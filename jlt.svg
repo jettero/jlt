@@ -16,7 +16,10 @@
    inkscape:version="0.46"
    version="1.0"
    sodipodi:docname="jlt.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/jettero/code/prē/jlt/jlt.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
     <filter
@@ -89,7 +92,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="138.73426"
+     inkscape:cx="296.85081"
      inkscape:cy="302.88951"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -132,25 +135,18 @@
        sodipodi:rx="64.579292"
        sodipodi:ry="70.297256"
        d="M 158.66193,148.74866 A 64.579292,70.297256 0 1 1 29.503349,148.74866 A 64.579292,70.297256 0 1 1 158.66193,148.74866 z"
-       transform="matrix(4.9551488,0,0,4.552098,-146.19349,-357.11846)"
+       transform="matrix(4.9551488,0,0,4.552098,-146.80769,-357.73267)"
        inkscape:transform-center-x="-27.476889"
        inkscape:transform-center-y="-29.911792" />
     <path
        style="opacity:1;fill:url(#linearGradient3189);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2.97431397;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3195)"
        d="M 234.01646,39.918981 C 127.32457,39.918981 40.731024,126.6485 40.731022,233.53945 C 40.731022,340.43041 127.32457,427.19039 234.01646,427.19038 C 340.70834,427.19038 427.3019,340.43042 427.30189,233.53945 C 427.30189,126.64849 340.70833,39.918983 234.01646,39.918981 z M 234.01646,45.70597 C 337.50756,45.705973 421.48444,129.85523 421.48444,233.53945 C 421.48445,337.22369 337.50757,421.40339 234.01646,421.40339 C 130.52533,421.4034 46.518011,337.22368 46.518011,233.53945 C 46.518013,129.85523 130.52534,45.70597 234.01646,45.70597 z"
        id="path2397"
-       transform="matrix(1.6555826,0,0,1.6525878,-67.433571,-65.969621)" />
-    <text
-       xml:space="preserve"
+       transform="matrix(1.6224709,0,0,1.619536,-60.299095,-58.864416)" />
+    <path
+       transform="scale(0.9442279,1.0590664)"
        style="font-size:333.91119385px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
-       x="125.72307"
-       y="390.44049"
-       id="text3778"
-       sodipodi:linespacing="125%"
-       transform="scale(0.9442279,1.0590664)"><tspan
-         sodipodi:role="line"
-         id="tspan3780"
-         x="125.72307"
-         y="390.44049">JLT</tspan></text>
+       d="M 158.49463,147.01793 L 191.42923,147.01793 L 191.42923,373.48406 C 191.42916,402.83171 185.83137,424.13592 174.63584,437.39675 C 163.54891,450.65749 145.66859,457.28788 120.99483,457.28795 L 108.44056,457.28795 L 108.44056,429.57071 L 118.71224,429.57071 C 133.27737,429.57067 143.54904,425.49461 149.52728,417.34252 C 155.50548,409.19037 158.49459,394.5709 158.49463,373.48406 L 158.49463,147.01793 M 256.97234,147.01793 L 289.90694,147.01793 L 289.90694,362.72325 L 408.43889,362.72325 L 408.43889,390.44049 L 256.97234,390.44049 L 256.97234,147.01793 M 363.43915,147.01793 L 569.36192,147.01793 L 569.36192,174.73516 L 482.94936,174.73516 L 482.94936,390.44049 L 449.85171,390.44049 L 449.85171,174.73516 L 363.43915,174.73516 L 363.43915,147.01793"
+       id="text3778" />
   </g>
 </svg>
