@@ -4,6 +4,6 @@
 	"vendor": "voltar.org",
 	"type": "web",
 	"main": "index.html",
-	"title": "JSON Location Tracker",
+	"title": "Jet's Location Tracker",
 	"icon": "icon.png"
 }

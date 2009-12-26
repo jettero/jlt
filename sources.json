@@ -1,4 +1,3 @@
 [
-    { "source": "app/jlt/panel.js" },
-    { "source": "stage-assistant.js" },
+    { "source": "stage-assistant.js" }
 ]

@@ -1,4 +1,4 @@
-name=JSONLocationTracker
+name=JetsLocationTracker
 
 default: test
 

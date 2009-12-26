@@ -4,6 +4,15 @@ function StageAssistant() {
 
 StageAssistant.prototype.setup = function() {
 	Mojo.Log.info("StageAssistant()::setup()")
+
+    // this.appController = Mojo.Controller.getAppController();
+    // this.indexStageController = this.appController.getActiveStageController();
+    //
+    // this.indexStageController.setupWidget("loading",
+    //     this.attributes = { spinnerSize: 'large' },
+    //     this.model      = { spinning: false }
+    // );
+
     this.controller.assistant.showScene('jlt', 'panel');
 }
 
