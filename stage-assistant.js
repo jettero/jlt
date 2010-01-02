@@ -5,17 +5,17 @@ function StageAssistant() {
 StageAssistant.prototype.setup = function() {
 	Mojo.Log.info("StageAssistant()::setup()")
 
-    this.controller.assistant.showScene('panel', 'ControlPanel');
+    this.controller.assistant.showScene('ControlPanel');
 }
 
-StageAssistant.prototype.showScene = function (directory, sceneName, args) {
-	Mojo.Log.info("StageAssistant()::showScene(%s, %s)", directory, sceneName)
+StageAssistant.prototype.showScene = function (sceneName, args) {
+	Mojo.Log.info("StageAssistant()::showScene(%s)", sceneName)
 
 	if (args === undefined) {
-		this.controller.pushScene({name: sceneName, sceneTemplate: directory + "/" + sceneName});
+		this.controller.pushScene({name: sceneName, sceneTemplate: sceneName});
 
 	} else {
-		this.controller.pushScene({name: sceneName, sceneTemplate: directory + "/" + sceneName}, args);
+		this.controller.pushScene({name: sceneName, sceneTemplate: sceneName}, args);
 	}
 };
 

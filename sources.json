@@ -1,4 +1,4 @@
 [
-    { "source": "app/panel/control_panel.js" },
+    { "source": "app/assistants/ControlPanel.js" },
     { "source": "stage-assistant.js" }
 ]
