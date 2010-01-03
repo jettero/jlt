@@ -18,6 +18,11 @@ ControlPanelAssistant.prototype.setup = function() {
     this.toggleModel = { value: false };
     this.controller.setupWidget('onOffToggle', this.onOffToggleOpt, this.toggleModel);		
     this.controller.get('onOffToggle').observe(Mojo.Event.propertyChange, this.selectorChangedHandler.bind(this));
+
+    this.onOffToggleOpt = {};
+    this.toggleModel = { value: false };
+    this.controller.setupWidget('onOffToggle', this.onOffToggleOpt, this.toggleModel);		
+    this.controller.get('onOffToggle').observe(Mojo.Event.propertyChange, this.selectorChangedHandler.bind(this));
 }
 
 ControlPanelAssistant.prototype.selectorChangedHandler = function(result) {

@@ -6,3 +6,13 @@
 	min-width: 160px !important;
     font-size: 16px;
 }
+
+.palm-row .title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.explanation {
+    font-size: 13px;
+    font-weight: normal;
+}
