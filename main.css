@@ -1,0 +1,8 @@
+.palm-page-header .icon.jlt {
+	background-image: url(header-icon.png);
+}
+
+.palm-page-header .title {
+	min-width: 160px !important;
+    font-size: 16px;
+}

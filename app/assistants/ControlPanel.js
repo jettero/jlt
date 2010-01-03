@@ -5,13 +5,23 @@ function ControlPanelAssistant() {
 ControlPanelAssistant.prototype.setup = function() {
     Mojo.Log.info("ControlPanel::setup()");
 
+    /*
     this.trackingHandle = this.controller.serviceRequest('palm://com.palm.location', {
         method:"startTracking",
         parameters: {"subscribe":true},
         onSuccess: this.trackingSuccessResponseHandler.bind(this),
         onFailure: this.trackingFailedResponseHandler.bind(this)
     });
+    */
 
+    this.onOffToggleOpt = {};
+    this.toggleModel = { value: false };
+    this.controller.setupWidget('onOffToggle', this.onOffToggleOpt, this.toggleModel);		
+    this.controller.get('onOffToggle').observe(Mojo.Event.propertyChange, this.selectorChangedHandler.bind(this));
+}
+
+ControlPanelAssistant.prototype.selectorChangedHandler = function(result) {
+    Mojo.Log.info("ControlPanel::selectorChangedHandler() = %s (%d)", errStr, errCode);
 }
 
 ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {
