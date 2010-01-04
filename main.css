@@ -12,7 +12,14 @@
     font-weight: bold;
 }
 
+.explanation.topsplain {
+    margin-left: 1em;
+    /* font-style: italic; */
+}
+
 .explanation {
+    color: gray;
     font-size: 13px;
-    font-weight: normal;
+    font-weight: lighter;
+    /* font-style: italic; */
 }
