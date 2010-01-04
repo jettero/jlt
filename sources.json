@@ -1,5 +1,4 @@
 [
-    { "source": "app/assistants/Test.js" },
     { "source": "app/assistants/ControlPanel.js" },
     { "source": "stage-assistant.js" }
 ]

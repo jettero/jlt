@@ -31,14 +31,13 @@ ControlPanelAssistant.prototype.setup = function() {
     this.trackingModel = { value: false };
     this.controller.setupWidget('trackingToggle', this.trackingOpts, this.trackingModel);		
     this.trackingChanged = this.trackingChanged.bindAsEventListener(this);
-    this.controller.get('trackingToggle').observe(Mojo.Event.propertyChange, this.trackingChanged);
+    Mojo.Event.listen($('trackingToggle'), Mojo.Event.propertyChange, this.trackingChanged);
 
     this.continuousOpts = {};
-    this.continuousModel = { value: true };
+    this.continuousModel = { value: false };
     this.controller.setupWidget('continuousUpdates', this.continuousOpts, this.continuousModel);		
     this.continuousChanged = this.continuousChanged.bindAsEventListener(this);
-    this.controller.get('continuousUpdates').observe(Mojo.Event.propertyChange, this.continuousChanged);
-    this.continuousChanged();
+    Mojo.Event.listen($('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
 
     this.URLAttributes = {
         hintText:      'http://mysite/cgi/path',
@@ -61,18 +60,13 @@ ControlPanelAssistant.prototype.setup = function() {
         updateInterval: 0.1, // this is 100ms I guess, doesn't seem to do anything... who knows
         round: true
     };
-    this.updateIntervalModel = { value: 50 };
+    this.updateIntervalModel = { value: 900 };
     this.controller.setupWidget('updateInterval', this.updateIntervalAttributes, this.updateIntervalModel);
     this.updateIntervalChanged = this.updateIntervalChanged.bindAsEventListener(this);
     Mojo.Event.listen($("updateInterval"), Mojo.Event.propertyChange, this.updateIntervalChanged);
+
+    this.continuousChanged();
     this.updateIntervalChanged();
-    $('updateIntervalGroup').hide();
-
-    this.updateIntervalModel.value = 50;
-    this.controller.modelChanged(this.updateIntervalModel);
-
-    this.updateIntervalModel.value = 50;
-    this.controller.modelChanged();
 
     this.restoring = false;
 };
@@ -148,11 +142,10 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
 
             this.restoring = true;
 
-            this.updateIntervalModel.value = prefs.updateInterval;
+            $('updateIntervalGroup').show();
+            this.updateIntervalModel.value = prefs.updateInterval; // doesn't update unless it's showing
             this.continuousModel.value     = prefs.continuous;
             this.URLModel.value            = prefs.URL;
-
-            this.updateIntervalModel.value = 50;
 
             this.controller.modelChanged(this.updateIntervalModel);
             this.controller.modelChanged(this.continuousModel);
