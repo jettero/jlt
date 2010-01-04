@@ -24,15 +24,14 @@ ControlPanelAssistant.prototype.setup = function() {
     this.controller.setupWidget('continuousUpdates', this.continuousOpts, this.continuousModel);		
     this.controller.get('continuousUpdates').observe(Mojo.Event.propertyChange, this.continuousChanged.bind(this));
 
-    /*
     this.URLAttributes = {
         hintText:      'http://mysite/cgi/path',
         textFieldName: 'postURL',
-        maxLength:     2048
+        maxLength:     2048,
+        multiline:     false
     };
     this.URLModel = { value: '' };
     this.controller.setupWidget('postURL', this.URLAttributes, this.URLModel);
-    */
 
 }
 
