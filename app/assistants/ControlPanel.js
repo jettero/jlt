@@ -23,6 +23,17 @@ ControlPanelAssistant.prototype.setup = function() {
     this.continuousModel = { value: true };
     this.controller.setupWidget('continuousUpdates', this.continuousOpts, this.continuousModel);		
     this.controller.get('continuousUpdates').observe(Mojo.Event.propertyChange, this.continuousChanged.bind(this));
+
+    /*
+    this.URLAttributes = {
+        hintText:      'http://mysite/cgi/path',
+        textFieldName: 'postURL',
+        maxLength:     2048
+    };
+    this.URLModel = { value: '' };
+    this.controller.setupWidget('postURL', this.URLAttributes, this.URLModel);
+    */
+
 }
 
 ControlPanelAssistant.prototype.trackingChanged = function() {
