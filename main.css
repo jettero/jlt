@@ -28,3 +28,16 @@
     font-size: 10px;
     font-weight: lighter;
 }
+
+.startsHidden {
+    display: none;
+}
+
+.rightInfo {
+    float: right;
+    margin: 0.1em;
+    margin-right: 0;
+    color: gray;
+    font-size: 10px;
+    font-weight: lighter;
+}

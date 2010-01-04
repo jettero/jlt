@@ -33,6 +33,38 @@ ControlPanelAssistant.prototype.setup = function() {
     this.URLModel = { value: '' };
     this.controller.setupWidget('postURL', this.URLAttributes, this.URLModel);
 
+    this.updateIntervalAttributes = {
+        modelProperty: 'value',
+        maxValue: 3600*2,
+        minValue: 5,
+        round: true,
+        updateInterval: 0.1
+    };
+    this.updateIntervalModel = { value: 1800 };
+    this.controller.setupWidget('updateInterval', this.updateIntervalAttributes, this.updateIntervalModel);
+    Mojo.Event.listen($('updateInterval'), 'mojo-property-change', this.updateIntervalChanged.bindAsEventListener(this));
+    this.updateIntervalChanged();
+}
+
+ControlPanelAssistant.prototype.updateIntervalChanged = function() {
+    var i = parseInt(this.updateIntervalModel.value);
+
+    Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", i);
+
+    var s;
+    if( i >= 900 ) {
+        if( i >= 2700 ) {
+            s = (parseFloat(i)/3600).toFixed(2) + " hours";
+
+        } else {
+            s = (parseFloat(i)/60).toFixed(2) + " minutes";
+        }
+
+    } else {
+        s = i + " seconds";
+    }
+
+    $('updateIntervalCurrent').innerHTML = s;
 }
 
 ControlPanelAssistant.prototype.trackingChanged = function() {
