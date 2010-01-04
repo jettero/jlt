@@ -14,19 +14,23 @@ ControlPanelAssistant.prototype.setup = function() {
     });
     */
 
-    this.onOffToggleOpt = {};
-    this.toggleModel = { value: false };
-    this.controller.setupWidget('onOffToggle', this.onOffToggleOpt, this.toggleModel);		
-    this.controller.get('onOffToggle').observe(Mojo.Event.propertyChange, this.selectorChangedHandler.bind(this));
+    this.trackingOpts = {};
+    this.trackingModel = { value: false };
+    this.controller.setupWidget('trackingToggle', this.trackingOpts, this.trackingModel);		
+    this.controller.get('trackingToggle').observe(Mojo.Event.propertyChange, this.trackingChanged.bind(this));
 
-    this.onOffToggleOpt = {};
-    this.toggleModel = { value: false };
-    this.controller.setupWidget('onOffToggle', this.onOffToggleOpt, this.toggleModel);		
-    this.controller.get('onOffToggle').observe(Mojo.Event.propertyChange, this.selectorChangedHandler.bind(this));
+    this.continuousOpts = {};
+    this.continuousModel = { value: true };
+    this.controller.setupWidget('continuousUpdates', this.continuousOpts, this.continuousModel);		
+    this.controller.get('continuousUpdates').observe(Mojo.Event.propertyChange, this.continuousChanged.bind(this));
 }
 
-ControlPanelAssistant.prototype.selectorChangedHandler = function(result) {
-    Mojo.Log.info("ControlPanel::selectorChangedHandler() = %s (%d)", errStr, errCode);
+ControlPanelAssistant.prototype.trackingChanged = function() {
+    Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
+}
+
+ControlPanelAssistant.prototype.continuousChanged = function() {
+    Mojo.Log.info("ControlPanel::continuousChanged(): %s", this.continuousModel.value ? "on" : "off");
 }
 
 ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {
