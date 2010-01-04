@@ -44,6 +44,7 @@ ControlPanelAssistant.prototype.setup = function() {
     this.controller.setupWidget('updateInterval', this.updateIntervalAttributes, this.updateIntervalModel);
     Mojo.Event.listen($('updateInterval'), 'mojo-property-change', this.updateIntervalChanged.bindAsEventListener(this));
     this.updateIntervalChanged();
+    $('updateIntervalGroup').hide();
 }
 
 ControlPanelAssistant.prototype.updateIntervalChanged = function() {
@@ -73,6 +74,10 @@ ControlPanelAssistant.prototype.trackingChanged = function() {
 
 ControlPanelAssistant.prototype.continuousChanged = function() {
     Mojo.Log.info("ControlPanel::continuousChanged(): %s", this.continuousModel.value ? "on" : "off");
+
+    if( this.continuousModel.value ) $('updateIntervalGroup').hide();
+    else $('updateIntervalGroup').show();
+
 }
 
 ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {
