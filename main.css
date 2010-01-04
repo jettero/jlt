@@ -29,10 +29,6 @@
     font-weight: lighter;
 }
 
-.startsHidden {
-    display: none;
-}
-
 .rightInfo {
     float: right;
     margin: 0.1em;
