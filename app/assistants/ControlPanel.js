@@ -93,10 +93,35 @@ ControlPanelAssistant.prototype.setup = function() {
     this.restoring = false;
 };
 
+ControlPanelAssistant.prototype.blinkRedLED = function(duration) {
+    $("r_led").src = "images/red_led_lighted.png";
+    if( duration === undefined ) duration = 500;
+    if( duration < 100 ) duration = 100;
+    setTimeout(function(){ $("r_led").src = "images/red_led.png"}, duration)
+};
+
+ControlPanelAssistant.prototype.blinkGreenLED = function(duration) {
+    $("g_led").src = "images/green_led_lighted.png";
+    if( duration === undefined ) duration = 500;
+    if( duration < 100 ) duration = 100;
+    setTimeout(function(){ $("g_led").src = "images/green_led.png"}, duration)
+};
+
+ControlPanelAssistant.prototype.blinkBlueLED = function(duration) {
+    $("b_led").src = "images/blue_led_lighted.png";
+    if( duration === undefined ) duration = 500;
+    if( duration < 100 ) duration = 100;
+    setTimeout(function(){ $("b_led").src = "images/blue_led.png"}, duration)
+};
+
 ControlPanelAssistant.prototype.resetQueue = function() {
     this.buffer = [];
     this.bufferFillModel.value = 0;
-    this.controller.modelchanged(this.bufferFillModel);
+    this.controller.modelChanged(this.bufferFillModel);
+
+    this.blinkRedLED();
+    this.blinkGreenLED();
+    this.blinkBlueLED();
 };
 
 ControlPanelAssistant.prototype.pushQueue = function(item) {
