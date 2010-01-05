@@ -65,8 +65,20 @@ ControlPanelAssistant.prototype.setup = function() {
     this.updateIntervalChanged = this.updateIntervalChanged.bindAsEventListener(this);
     Mojo.Event.listen($("updateInterval"), Mojo.Event.propertyChange, this.updateIntervalChanged);
 
+    this.bufferSizeAttributes = {
+        minValue: 1,
+        maxValue: 100,
+        updateInterval: 0.1, // this is 100ms I guess, doesn't seem to do anything... who knows
+        round: true
+    };
+    this.bufferSizeModel = { value: 10 };
+    this.controller.setupWidget('bufferSize', this.bufferSizeAttributes, this.bufferSizeModel);
+    this.bufferSizeChanged = this.bufferSizeChanged.bindAsEventListener(this);
+    Mojo.Event.listen($("bufferSize"), Mojo.Event.propertyChange, this.bufferSizeChanged);
+
     this.continuousChanged();
     this.updateIntervalChanged();
+    this.bufferSizeChanged();
 
     this.restoring = false;
 };
@@ -96,6 +108,16 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
     }
 
     $('updateIntervalCurrent').innerHTML = s;
+
+    this.savePrefs();
+};
+
+ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
+    var i = parseInt(this.bufferSizeModel.value);
+
+    Mojo.Log.info("ControlPanel::bufferSizeChanged(): %d messages", i);
+
+    $('bufferSizeCurrent').innerHTML = i + " messages";
 
     this.savePrefs();
 };
@@ -142,17 +164,21 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
 
             this.restoring = true;
 
-            $('updateIntervalGroup').show();
-            this.updateIntervalModel.value = prefs.updateInterval; // doesn't update unless it's showing
+            $('updateIntervalGroup').show(); // doesn't update unless it's showing
+
+            this.updateIntervalModel.value = prefs.updateInterval;
+            this.bufferSizeModel.value     = prefs.bufferSize;
             this.continuousModel.value     = prefs.continuous;
             this.URLModel.value            = prefs.URL;
 
             this.controller.modelChanged(this.updateIntervalModel);
+            this.controller.modelChanged(this.bufferSizeModel);
             this.controller.modelChanged(this.continuousModel);
             this.controller.modelChanged(this.URLModel);
 
-            this.updateIntervalChanged(); // updates some other UI items
-            this.continuousChanged(); // updates some other UI items
+            this.bufferSizeChanged();
+            this.updateIntervalChanged();
+            this.continuousChanged();
 
             this.restoring = false;
 
@@ -176,7 +202,8 @@ ControlPanelAssistant.prototype.savePrefs = function() {
     var prefs = {
         URL:            this.URLModel.value,
         continuous:     this.continuousModel.value,
-        updateInterval: this.updateIntervalModel.value
+        updateInterval: this.updateIntervalModel.value,
+        bufferSize:     this.bufferSizeModel.value
     };
 
     this.dbo.simpleAdd("prefs", prefs,
