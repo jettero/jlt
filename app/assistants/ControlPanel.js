@@ -1,3 +1,8 @@
+/*jslint white: false
+*/
+/*global Mojo $ ControlPanelAssistant
+*/
+
 function ControlPanelAssistant() {
     Mojo.Log.info("ControlPanel()");
 }
@@ -80,7 +85,28 @@ ControlPanelAssistant.prototype.setup = function() {
     this.updateIntervalChanged();
     this.bufferSizeChanged();
 
+    this.bufferFillOpts  = { };
+    this.bufferFillModel = { value: 0 };
+    this.controller.setupWidget('bufferFill', this.bufferFillOpts, this.bufferFillModel);
+    this.resetQueue();
+
     this.restoring = false;
+};
+
+ControlPanelAssistant.prototype.resetQueue = function() {
+    this.buffer = [];
+    this.bufferFillModel.value = 0;
+    this.controller.modelchanged(this.bufferFillModel);
+};
+
+ControlPanelAssistant.prototype.pushQueue = function(item) {
+    this.buffer.push(item);
+
+    while( this.buffer.length > this.bufferSizeModel.value )
+        this.buffer.shift();
+
+    this.bufferFillModel.value = this.buffer.length / this.bufferFillModel.value;
+    this.controller.modelchanged(this.bufferFillModel);
 };
 
 ControlPanelAssistant.prototype.URLChanged = function() {

@@ -18,9 +18,14 @@
                 <div class="palm-row-wrapper">
                     <div class="title">
 
-                    <img src="images/red_led.png" height="16" width="16"/>
-                    <img src="images/green_led.png" height="16" width="16"/>
-                    <img src="images/blue_led.png" height="16" width="16"/>
+                    <div id="bufferFill" x-mojo-element="ProgressBar"
+                        style="margin-top: 0.5em; float:left; width: 177px;"></div>
+
+                    <div style="float: right">
+                        <img id='r_led' src="images/red_led.png"   height="24" width="24"/>
+                        <img id='g_led' src="images/green_led.png" height="24" width="24"/>
+                        <img id='b_led' src="images/blue_led.png"  height="24" width="24"/>
+                    </div>
 
                     </div>
                 </div>
