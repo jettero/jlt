@@ -14,7 +14,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   sodipodi:docname="red_led.svg"
+   sodipodi:docname="blue_led.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0">
   <defs
@@ -22,22 +22,22 @@
     <linearGradient
        id="linearGradient3205">
       <stop
-         style="stop-color:#ff0000;stop-opacity:1;"
+         style="stop-color:#0015ff;stop-opacity:1;"
          offset="0"
          id="stop3207" />
       <stop
-         style="stop-color:#b11414;stop-opacity:1;"
+         style="stop-color:#0514b5;stop-opacity:1;"
          offset="1"
          id="stop3209" />
     </linearGradient>
     <linearGradient
        id="linearGradient3197">
       <stop
-         style="stop-color:#ff8787;stop-opacity:0.69411767;"
+         style="stop-color:#ffffff;stop-opacity:0.5958904;"
          offset="0"
          id="stop3199" />
       <stop
-         style="stop-color:#ff0000;stop-opacity:0;"
+         style="stop-color:#0015ff;stop-opacity:0;"
          offset="1"
          id="stop3201" />
     </linearGradient>
@@ -90,15 +90,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="208.47758"
+     inkscape:cx="269.24403"
      inkscape:cy="181.52765"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1231"
-     inkscape:window-height="882"
+     inkscape:window-height="963"
      inkscape:window-x="0"
-     inkscape:window-y="25" />
+     inkscape:window-y="33" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -153,7 +153,7 @@
        d="M 534.3707,571.52954 A 214.15234,214.15234 0 1 1 106.06601,571.52954 A 214.15234,214.15234 0 1 1 534.3707,571.52954 z" />
     <path
        sodipodi:type="arc"
-       style="fill:url(#radialGradient2419);fill-opacity:1;stroke:none;stroke-width:9;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:0.76712329000000001"
+       style="fill:url(#radialGradient2419);fill-opacity:1;stroke:none;stroke-width:9;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:0.76712329"
        id="path2417"
        sodipodi:cx="320.21835"
        sodipodi:cy="571.52954"
