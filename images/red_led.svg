@@ -9,13 +9,14 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="744.09448819"
-   height="1052.3622047"
+   width="437.30469"
+   height="437.30469"
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.46"
    sodipodi:docname="red_led.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0">
   <defs
      id="defs4">
     <linearGradient
@@ -87,7 +88,7 @@
      inkscape:window-width="1231"
      inkscape:window-height="882"
      inkscape:window-x="0"
-     inkscape:window-y="25" />
+     inkscape:window-y="70" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -102,7 +103,8 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-101.56601,-352.8772)">
     <path
        sodipodi:type="arc"
        style="fill:none;stroke:none;stroke-width:9;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:0.76712329"
@@ -114,7 +116,7 @@
        d="M 473.76154,496.77829 A 124.24876,124.24876 0 1 1 225.26403,496.77829 A 124.24876,124.24876 0 1 1 473.76154,496.77829 z" />
     <path
        sodipodi:type="arc"
-       style="fill:url(#radialGradient3211);fill-opacity:1;stroke:none;stroke-width:9;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:0.76712329000000001"
+       style="fill:url(#radialGradient3211);fill-opacity:1;stroke:none;stroke-width:9;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:0.76712329"
        id="path3163"
        sodipodi:cx="320.21835"
        sodipodi:cy="571.52954"
@@ -123,7 +125,7 @@
        d="M 534.3707,571.52954 A 214.15234,214.15234 0 1 1 106.06601,571.52954 A 214.15234,214.15234 0 1 1 534.3707,571.52954 z" />
     <path
        sodipodi:type="arc"
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:9;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:0.79702967"
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:9;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:0.79702968"
        id="path3185"
        sodipodi:cx="320.21835"
        sodipodi:cy="571.52954"
