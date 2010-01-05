@@ -10,15 +10,6 @@ function ControlPanelAssistant() {
 ControlPanelAssistant.prototype.setup = function() {
     Mojo.Log.info("ControlPanel::setup()");
 
-    /*
-    this.trackingHandle = this.controller.serviceRequest('palm://com.palm.location', {
-        method:"startTracking",
-        parameters: {"subscribe":true},
-        onSuccess: this.trackingSuccessResponseHandler.bind(this),
-        onFailure: this.trackingFailedResponseHandler.bind(this)
-    });
-    */
-
     this.redLEDCount   = [];
     this.greenLEDCount = [];
     this.blueLEDCount  = [];
@@ -29,6 +20,9 @@ ControlPanelAssistant.prototype.setup = function() {
     this.blinkGreenLED_3 = this.blinkGreenLED_3.bind(this);
     this.blinkBlueLED_2  = this.blinkBlueLED_2.bind(this);
     this.blinkBlueLED_3  = this.blinkBlueLED_3.bind(this);
+
+    this.trackingSuccessResponseHandler = this.trackingSuccessResponseHandler.bind(this);
+    this.trackingFailedResponseHandler  = this.trackingFailedResponseHandler.bind(this);
 
     var options = {
         name:    "JLTOptions",
@@ -170,12 +164,27 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
 ControlPanelAssistant.prototype.trackingChanged = function(event) {
     Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
 
-    this.blinkRedLED(100);
-    this.blinkGreenLED(100);
-    this.blinkBlueLED(100);
-
     if( this.trackingModel.value ) {
-        $("continuousUpdatesGroup").hide();
+        if( this.continuousModel.value ) {
+
+            this.trackingHandle = this.controller.serviceRequest('palm://com.palm.location', {
+                method:"startTracking",
+                parameters: {"subscribe":true},
+                onSuccess: this.trackingSuccessResponseHandler,
+                onFailure: this.trackingFailedResponseHandler
+            });
+
+            this.blinkRedLED(100);
+            this.blinkGreenLED(100);
+            this.blinkBlueLED(100);
+
+            $("continuousUpdatesGroup").hide();
+
+        } else {
+            Mojo.Controller.errorDialog("ERROR non-continuous updates aren't implemented yet");
+            this.trackingModel.value = false;
+            this.controller.modelChanged(this.trackingModel);
+        }
 
     } else {
         this.resetQueue();
