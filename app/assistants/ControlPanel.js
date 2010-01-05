@@ -1,4 +1,4 @@
-/*jslint white: false
+/*jslint white: false, onevar: false
 */
 /*global Mojo $ ControlPanelAssistant
 */
@@ -18,6 +18,17 @@ ControlPanelAssistant.prototype.setup = function() {
         onFailure: this.trackingFailedResponseHandler.bind(this)
     });
     */
+
+    this.redLEDCount   = [];
+    this.greenLEDCount = [];
+    this.blueLEDCount  = [];
+
+    this.blinkRedLED_2   = this.blinkRedLED_2.bind(this);
+    this.blinkRedLED_3   = this.blinkRedLED_3.bind(this);
+    this.blinkGreenLED_2 = this.blinkGreenLED_2.bind(this);
+    this.blinkGreenLED_3 = this.blinkGreenLED_3.bind(this);
+    this.blinkBlueLED_2  = this.blinkBlueLED_2.bind(this);
+    this.blinkBlueLED_3  = this.blinkBlueLED_3.bind(this);
 
     var options = {
         name:    "JLTOptions",
@@ -88,30 +99,9 @@ ControlPanelAssistant.prototype.setup = function() {
     this.bufferFillOpts  = { };
     this.bufferFillModel = { value: 0 };
     this.controller.setupWidget('bufferFill', this.bufferFillOpts, this.bufferFillModel);
-    this.resetQueue();
+    this.buffer = [];
 
     this.restoring = false;
-};
-
-ControlPanelAssistant.prototype.blinkRedLED = function(duration) {
-    $("r_led").src = "images/red_led_lighted.png";
-    if( duration === undefined ) duration = 500;
-    if( duration < 100 ) duration = 100;
-    setTimeout(function(){ $("r_led").src = "images/red_led.png"}, duration)
-};
-
-ControlPanelAssistant.prototype.blinkGreenLED = function(duration) {
-    $("g_led").src = "images/green_led_lighted.png";
-    if( duration === undefined ) duration = 500;
-    if( duration < 100 ) duration = 100;
-    setTimeout(function(){ $("g_led").src = "images/green_led.png"}, duration)
-};
-
-ControlPanelAssistant.prototype.blinkBlueLED = function(duration) {
-    $("b_led").src = "images/blue_led_lighted.png";
-    if( duration === undefined ) duration = 500;
-    if( duration < 100 ) duration = 100;
-    setTimeout(function(){ $("b_led").src = "images/blue_led.png"}, duration)
 };
 
 ControlPanelAssistant.prototype.resetQueue = function() {
@@ -119,19 +109,23 @@ ControlPanelAssistant.prototype.resetQueue = function() {
     this.bufferFillModel.value = 0;
     this.controller.modelChanged(this.bufferFillModel);
 
-    this.blinkRedLED();
-    this.blinkGreenLED();
-    this.blinkBlueLED();
+    this.blinkBlueLED(1500);
 };
 
 ControlPanelAssistant.prototype.pushQueue = function(item) {
     this.buffer.push(item);
 
-    while( this.buffer.length > this.bufferSizeModel.value )
-        this.buffer.shift();
+    if( this.buffer.length > this.bufferSizeModel.value ) {
+        while( this.buffer.length > this.bufferSizeModel.value ) {
+            this.buffer.shift();
+            this.blinkBlueLED(100);
+        }
 
-    this.bufferFillModel.value = this.buffer.length / this.bufferFillModel.value;
-    this.controller.modelchanged(this.bufferFillModel);
+    } else {
+        this.bufferFillModel.value = this.buffer.length / this.bufferFillModel.value;
+        this.controller.modelchanged(this.bufferFillModel);
+        this.blinkBlueLED(500);
+    }
 };
 
 ControlPanelAssistant.prototype.URLChanged = function() {
@@ -175,6 +169,18 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
 
 ControlPanelAssistant.prototype.trackingChanged = function(event) {
     Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
+
+    this.blinkRedLED(100);
+    this.blinkGreenLED(100);
+    this.blinkBlueLED(100);
+
+    if( this.trackingModel.value ) {
+        $("continuousUpdatesGroup").hide();
+
+    } else {
+        this.resetQueue();
+        $("continuousUpdatesGroup").show();
+    }
 };
 
 ControlPanelAssistant.prototype.continuousChanged = function(event) {
@@ -214,8 +220,6 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
                 return;
 
             this.restoring = true;
-
-            $('updateIntervalGroup').show(); // doesn't update unless it's showing
 
             this.updateIntervalModel.value = prefs.updateInterval;
             this.bufferSizeModel.value     = prefs.bufferSize;
@@ -264,7 +268,7 @@ ControlPanelAssistant.prototype.savePrefs = function() {
         }.bind(this),
 
         function(transaction,result) {
-            Mojo.Controller.errorDialog("ERROR saving prefs (#" + error.message + ").");
+            Mojo.Controller.errorDialog("ERROR saving prefs (#" + result.message + ").");
         }.bind(this)
     );
 };
@@ -303,4 +307,76 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
         return "something bad happened, error unknown";
 
     return res[errorCode];
+};
+
+ControlPanelAssistant.prototype.blinkRedLED_2 = function() {
+    $("r_led").src = "images/red_led.png";
+    setTimeout(this.blinkRedLED_3, 100);
+};
+
+ControlPanelAssistant.prototype.blinkRedLED_3 = function() {
+    this.redLEDCount.shift();
+    if( this.redLEDCount.length > 0 ) {
+        $("r_led").src = "images/red_led_lighted.png";
+        setTimeout(this.blinkRedLED_2, this.redLEDCount[0]);
+    }
+};
+
+ControlPanelAssistant.prototype.blinkRedLED = function(duration) {
+    if( duration === undefined ) duration = 500;
+    if( duration < 100 ) duration = 100;
+    this.redLEDCount.push(duration);
+
+    if( this.redLEDCount.length == 1 ) {
+        $("r_led").src = "images/red_led_lighted.png";
+        setTimeout(this.blinkRedLED_2, duration);
+    }
+};
+
+ControlPanelAssistant.prototype.blinkGreenLED_2 = function() {
+    $("g_led").src = "images/green_led.png";
+    setTimeout(this.blinkGreenLED_3, 100);
+};
+
+ControlPanelAssistant.prototype.blinkGreenLED_3 = function() {
+    this.greenLEDCount.shift();
+    if( this.greenLEDCount.length > 0 ) {
+        $("g_led").src = "images/green_led_lighted.png";
+        setTimeout(this.blinkGreenLED_2, this.greenLEDCount[0]);
+    }
+};
+
+ControlPanelAssistant.prototype.blinkGreenLED = function(duration) {
+    if( duration === undefined ) duration = 500;
+    if( duration < 100 ) duration = 100;
+    this.greenLEDCount.push(duration);
+
+    if( this.greenLEDCount.length == 1 ) {
+        $("g_led").src = "images/green_led_lighted.png";
+        setTimeout(this.blinkGreenLED_2, duration);
+    }
+};
+
+ControlPanelAssistant.prototype.blinkBlueLED_2 = function() {
+    $("b_led").src = "images/blue_led.png";
+    setTimeout(this.blinkBlueLED_3, 100);
+};
+
+ControlPanelAssistant.prototype.blinkBlueLED_3 = function() {
+    this.blueLEDCount.shift();
+    if( this.blueLEDCount.length > 0 ) {
+        $("b_led").src = "images/blue_led_lighted.png";
+        setTimeout(this.blinkBlueLED_2, this.blueLEDCount[0]);
+    }
+};
+
+ControlPanelAssistant.prototype.blinkBlueLED = function(duration) {
+    if( duration === undefined ) duration = 500;
+    if( duration < 100 ) duration = 100;
+    this.blueLEDCount.push(duration);
+
+    if( this.blueLEDCount.length == 1 ) {
+        $("b_led").src = "images/blue_led_lighted.png";
+        setTimeout(this.blinkBlueLED_2, duration);
+    }
 };
