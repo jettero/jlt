@@ -8,6 +8,7 @@ use HTTP::Server::Simple;
 use base qw(HTTP::Server::Simple::CGI);
 use JSON;
 
+$0 = "demo-server.pl";
 my $json = JSON->new;
 
 sub handle_fix {
