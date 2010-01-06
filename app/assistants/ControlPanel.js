@@ -21,6 +21,8 @@ ControlPanelAssistant.prototype.setup = function() {
     this.blinkBlueLED_2  = this.blinkBlueLED_2.bind(this);
     this.blinkBlueLED_3  = this.blinkBlueLED_3.bind(this);
 
+    this.trackingLoop    = this.trackingLoop.bind(this);
+
     this.trackingSuccessResponseHandler = this.trackingSuccessResponseHandler.bind(this);
     this.trackingFailedResponseHandler  = this.trackingFailedResponseHandler.bind(this);
 
@@ -168,6 +170,26 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
     this.savePrefs();
 };
 
+ControlPanelAssistant.prototype.trackingLoop = function() {
+    if( !this.trackingModel.value )
+        return;
+
+    var now = (new Date()).getTime()/1000;
+
+    if( this.trackingLast + this.updateIntervalModel.value < now ) {
+        Mojo.Log.info("ControlPanel::trackingLoop() [loop true]");
+        this.trackingLast = now;
+
+        // get fix here
+
+        this.blinkRedLED(100);
+        this.blinkGreenLED(100);
+        this.blinkBlueLED(100);
+    }
+
+    setTimeout(this.trackingLoop, 1000);
+};
+
 ControlPanelAssistant.prototype.trackingChanged = function(event) {
     Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
 
@@ -188,9 +210,10 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
             $("continuousUpdatesGroup").hide();
 
         } else {
-            Mojo.Controller.errorDialog("ERROR non-continuous updates aren't implemented yet");
-            this.trackingModel.value = false;
-            this.controller.modelChanged(this.trackingModel);
+            this.trackingLast = 0;
+            this.trackingLoop();
+
+            $("continuousUpdatesGroup").hide();
         }
 
     } else {
