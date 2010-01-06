@@ -10,8 +10,13 @@ use base qw(HTTP::Server::Simple::CGI);
 sub handle_request {
     my ($this, $cgi) = @_;
 
+    my @p;
+    for my $p ($cgi->param) {
+        push @p, "$p: " . $cgi->param($p);
+    }
+
     print "Content-Type: text/plain\n\n";
-    print "hiya!!\n";
+    print "params: @p\n";
 }
 
 my $start = "run";

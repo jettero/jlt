@@ -15,10 +15,13 @@
 ** of error... Various blinkings could probably be used to indicate things.
 */
 
+// function ControlPanelAssistant() {{{
 function ControlPanelAssistant() {
     Mojo.Log.info("ControlPanel()");
 }
+// }}}
 
+// ControlPanelAssistant.prototype.setup = function() {{{
 ControlPanelAssistant.prototype.setup = function() {
     Mojo.Log.info("ControlPanel::setup()");
 
@@ -111,7 +114,8 @@ ControlPanelAssistant.prototype.setup = function() {
 
     this.restoring = false;
 };
-
+// }}}
+// ControlPanelAssistant.prototype.resetQueue = function() {{{
 ControlPanelAssistant.prototype.resetQueue = function() {
     this.buffer = [];
     this.bufferFillModel.value = 0;
@@ -119,7 +123,8 @@ ControlPanelAssistant.prototype.resetQueue = function() {
 
     this.blinkBlueLED(1500);
 };
-
+// }}}
+// ControlPanelAssistant.prototype.pushQueue = function(item) {{{
 ControlPanelAssistant.prototype.pushQueue = function(item) {
     if( !this.trackingModel.value )
         return;
@@ -142,13 +147,15 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
     Mojo.Log.info( "ControlPanel::pushQueue() -- buffer-fullness: "
         + (this.bufferFillModel.value*100) + " items: " + this.buffer.length );
 };
-
+// }}}
+// ControlPanelAssistant.prototype.URLChanged = function() {{{
 ControlPanelAssistant.prototype.URLChanged = function() {
     Mojo.Log.info("ControlPanel::URLChanged(): %s", this.URLModel.value);
 
     this.savePrefs();
 };
-
+// }}}
+// ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {{{
 ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
     var i = parseInt(this.updateIntervalModel.value);
 
@@ -171,7 +178,8 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
 
     this.savePrefs();
 };
-
+// }}}
+// ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {{{
 ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
     var i = parseInt(this.bufferSizeModel.value);
 
@@ -181,7 +189,8 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
 
     this.savePrefs();
 };
-
+// }}}
+// ControlPanelAssistant.prototype.trackingLoop = function() {{{
 ControlPanelAssistant.prototype.trackingLoop = function() {
     if( !this.trackingModel.value )
         return;
@@ -217,7 +226,8 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
 
     setTimeout(this.trackingLoop, 1000);
 };
-
+// }}}
+// ControlPanelAssistant.prototype.trackingChanged = function(event) {{{
 ControlPanelAssistant.prototype.trackingChanged = function(event) {
     Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
 
@@ -254,7 +264,8 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
         $("continuousUpdatesGroup").show();
     }
 };
-
+// }}}
+// ControlPanelAssistant.prototype.continuousChanged = function(event) {{{
 ControlPanelAssistant.prototype.continuousChanged = function(event) {
     Mojo.Log.info("ControlPanel::continuousChanged(): %s", this.continuousModel.value ? "on" : "off");
 
@@ -263,7 +274,8 @@ ControlPanelAssistant.prototype.continuousChanged = function(event) {
 
     this.savePrefs();
 };
-
+// }}}
+// ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {{{
 ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {
     /* var asJSON = Object.toJSON(result);
     ** Mojo.Log.info("ControlPanel::trackingSuccessResponseHandler(): %s", asJSON);
@@ -292,7 +304,8 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
 
     this.pushQueue(item);
 };
-
+// }}}
+// ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result) {{{
 ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result) {
     var errCode = result.errorCode;
     var errStr  = this.errCodeToStr(errCode);
@@ -304,13 +317,15 @@ ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result)
     this.blinkRedLED(700);
     this.blinkBlueLED(700);
 };
-
+// }}}
+// ControlPanelAssistant.prototype.activate = function(event) {{{
 ControlPanelAssistant.prototype.activate = function(event) {
     Mojo.Log.info("ControlPanel::activate()");
 
     this.restorePrefs();
 };
-
+// }}}
+// ControlPanelAssistant.prototype.restorePrefs = function() {{{
 ControlPanelAssistant.prototype.restorePrefs = function() {
     this.dbo.simpleGet("prefs",
         function(prefs) {
@@ -347,7 +362,8 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
         }.bind(this)
     );
 };
-
+// }}}
+// ControlPanelAssistant.prototype.savePrefs = function() {{{
 ControlPanelAssistant.prototype.savePrefs = function() {
     Mojo.Log.info("save() restoring=%s (aborts when true)", this.restoring ? "true" : "false");
 
@@ -372,13 +388,15 @@ ControlPanelAssistant.prototype.savePrefs = function() {
         }.bind(this)
     );
 };
-
+// }}}
+// ControlPanelAssistant.prototype.deactivate = function(event) {{{
 ControlPanelAssistant.prototype.deactivate = function(event) {
     Mojo.Log.info("ControlPanel::deactivate()");
 
     this.savePrefs();
 };
-
+// }}}
+// ControlPanelAssistant.prototype.cleanup = function(event) {{{
 ControlPanelAssistant.prototype.cleanup = function(event) {
     Mojo.Log.info("ControlPanel::cleanup()");
 
@@ -389,7 +407,8 @@ ControlPanelAssistant.prototype.cleanup = function(event) {
     if( this.trackingHandle )
         this.trackingHandle.cancel();
 };
-
+// }}}
+// ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {{{
 ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     var res = {
         0: "Success",
@@ -408,12 +427,16 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 
     return res[errorCode];
 };
+// }}}
 
+// LED functions {{{
+// ControlPanelAssistant.prototype.blinkRedLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkRedLED_2 = function() {
     $("r_led").src = "images/red_led.png";
     setTimeout(this.blinkRedLED_3, 100);
 };
-
+// }}}
+// ControlPanelAssistant.prototype.blinkRedLED_3 = function() {{{
 ControlPanelAssistant.prototype.blinkRedLED_3 = function() {
     this.redLEDCount.shift();
     if( this.redLEDCount.length > 0 ) {
@@ -421,7 +444,8 @@ ControlPanelAssistant.prototype.blinkRedLED_3 = function() {
         setTimeout(this.blinkRedLED_2, this.redLEDCount[0]);
     }
 };
-
+// }}}
+// ControlPanelAssistant.prototype.blinkRedLED = function(duration) {{{
 ControlPanelAssistant.prototype.blinkRedLED = function(duration) {
     if( duration === undefined ) duration = 500;
     if( duration < 100 ) duration = 100;
@@ -432,12 +456,14 @@ ControlPanelAssistant.prototype.blinkRedLED = function(duration) {
         setTimeout(this.blinkRedLED_2, duration);
     }
 };
-
+// }}}
+// ControlPanelAssistant.prototype.blinkGreenLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkGreenLED_2 = function() {
     $("g_led").src = "images/green_led.png";
     setTimeout(this.blinkGreenLED_3, 100);
 };
-
+// }}}
+// ControlPanelAssistant.prototype.blinkGreenLED_3 = function() {{{
 ControlPanelAssistant.prototype.blinkGreenLED_3 = function() {
     this.greenLEDCount.shift();
     if( this.greenLEDCount.length > 0 ) {
@@ -445,7 +471,8 @@ ControlPanelAssistant.prototype.blinkGreenLED_3 = function() {
         setTimeout(this.blinkGreenLED_2, this.greenLEDCount[0]);
     }
 };
-
+// }}}
+// ControlPanelAssistant.prototype.blinkGreenLED = function(duration) {{{
 ControlPanelAssistant.prototype.blinkGreenLED = function(duration) {
     if( duration === undefined ) duration = 500;
     if( duration < 100 ) duration = 100;
@@ -456,12 +483,14 @@ ControlPanelAssistant.prototype.blinkGreenLED = function(duration) {
         setTimeout(this.blinkGreenLED_2, duration);
     }
 };
-
+// }}}
+// ControlPanelAssistant.prototype.blinkBlueLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkBlueLED_2 = function() {
     $("b_led").src = "images/blue_led.png";
     setTimeout(this.blinkBlueLED_3, 100);
 };
-
+// }}}
+// ControlPanelAssistant.prototype.blinkBlueLED_3 = function() {{{
 ControlPanelAssistant.prototype.blinkBlueLED_3 = function() {
     this.blueLEDCount.shift();
     if( this.blueLEDCount.length > 0 ) {
@@ -469,7 +498,8 @@ ControlPanelAssistant.prototype.blinkBlueLED_3 = function() {
         setTimeout(this.blinkBlueLED_2, this.blueLEDCount[0]);
     }
 };
-
+// }}}
+// ControlPanelAssistant.prototype.blinkBlueLED = function(duration) {{{
 ControlPanelAssistant.prototype.blinkBlueLED = function(duration) {
     if( duration === undefined ) duration = 500;
     if( duration < 100 ) duration = 100;
@@ -480,3 +510,5 @@ ControlPanelAssistant.prototype.blinkBlueLED = function(duration) {
         setTimeout(this.blinkBlueLED_2, duration);
     }
 };
+// }}}
+// }}}
