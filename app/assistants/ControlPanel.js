@@ -37,6 +37,14 @@ ControlPanelAssistant.prototype.setup = function() {
     this.blinkBlueLED_3  = this.blinkBlueLED_3.bind(this);
 
     this.trackingLoop    = this.trackingLoop.bind(this);
+    this.buffercheckLoop = this.bufferCheckLoop.bind(this);
+    this.everySecond     = function() {
+        this.trackingLoop();
+        this.buffercheckLoop();
+
+    }.bind(this);
+
+    setInterval(this.everySecond, 1000);
 
     this.trackingSuccessResponseHandler = this.trackingSuccessResponseHandler.bind(this);
     this.trackingFailedResponseHandler  = this.trackingFailedResponseHandler.bind(this);
@@ -190,9 +198,19 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
     this.savePrefs();
 };
 // }}}
+// ControlPanelAssistant.prototype.bufferCheckLoop = function() {{{
+ControlPanelAssistant.prototype.bufferCheckLoop = function() {
+    // if( !this.trackingModel.value )
+    // we don't particularly care if we're tracking... data is data... send it.
+
+    if( this.buffer.length > 0 ) {
+        Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d", this.buffer.length);
+    }
+};
+// }}}
 // ControlPanelAssistant.prototype.trackingLoop = function() {{{
 ControlPanelAssistant.prototype.trackingLoop = function() {
-    if( !this.trackingModel.value )
+    if( !(this.trackingModel.value && this.continuousModel.value) )
         return;
 
     var now = (new Date()).getTime()/1000;
@@ -223,8 +241,6 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
             });
         }
     }
-
-    setTimeout(this.trackingLoop, 1000);
 };
 // }}}
 // ControlPanelAssistant.prototype.trackingChanged = function(event) {{{
@@ -249,7 +265,8 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
 
         } else {
             this.trackingLast = 0;
-            this.trackingLoop();
+
+            // there's nothing to start here
 
             $("continuousUpdatesGroup").hide();
         }
@@ -260,7 +277,8 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
             this.trackingHandle = undefined;
         }
 
-        this.resetQueue();
+        // Let the buffer check loop send it all... it'll bottom it out eventually.
+        // this.resetQueue();
         $("continuousUpdatesGroup").show();
     }
 };
