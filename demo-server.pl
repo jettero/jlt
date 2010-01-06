@@ -44,7 +44,6 @@ sub handle_request {
 
     my $j = $json->encode({ fix_tlist=>$fix_tlist });
     print "HTTP/1.0 200 OK\nContent-Type: text/javascript\n\n$j\n";
-    warn "$j\n";
 }
 
 my $start = "run";
