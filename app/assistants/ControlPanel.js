@@ -202,23 +202,34 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
     this.savePrefs();
 };
 // }}}
-
+// ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
-    if( transport.status == 200 ) {
+    Mojo.Log.info("ControlPanel::postFixesSuccess(%d) -- %s", transport.status, Object.toJSON(transport));
+
+    if( transport.status >= 200 && transport.status < 300 ) {
         var rt = transport.responseText;
         Mojo.Log.info("got fixes response: %s", rt);
 
+        this.runningRequest = undefined;
+        /*
+        var t;
+        for(t in rt) {
+            this.blinkGreenLED(100);
+        } */
+
     } else {
-        var t = new Template($L("Error posting fixes: #{statusText} (#{status})"));
-        var m = t.evaluate(transport);
-        Mojo.Controller.errorDialog(m);
-        this.trackingModel.value = false;
-        this.controller.modelChanged(this.trackingModel);
-        this.trackingChanged();
+        // if prototype doesn't know what happened, it thinks it's a success (eat my ass)
+
+        this.postFixesFailure(transport);
+        this.blinkRedLED(100);
     }
 };
-
+// }}}
+// ControlPanelAssistant.prototype.postFixesFailure = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
+    Mojo.Log.info("ControlPanel::postFixesFailure(%d)", transport.status);
+    this.runningRequest = undefined;
+
     var t = new Template($L("Ajax Error: #{status}"));
     var m = t.evaluate(transport);
     var e = [m];
@@ -226,15 +237,17 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     // It probably isn't worth mentioning to the user...
     // network errors and things...
     Mojo.Log.info(e.join("... "));
-};
 
+    this.blinkRedLED(100);
+};
+// }}}
 // ControlPanelAssistant.prototype.bufferCheckLoop = function() {{{
 ControlPanelAssistant.prototype.bufferCheckLoop = function() {
     if( this.runningRequest )
         return;
 
     if( this.buffer.length > 0 ) {
-        Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d", this.buffer.length);
+        Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d [starting request]", this.buffer.length);
 
         this.runningRequest = new Ajax.Request(this.URLModel.value, {
             method: 'post',
