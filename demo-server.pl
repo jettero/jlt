@@ -6,17 +6,44 @@ use Getopt::Long;
 use Pod::Usage;
 use HTTP::Server::Simple;
 use base qw(HTTP::Server::Simple::CGI);
+use JSON;
+
+my $json = JSON->new;
+
+sub handle_fix {
+    my ($this, $fix, $fix_tlist) = @_;
+
+    return unless ref $fix eq "HASH";
+
+    for my $k (qw(t ll vv al ha hv)) {
+        # NOTE: the request is malformed without these keys
+        return unless exists $fix->{$k};
+    }
+
+    my $t = delete $fix->{t};
+    my @t = ref $t ? @$t : $t;
+
+    push @$fix_tlist, @t;
+}
 
 sub handle_request {
     my ($this, $cgi) = @_;
 
-    my @p;
-    for my $p ($cgi->param) {
-        push @p, "$p: " . $cgi->param($p);
+    my $fix_tlist = [];
+    if( my $json_fixes = $cgi->param("fixes") ) {
+        my $fixes = eval { $json->decode($json_fixes) };
+        if( not ref $fixes ) {
+            print "HTTP/1.0 400 JSON error\nContent-Type: text/plain\n\n$@";
+            warn "invalid json: $@\n";
+            return;
+        }
+
+        $this->handle_fix( $_, $fix_tlist ) for @$fixes;
     }
 
-    print "Content-Type: text/plain\n\n";
-    print "params: @p\n";
+    my $j = $json->encode({ fix_tlist=>$fix_tlist });
+    print "HTTP/1.0 200 OK\nContent-Type: text/javascript\n\n$j\n";
+    warn "$j\n";
 }
 
 my $start = "run";
