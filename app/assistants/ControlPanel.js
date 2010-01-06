@@ -39,13 +39,13 @@ ControlPanelAssistant.prototype.setup = function() {
 
     this.trackingOpts = {};
     this.trackingModel = { value: false };
-    this.controller.setupWidget('trackingToggle', this.trackingOpts, this.trackingModel);		
+    this.controller.setupWidget('trackingToggle', this.trackingOpts, this.trackingModel);
     this.trackingChanged = this.trackingChanged.bindAsEventListener(this);
     Mojo.Event.listen($('trackingToggle'), Mojo.Event.propertyChange, this.trackingChanged);
 
     this.continuousOpts = {};
     this.continuousModel = { value: false };
-    this.controller.setupWidget('continuousUpdates', this.continuousOpts, this.continuousModel);		
+    this.controller.setupWidget('continuousUpdates', this.continuousOpts, this.continuousModel);
     this.continuousChanged = this.continuousChanged.bindAsEventListener(this);
     Mojo.Event.listen($('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
 
@@ -107,6 +107,9 @@ ControlPanelAssistant.prototype.resetQueue = function() {
 };
 
 ControlPanelAssistant.prototype.pushQueue = function(item) {
+    if( !this.trackingModel.value )
+        return;
+
     this.buffer.push(item);
 
     if( this.buffer.length > this.bufferSizeModel.value ) {
@@ -116,10 +119,14 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
         }
 
     } else {
-        this.bufferFillModel.value = this.buffer.length / this.bufferFillModel.value;
-        this.controller.modelchanged(this.bufferFillModel);
         this.blinkBlueLED(500);
     }
+
+    this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
+    this.controller.modelChanged(this.bufferFillModel);
+
+    Mojo.Log.info( "ControlPanel::pushQueue() -- buffer-fullness: "
+        + (this.bufferFillModel.value*100) + " items: " + this.buffer.length );
 };
 
 ControlPanelAssistant.prototype.URLChanged = function() {
@@ -187,6 +194,11 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
         }
 
     } else {
+        if( this.trackingHandle ) {
+            this.trackingHandle.cancel();
+            this.trackingHandle = undefined;
+        }
+
         this.resetQueue();
         $("continuousUpdatesGroup").show();
     }
@@ -202,9 +214,30 @@ ControlPanelAssistant.prototype.continuousChanged = function(event) {
 };
 
 ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {
-    var asJSON = Object.toJSON(result);
+    /* var asJSON = Object.toJSON(result);
+    ** Mojo.Log.info("ControlPanel::trackingSuccessResponseHandler(): %s", asJSON);
+    */
 
-    Mojo.Log.info("ControlPanel::trackingSuccessResponseHandler(): %s", asJSON);
+    /*
+    ** 2010-01-05T23:36:28.366243Z [177865] qemux86 user.notice LunaSysMgr:
+    ** {LunaSysMgrJS}: com.jettero.jlt: Info:
+    ** ControlPanel::trackingSuccessResponseHandler(): {"errorCode": 0,
+    ** "timestamp": 1262734588363, "latitude": 37.392809987068176, "longitude":
+    ** -122.04046189785004, "horizAccuracy": 0.5, "heading": 0, "velocity": 0,
+    ** "altitude": 500, "vertAccuracy": 0.5},
+    ** file:///var/usr/palm/applications/com.jettero.jlt/index.html:0
+    */
+
+    var item = {
+        t:  result.timestamp,
+        ll: [ result.latitude, result.longitude ],
+        ha: result.horizAccuracy,
+        va: result.vertAccuracy,
+        al: result.altitude,
+        vv: [ result.velocity, result.heading ]
+    };
+
+    this.pushQueue(item);
 };
 
 ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result) {
