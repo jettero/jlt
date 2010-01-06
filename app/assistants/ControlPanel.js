@@ -36,15 +36,19 @@ ControlPanelAssistant.prototype.setup = function() {
     this.blinkBlueLED_2  = this.blinkBlueLED_2.bind(this);
     this.blinkBlueLED_3  = this.blinkBlueLED_3.bind(this);
 
+    this.postFixesSuccess = this.postFixesSuccess.bind(this);
+    this.postFixesFailure = this.postFixesFailure.bind(this);
+
     this.trackingLoop    = this.trackingLoop.bind(this);
-    this.buffercheckLoop = this.bufferCheckLoop.bind(this);
+    this.bufferCheckLoop = this.bufferCheckLoop.bind(this);
     this.everySecond     = function() {
-        this.trackingLoop();
-        this.buffercheckLoop();
+            this.trackingLoop();
+            this.bufferCheckLoop();
+        }.bind(this);
 
-    }.bind(this);
-
-    setInterval(this.everySecond, 1000);
+    setInterval(this.everySecond, 1100);
+    // Longer than a second because the timer seems a bit fast on the EMU...
+    // probably doesn't matter very much anyway.
 
     this.trackingSuccessResponseHandler = this.trackingSuccessResponseHandler.bind(this);
     this.trackingFailedResponseHandler  = this.trackingFailedResponseHandler.bind(this);
@@ -198,19 +202,52 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
     this.savePrefs();
 };
 // }}}
+
+ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
+    if( transport.status == 200 ) {
+        var rt = transport.responseText;
+        Mojo.Log.info("got fixes response: %s", rt);
+
+    } else {
+        var t = new Template($L("Error posting fixes: #{statusText} (#{status})"));
+        var m = t.evaluate(transport);
+        Mojo.Controller.errorDialog(m);
+        this.trackingModel.value = false;
+        this.controller.modelChanged(this.trackingModel);
+        this.trackingChanged();
+    }
+};
+
+ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
+    var t = new Template($L("Ajax Error: #{status}"));
+    var m = t.evaluate(transport);
+    var e = [m];
+
+    // It probably isn't worth mentioning to the user...
+    // network errors and things...
+    Mojo.Log.info(e.join("... "));
+};
+
 // ControlPanelAssistant.prototype.bufferCheckLoop = function() {{{
 ControlPanelAssistant.prototype.bufferCheckLoop = function() {
-    // if( !this.trackingModel.value )
-    // we don't particularly care if we're tracking... data is data... send it.
+    if( this.runningRequest )
+        return;
 
     if( this.buffer.length > 0 ) {
         Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d", this.buffer.length);
+
+        this.runningRequest = new Ajax.Request(this.URLModel.value, {
+            method: 'post',
+            parameters: { fixes: Object.toJSON(this.buffer) },
+            onSuccess: this.postFixesSuccess,
+            onFailure: this.postFixesFailure
+        });
     }
 };
 // }}}
 // ControlPanelAssistant.prototype.trackingLoop = function() {{{
 ControlPanelAssistant.prototype.trackingLoop = function() {
-    if( !(this.trackingModel.value && this.continuousModel.value) )
+    if( !this.trackingModel.value || this.continuousModel.value )
         return;
 
     var now = (new Date()).getTime()/1000;
@@ -248,6 +285,9 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
     Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
 
     if( this.trackingModel.value ) {
+        this.blinkBlueLED(100);
+        this.blinkBlueLED(100);
+
         if( this.continuousModel.value ) {
 
             this.trackingHandle = this.controller.serviceRequest('palm://com.palm.location', {
@@ -256,10 +296,6 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
                 onSuccess: this.trackingSuccessResponseHandler,
                 onFailure: this.trackingFailedResponseHandler
             });
-
-            this.blinkRedLED(100);
-            this.blinkGreenLED(100);
-            this.blinkBlueLED(100);
 
             $("continuousUpdatesGroup").hide();
 
@@ -272,6 +308,9 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
         }
 
     } else {
+        this.blinkRedLED(100);
+        this.blinkRedLED(100);
+
         if( this.trackingHandle ) {
             this.trackingHandle.cancel();
             this.trackingHandle = undefined;
