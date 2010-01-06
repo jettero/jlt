@@ -3,6 +3,18 @@
 /*global Mojo $ ControlPanelAssistant
 */
 
+/*
+** I'm not totally sure what to do with the LEDs yet, but I'm
+** going to try to write a strategy so it becomes clearer:
+**
+** 1. Blue is GPS and GPS buffer status.
+** 2. Green is Webs and Web statuses.
+** 3. Red indicates an error of some kind.
+**
+** I'm thinking of lighting the red with the blue/green to indicate what type
+** of error... Various blinkings could probably be used to indicate things.
+*/
+
 function ControlPanelAssistant() {
     Mojo.Log.info("ControlPanel()");
 }
@@ -121,7 +133,7 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
         }
 
     } else {
-        this.blinkBlueLED(500);
+        this.blinkBlueLED(100);
     }
 
     this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
@@ -180,11 +192,27 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
         Mojo.Log.info("ControlPanel::trackingLoop() [loop true]");
         this.trackingLast = now;
 
-        // get fix here
+        if( !this.trackingFixRunning ) {
+            this.trackingFixRunning = true;
 
-        this.blinkRedLED(100);
-        this.blinkGreenLED(100);
-        this.blinkBlueLED(100);
+            this.blinkBlueLED(100);
+
+            this.controller.serviceRequest('palm://com.palm.location', {
+                method:     "getCurrentPosition",
+                onSuccess:  this.trackingSuccessResponseHandler,
+                onFailure:  this.trackingFailedResponseHandler,
+                parameters: {
+                    // 1: high (100m or less), 2: default medium (350m or less), 3: low
+                    accuracy: 2,
+
+                    // 1: 5sec, 2: default 5-20 sec, 3: 20+sec
+                    responseTimeA: 2,
+
+                    // max age of cached result, default 0: do not use cached result
+                    maximumAge: this.updateIntervalModel.value-1,
+                }
+            });
+        }
     }
 
     setTimeout(this.trackingLoop, 1000);
@@ -251,6 +279,8 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
     ** file:///var/usr/palm/applications/com.jettero.jlt/index.html:0
     */
 
+    this.trackingFixRunning = false;
+
     var item = {
         t:  result.timestamp,
         ll: [ result.latitude, result.longitude ],
@@ -267,7 +297,12 @@ ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result)
     var errCode = result.errorCode;
     var errStr  = this.errCodeToStr(errCode);
 
+    this.trackingFixRunning = false;
+
     Mojo.Log.info("ControlPanel::trackingFailedResponseHandler() = %s (%d)", errStr, errCode);
+
+    this.blinkRedLED(700);
+    this.blinkBlueLED(700);
 };
 
 ControlPanelAssistant.prototype.activate = function(event) {
