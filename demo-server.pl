@@ -10,13 +10,27 @@ use JSON;
 
 $0 = "demo-server.pl";
 my $json = JSON->new;
+my $start = "run";
+my $port  = 4000;
+
+Getopt::Long::Configure("bundling");
+GetOptions(
+    "background|daemon|b|d" => sub { $start = "background" },
+    "port|p=i" => \$port,
+    "help|H" => sub { pod2usage(-verbose=>1) },
+    "h"      => sub { pod2usage() },
+
+) or pod2usage();
+
+my $server = main->new($port);
+   $server->$start;
 
 sub handle_fix {
     my ($this, $fix, $fix_tlist) = @_;
 
     return unless ref $fix eq "HASH";
 
-    for my $k (qw(t ll vv al ha hv)) {
+    for my $k (qw(t ll vv al ha va)) {
         # NOTE: the request is malformed without these keys
         return unless exists $fix->{$k};
     }
@@ -34,7 +48,7 @@ sub handle_request {
     if( my $json_fixes = $cgi->param("fixes") ) {
         my $fixes = eval { $json->decode($json_fixes) };
         if( not ref $fixes ) {
-            print "HTTP/1.0 400 JSON error\nContent-Type: text/plain\n\n$@";
+            print "HTTP/1.0 400 JSON error\r\nContent-Type: text/plain\r\n\r\n$@";
             warn "invalid json: $@\n";
             return;
         }
@@ -43,23 +57,9 @@ sub handle_request {
     }
 
     my $j = $json->encode({ fix_tlist=>$fix_tlist });
-    print "HTTP/1.0 200 OK\nContent-Type: text/javascript\n\n$j\n";
+    print "HTTP/1.0 200 OK\r\nContent-Type: text/javascript\r\n\r\n$j\r\n";
+    warn "json: $j\n" if $start ne "background";
 }
-
-my $start = "run";
-my $port  = 4000;
-
-Getopt::Long::Configure("bundling");
-GetOptions(
-    "background|daemon|b|d" => sub { $start = "background" },
-    "port|p=i" => \$port,
-    "help|H" => sub { pod2usage(-verbose=>1) },
-    "h"      => sub { pod2usage() },
-
-) or pod2usage();
-
-my $server = main->new($port);
-   $server->$start;
 
 __END__
 
