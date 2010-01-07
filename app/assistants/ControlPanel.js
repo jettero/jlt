@@ -127,6 +127,33 @@ ControlPanelAssistant.prototype.setup = function() {
     this.restoring = false;
 };
 // }}}
+// ControlPanelAssistant.prototype.activate = function(event) {{{
+ControlPanelAssistant.prototype.activate = function(event) {
+    Mojo.Log.info("ControlPanel::activate()");
+
+    this.restorePrefs();
+};
+// }}}
+// ControlPanelAssistant.prototype.deactivate = function(event) {{{
+ControlPanelAssistant.prototype.deactivate = function(event) {
+    Mojo.Log.info("ControlPanel::deactivate()");
+
+    this.savePrefs();
+};
+// }}}
+// ControlPanelAssistant.prototype.cleanup = function(event) {{{
+ControlPanelAssistant.prototype.cleanup = function(event) {
+    Mojo.Log.info("ControlPanel::cleanup()");
+
+    // XXX: What needs to be cleaned up?  Seriously.  Does any of this clean
+    // itself up? or do you have to go through and destroy each object and
+    // click handler?
+
+    if( this.trackingHandle )
+        this.trackingHandle.cancel();
+};
+// }}}
+
 // ControlPanelAssistant.prototype.resetQueue = function() {{{
 ControlPanelAssistant.prototype.resetQueue = function() {
     this.buffer = [];
@@ -153,6 +180,7 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
         this.blinkBlueLED(100);
     }
 
+            this.blinkBlueLED(100);
     this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
     this.controller.modelChanged(this.bufferFillModel);
 
@@ -160,6 +188,15 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
         + (this.bufferFillModel.value*100) + " items: " + this.buffer.length );
 };
 // }}}
+// ControlPanelAssistant.prototype.rmQueue = function(item) {{{
+ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
+    this.buffer = this.buffer.filter(function(e){ e.t != timestamp;});
+    this.blinkBlueLED(100);
+    this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
+    this.controller.modelChanged(this.bufferFillModel);
+};
+// }}}
+
 // ControlPanelAssistant.prototype.URLChanged = function() {{{
 ControlPanelAssistant.prototype.URLChanged = function() {
     Mojo.Log.info("ControlPanel::URLChanged(): %s", this.URLModel.value);
@@ -202,6 +239,53 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
     this.savePrefs();
 };
 // }}}
+// ControlPanelAssistant.prototype.trackingChanged = function(event) {{{
+ControlPanelAssistant.prototype.trackingChanged = function(event) {
+    Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
+
+    if( this.trackingModel.value ) {
+        if( this.continuousModel.value ) {
+
+            this.trackingHandle = this.controller.serviceRequest('palm://com.palm.location', {
+                method:"startTracking",
+                parameters: {"subscribe":true},
+                onSuccess: this.trackingSuccessResponseHandler,
+                onFailure: this.trackingFailedResponseHandler
+            });
+
+            $("continuousUpdatesGroup").hide();
+
+        } else {
+            this.trackingLast = 0;
+
+            // there's nothing to start here
+
+            $("continuousUpdatesGroup").hide();
+        }
+
+    } else {
+        if( this.trackingHandle ) {
+            this.trackingHandle.cancel();
+            this.trackingHandle = undefined;
+        }
+
+        // Let the buffer check loop send it all... it'll bottom it out eventually.
+        // this.resetQueue();
+        $("continuousUpdatesGroup").show();
+    }
+};
+// }}}
+// ControlPanelAssistant.prototype.continuousChanged = function(event) {{{
+ControlPanelAssistant.prototype.continuousChanged = function(event) {
+    Mojo.Log.info("ControlPanel::continuousChanged(): %s", this.continuousModel.value ? "on" : "off");
+
+    if( this.continuousModel.value ) $('updateIntervalGroup').hide();
+    else $('updateIntervalGroup').show();
+
+    this.savePrefs();
+};
+// }}}
+
 // ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
     Mojo.Log.info("ControlPanel::postFixesSuccess(%d)", transport.status);
@@ -212,8 +296,9 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 
             for(var i=0; i<rt.length; i++) {
                 var t = rt[i];
-                Mojo.Log.info("ControlPanel::postFixesSuccess(%d) t=%d", transport.status, t);
+
                 this.blinkGreenLED(100);
+                this.rmQueue(t);
             }
 
         }
@@ -252,6 +337,7 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     this.blinkGreenLED(700);
 };
 // }}}
+
 // ControlPanelAssistant.prototype.bufferCheckLoop = function() {{{
 ControlPanelAssistant.prototype.bufferCheckLoop = function() {
     if( this.runningRequest )
@@ -304,52 +390,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
     }
 };
 // }}}
-// ControlPanelAssistant.prototype.trackingChanged = function(event) {{{
-ControlPanelAssistant.prototype.trackingChanged = function(event) {
-    Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
 
-    if( this.trackingModel.value ) {
-        if( this.continuousModel.value ) {
-
-            this.trackingHandle = this.controller.serviceRequest('palm://com.palm.location', {
-                method:"startTracking",
-                parameters: {"subscribe":true},
-                onSuccess: this.trackingSuccessResponseHandler,
-                onFailure: this.trackingFailedResponseHandler
-            });
-
-            $("continuousUpdatesGroup").hide();
-
-        } else {
-            this.trackingLast = 0;
-
-            // there's nothing to start here
-
-            $("continuousUpdatesGroup").hide();
-        }
-
-    } else {
-        if( this.trackingHandle ) {
-            this.trackingHandle.cancel();
-            this.trackingHandle = undefined;
-        }
-
-        // Let the buffer check loop send it all... it'll bottom it out eventually.
-        // this.resetQueue();
-        $("continuousUpdatesGroup").show();
-    }
-};
-// }}}
-// ControlPanelAssistant.prototype.continuousChanged = function(event) {{{
-ControlPanelAssistant.prototype.continuousChanged = function(event) {
-    Mojo.Log.info("ControlPanel::continuousChanged(): %s", this.continuousModel.value ? "on" : "off");
-
-    if( this.continuousModel.value ) $('updateIntervalGroup').hide();
-    else $('updateIntervalGroup').show();
-
-    this.savePrefs();
-};
-// }}}
 // ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {{{
 ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {
     /* var asJSON = Object.toJSON(result);
@@ -393,13 +434,7 @@ ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result)
     this.blinkBlueLED(700);
 };
 // }}}
-// ControlPanelAssistant.prototype.activate = function(event) {{{
-ControlPanelAssistant.prototype.activate = function(event) {
-    Mojo.Log.info("ControlPanel::activate()");
 
-    this.restorePrefs();
-};
-// }}}
 // ControlPanelAssistant.prototype.restorePrefs = function() {{{
 ControlPanelAssistant.prototype.restorePrefs = function() {
     this.dbo.simpleGet("prefs",
@@ -464,25 +499,7 @@ ControlPanelAssistant.prototype.savePrefs = function() {
     );
 };
 // }}}
-// ControlPanelAssistant.prototype.deactivate = function(event) {{{
-ControlPanelAssistant.prototype.deactivate = function(event) {
-    Mojo.Log.info("ControlPanel::deactivate()");
 
-    this.savePrefs();
-};
-// }}}
-// ControlPanelAssistant.prototype.cleanup = function(event) {{{
-ControlPanelAssistant.prototype.cleanup = function(event) {
-    Mojo.Log.info("ControlPanel::cleanup()");
-
-    // XXX: What needs to be cleaned up?  Seriously.  Does any of this clean
-    // itself up? or do you have to go through and destroy each object and
-    // click handler?
-
-    if( this.trackingHandle )
-        this.trackingHandle.cancel();
-};
-// }}}
 // ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {{{
 ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     var res = {
