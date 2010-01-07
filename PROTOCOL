@@ -13,8 +13,7 @@ have a single paramater, "fixes" which will contain a JSON *string*:
             al: result.altitude,
             vv: [ result.velocity, result.heading ]
         },
-        {
-        },
+
         ...,
     ]
 
@@ -29,6 +28,7 @@ The "t" index *may* be an array of timestamps as follows:
             al: result.altitude,
             vv: [ result.velocity, result.heading ]
         }, 
+
         ...
     ]
 
