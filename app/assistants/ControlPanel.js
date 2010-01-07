@@ -349,8 +349,6 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
             this.blinkGreenLED(400);
         }
 
-        this.runningRequest = undefined;
-
     } else {
         // if prototype doesn't know what happened, it thinks it's a success (eat my ass)
 
@@ -358,6 +356,8 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
         this.blinkRedLED(700);
         this.blinkGreenLED(700);
     }
+
+    this.runningRequest = undefined;
 };
 // }}}
 // ControlPanelAssistant.prototype.postFixesFailure = function(transport) {{{
