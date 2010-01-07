@@ -1,0 +1,39 @@
+
+The JSON Location Tracker protocol is very simple.
+
+The JLT will "POST" http messages to any URL.  The post message will
+have a single paramater, "fixes" which will contain a JSON *string*:
+
+    [
+        {
+            t:  result.timestamp,
+            ll: [ result.latitude, result.longitude ],
+            ha: result.horizAccuracy,
+            va: result.vertAccuracy,
+            al: result.altitude,
+            vv: [ result.velocity, result.heading ]
+        },
+        {
+        },
+        ...,
+    ]
+
+The "t" index *may* be an array of timestamps as follows:
+
+    [
+        {
+            t:  [timestamp, timestamp, timestamp, timestamp, ... ],
+            ll: [ result.latitude, result.longitude ],
+            ha: result.horizAccuracy,
+            va: result.vertAccuracy,
+            al: result.altitude,
+            vv: [ result.velocity, result.heading ]
+        }, 
+        ...
+    ]
+
+CGI data syncs *must* respond with *either* the timestamp of the
+message or the *first* timestamp of the message; foreach fix in the
+array of fixes:
+
+    { fix_tlist: [ timestamp, timestamp, timestamp, ... ]}
