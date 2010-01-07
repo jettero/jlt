@@ -180,8 +180,7 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
         var last = this.buffer[this.buffer.length -1];
 
         if( veryClose(last.ll[0], item.ll[0]) && veryClose(last.ll[1], item.ll[1]) && veryClose(last.al, item.al) ) {
-            Mojo.Log.info("here...");
-            if( !(typeof last.t === "Array") ) {
+            if( typeof last.t === "number" ) {
                 last.t = [last.t, item.t];
 
             } else {
@@ -218,11 +217,9 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
     Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d)", timestamp);
 
     for(var i=0; i<this.buffer.length; i++) {
-        Mojo.Log.info("hrm(i=%d, timestamp=%d)", i, timestamp);
-
-        if( typeof this.buffer[i].t === "Array"
-            ? this.buffer[i].t[0] == timestamp      // we're concerned with the first timestamp only
-            : this.buffer[i].t    == timestamp ) {  // there only is one timestamp
+        if( typeof this.buffer[i].t === "number"
+            ? this.buffer[i].t    == timestamp      // there only is one timestamp
+            : this.buffer[i].t[0] == timestamp ) {  // we're concerned with the first timestamp only
 
             // NOTE: I have no idea how garbage collection works in js, but I *wish*
             // this would recursively delete the object at pos[i]; who knows...
