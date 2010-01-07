@@ -164,9 +164,33 @@ ControlPanelAssistant.prototype.resetQueue = function() {
 };
 // }}}
 // ControlPanelAssistant.prototype.pushQueue = function(item) {{{
+
+function veryClose(x,i) {
+    if( Math.abs( x-i ) < 0.0001 )
+        return true;
+
+    return false;
+}
+
 ControlPanelAssistant.prototype.pushQueue = function(item) {
     if( !this.trackingModel.value )
         return;
+
+    if( this.buffer.length > 0 ) {
+        var last = this.buffer[this.buffer.length -1];
+
+        if( veryClose(last.ll[0], item.ll[0]) && veryClose(last.ll[1], item.ll[1]) && veryClose(last.al, item.al) ) {
+            if( !(typeof last.t === "Array") ) {
+                last.t = [last.t, item.t];
+
+            } else {
+                last.t.push(item.t);
+            }
+
+            this.blinkBlueLED(100);
+            return;
+        }
+    }
 
     this.buffer.push(item);
 
@@ -174,13 +198,13 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
         while( this.buffer.length > this.bufferSizeModel.value ) {
             this.buffer.shift();
             this.blinkBlueLED(100);
+            this.blinkRedLED(100);
         }
 
     } else {
         this.blinkBlueLED(100);
     }
 
-            this.blinkBlueLED(100);
     this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
     this.controller.modelChanged(this.bufferFillModel);
 
