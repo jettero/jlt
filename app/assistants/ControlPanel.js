@@ -190,8 +190,21 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
 // }}}
 // ControlPanelAssistant.prototype.rmQueue = function(item) {{{
 ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
-    this.buffer = this.buffer.filter(function(e){ e.t != timestamp;});
-    this.blinkBlueLED(100);
+    Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d)", timestamp);
+
+    for(var i=0; i<this.buffer.length; i++) {
+        Mojo.Log.info("hrm(e.t=%d, timestamp=%d)", this.buffer[i].t, timestamp);
+
+        if( this.buffer[i].t == timestamp ) {
+            // NOTE: I have no idea how garbage collection works in js, but I *wish*
+            // this would recursively delete the object at pos[i]; who knows...
+            delete this.buffer[i];
+
+            // get rid of the undef
+            this.buffer.splice(i,1);
+        }
+    }
+
     this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
     this.controller.modelChanged(this.bufferFillModel);
 };
