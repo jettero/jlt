@@ -38,9 +38,9 @@ sub handle_fix {
     }
 
     my $t = delete $fix->{t};
-    my @t = ref $t ? @$t : $t;
+       $t = $t->[0] if ref $t;
 
-    push @$fix_tlist, @t;
+    push @$fix_tlist, $t;
 }
 
 sub handle_request {
