@@ -12,11 +12,13 @@ $0 = "demo-server.pl";
 my $json = JSON->new;
 my $start = "run";
 my $port  = 4000;
+my $sleep;
 
 Getopt::Long::Configure("bundling");
 GetOptions(
     "background|daemon|b|d" => sub { $start = "background" },
     "port|p=i" => \$port,
+    "sleep|s=i" => \$sleep,
     "help|H" => sub { pod2usage(-verbose=>1) },
     "h"      => sub { pod2usage() },
 
@@ -43,6 +45,8 @@ sub handle_fix {
 
 sub handle_request {
     my ($this, $cgi) = @_;
+
+    sleep rand $sleep if $sleep;
 
     my $fix_tlist = [];
     if( my $json_fixes = $cgi->param("fixes") ) {
@@ -92,6 +96,10 @@ Background mode.  Once the server starts, it should background immediately.
 =item B<--port> B<-p>
 
 Speicify a port to run on.
+
+=item B<--sleep> B<-s>
+
+Randomly sleep for 0 - x seconds during the handler process.
 
 =item B<-h>
 
