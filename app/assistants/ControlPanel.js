@@ -204,24 +204,34 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
 // }}}
 // ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
-    Mojo.Log.info("ControlPanel::postFixesSuccess(%d) -- %s", transport.status, Object.toJSON(transport));
+    Mojo.Log.info("ControlPanel::postFixesSuccess(%d)", transport.status);
 
     if( transport.status >= 200 && transport.status < 300 ) {
-        var rt = transport.responseText;
-        Mojo.Log.info("got fixes response: %s", rt);
+        try {
+            var rt = transport.responseText.evalJSON().fix_tlist;
+
+            for(var i=0; i<rt.length; i++) {
+                var t = rt[i];
+                Mojo.Log.info("ControlPanel::postFixesSuccess(%d) t=%d", transport.status, t);
+                this.blinkGreenLED(100);
+            }
+
+        }
+
+        catch(e) {
+            Mojo.Log.info("ControlPanel::postFixesSuccess, error processing js: %s", e);
+            this.blinkRedLED(400);
+            this.blinkGreenLED(400);
+        }
 
         this.runningRequest = undefined;
-        /*
-        var t;
-        for(t in rt) {
-            this.blinkGreenLED(100);
-        } */
 
     } else {
         // if prototype doesn't know what happened, it thinks it's a success (eat my ass)
 
         this.postFixesFailure(transport);
-        this.blinkRedLED(100);
+        this.blinkRedLED(700);
+        this.blinkGreenLED(700);
     }
 };
 // }}}
@@ -238,7 +248,8 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     // network errors and things...
     Mojo.Log.info(e.join("... "));
 
-    this.blinkRedLED(100);
+    this.blinkRedLED(700);
+    this.blinkGreenLED(700);
 };
 // }}}
 // ControlPanelAssistant.prototype.bufferCheckLoop = function() {{{
@@ -298,9 +309,6 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
     Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
 
     if( this.trackingModel.value ) {
-        this.blinkBlueLED(100);
-        this.blinkBlueLED(100);
-
         if( this.continuousModel.value ) {
 
             this.trackingHandle = this.controller.serviceRequest('palm://com.palm.location', {
@@ -321,9 +329,6 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
         }
 
     } else {
-        this.blinkRedLED(100);
-        this.blinkRedLED(100);
-
         if( this.trackingHandle ) {
             this.trackingHandle.cancel();
             this.trackingHandle = undefined;
