@@ -217,21 +217,12 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
     Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d)", timestamp);
 
     for(var i=0; i<this.buffer.length; i++) {
-        Mojo.Log.info("hrm(e.t=%d, timestamp=%d)", this.buffer[i].t, timestamp);
+        Mojo.Log.info("hrm(i=%d, timestamp=%d)", i, timestamp);
 
-        if( typeof this.buffer[i].t === "Array" ) {
-            for(var j=0; j<this.buffer[i].t.length; j++) {
-                if( this.buffer[i].t[j] == timestamp ) {
-                    delete this.buffer[i];
-                    this.buffer.splice(i,1);
+        if( typeof this.buffer[i].t === "Array"
+            ? this.buffer[i].t[0] == timestamp      // we're concerned with the first timestamp only
+            : this.buffer[i].t    == timestamp ) {  // there only is one timestamp
 
-                    this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
-                    this.controller.modelChanged(this.bufferFillModel);
-                    return;
-                }
-            }
-
-        } else if( this.buffer[i].t == timestamp ) {
             // NOTE: I have no idea how garbage collection works in js, but I *wish*
             // this would recursively delete the object at pos[i]; who knows...
             delete this.buffer[i];
@@ -241,7 +232,8 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
 
             this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
             this.controller.modelChanged(this.bufferFillModel);
-            return;
+
+            return; // we're all done here
         }
     }
 };
