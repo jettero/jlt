@@ -166,7 +166,7 @@ ControlPanelAssistant.prototype.resetQueue = function() {
 // ControlPanelAssistant.prototype.pushQueue = function(item) {{{
 
 function veryClose(x,i) {
-    if( Math.abs( x-i ) < 0.0001 )
+    if( Math.abs( x-i ) < 0.00001 )
         return true;
 
     return false;
@@ -180,6 +180,7 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
         var last = this.buffer[this.buffer.length -1];
 
         if( veryClose(last.ll[0], item.ll[0]) && veryClose(last.ll[1], item.ll[1]) && veryClose(last.al, item.al) ) {
+            Mojo.Log.info("here...");
             if( !(typeof last.t === "Array") ) {
                 last.t = [last.t, item.t];
 
