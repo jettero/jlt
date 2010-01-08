@@ -41,10 +41,7 @@
                     <div class="title">
                         Post URL
                         <div class='explanation'>
-                        This is the full URL you wish for GPS data to POST to.
-                        The exact format is discussed in the helpfile.  The
-                        field resists accidental edits.  To edit, tap-and-hold
-                        and the field will drop into edit mode.
+                        The URL for the CGI data sink on your web site.
 
                         </div>
                     </div>
@@ -71,11 +68,7 @@
                     <div class="title">
                         Continuous Updates
                         <div class='explanation'>
-                        The application can &quot;subscribe&quot; to the GPS
-                        system.  The GPS readings will get more and more
-                        accurate while continously reading, however, it will be
-                        pretty hard on the battery and will upload much more
-                        data to the webserver.
+                        Subscribing to continuous GPS updates will be harder on the battery and consume more network resources.
 
                         </div>
                     </div>
@@ -92,11 +85,7 @@
                         Update Interval
                         <div class="rightInfo" id="updateIntervalCurrent"></div>
                         <div class='explanation'>
-                        The GPS can take 3 or 20 seconds to deliver data to the
-                        application.  This interval is the time between the
-                        last read and the start of the next query &mdash; as
-                        such, the readings may be further apart than this
-                        setting might otherwise indicate.
+                        The interval between receiving a GPS fix and asking for the next one.
 
                         </div>
                     </div>
@@ -115,15 +104,7 @@
                         <div class="rightInfo" id="bufferSizeCurrent"></div>
                         <div class='explanation'>
                         The application stores readings locally until they're
-                        confirmed as accepted by the webserver.  This controls
-                        the size of the local buffer.  If a new reading is
-                        &quot;very close&quot; to the last reading, the new
-                        timesamp will be added to the last reading, rather than
-                        pushing a new reading into the buffer.
-
-                        The list of timestamps in a reading can grow
-                        indefinitely, but rarely should if the remote webserver
-                        is accepting POSTs.
+                        confirmed as accepted by the webserver.
 
                         </div>
                     </div>
