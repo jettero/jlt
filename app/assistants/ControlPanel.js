@@ -362,20 +362,9 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 // }}}
 // ControlPanelAssistant.prototype.postFixesFailure = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
-    Mojo.Log.info("ControlPanel::postFixesFailure(%d)", transport.status);
-
-    var t = new Template($L("Ajax Error: #{status}"));
-    var m = t.evaluate(transport);
-    var e = [m];
-
-    // It probably isn't worth mentioning to the user...
-    // network errors and things...
-    Mojo.Log.info(e.join("... "));
-
-    this.blinkRedLED(700);
-    this.blinkGreenLED(700);
-
-    this.runningRequest = undefined;
+    this.trackingHandle = undefined;
+    this.blinkRedLED(100);
+    this.blinkGreenLED(100);
 };
 // }}}
 
@@ -389,9 +378,15 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
 
         this.runningRequest = new Ajax.Request(this.URLModel.value, {
             method: 'post',
+
             parameters: { fixes: Object.toJSON(this.buffer) },
-            onSuccess: this.postFixesSuccess,
-            onFailure: this.postFixesFailure
+
+            requestTimeout: 50,
+
+            onSuccess:   this.postFixesSuccess,
+            onFailure:   this.postFixesFailure,
+            onTimeout:   this.postFixesFailure,
+            onException: this.postFixesFailure
         });
     }
 };
