@@ -95,7 +95,7 @@ ControlPanelAssistant.prototype.setup = function() {
 
     this.updateIntervalAttributes = {
         minValue: 5,
-        maxValue: 7200,
+        maxValue: 1800,
         updateInterval: 0.1, // this is 100ms I guess, doesn't seem to do anything... who knows
         round: true
     };
@@ -349,6 +349,8 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
             this.blinkGreenLED(400);
         }
 
+        this.runningRequest = undefined;
+
     } else {
         // if prototype doesn't know what happened, it thinks it's a success (eat my ass)
 
@@ -356,14 +358,11 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
         this.blinkRedLED(700);
         this.blinkGreenLED(700);
     }
-
-    this.runningRequest = undefined;
 };
 // }}}
 // ControlPanelAssistant.prototype.postFixesFailure = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     Mojo.Log.info("ControlPanel::postFixesFailure(%d)", transport.status);
-    this.runningRequest = undefined;
 
     var t = new Template($L("Ajax Error: #{status}"));
     var m = t.evaluate(transport);
@@ -375,6 +374,8 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
 
     this.blinkRedLED(700);
     this.blinkGreenLED(700);
+
+    this.runningRequest = undefined;
 };
 // }}}
 
