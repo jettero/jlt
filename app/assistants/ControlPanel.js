@@ -15,6 +15,11 @@
 ** of error... Various blinkings could probably be used to indicate things.
 */
 
+var short_blink    =  200;
+var medium_blink   =  750;
+var long_blink     = 1200;
+var blink_off_time =  100;
+
 // function ControlPanelAssistant() {{{
 function ControlPanelAssistant() {
     Mojo.Log.info("ControlPanel()");
@@ -160,7 +165,7 @@ ControlPanelAssistant.prototype.resetQueue = function() {
     this.bufferFillModel.value = 0;
     this.controller.modelChanged(this.bufferFillModel);
 
-    this.blinkBlueLED(1500);
+    this.blinkBlueLED(long_blink);
 };
 // }}}
 // ControlPanelAssistant.prototype.pushQueue = function(item) {{{
@@ -187,7 +192,7 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
                 last.t.push(item.t);
             }
 
-            this.blinkBlueLED(100);
+            this.blinkBlueLED(short_blink);
             return;
         }
     }
@@ -197,12 +202,12 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
     if( this.buffer.length > this.bufferSizeModel.value ) {
         while( this.buffer.length > this.bufferSizeModel.value ) {
             this.buffer.shift();
-            this.blinkBlueLED(100);
-            this.blinkRedLED(100);
+            this.blinkBlueLED(short_blink);
+            this.blinkRedLED(short_blink);
         }
 
     } else {
-        this.blinkBlueLED(100);
+        this.blinkBlueLED(short_blink);
     }
 
     this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
@@ -337,7 +342,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
             for(var i=0; i<rt.length; i++) {
                 var t = rt[i];
 
-                this.blinkGreenLED(100);
+                this.blinkGreenLED(short_blink);
                 this.rmQueue(t);
             }
 
@@ -345,8 +350,8 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 
         catch(e) {
             Mojo.Log.info("ControlPanel::postFixesSuccess, error processing js: %s", e);
-            this.blinkRedLED(400);
-            this.blinkGreenLED(400);
+            this.blinkRedLED(medium_blink);
+            this.blinkGreenLED(medium_blink);
         }
 
         this.runningRequest = undefined;
@@ -355,16 +360,16 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
         // if prototype doesn't know what happened, it thinks it's a success (eat my ass)
 
         this.postFixesFailure(transport);
-        this.blinkRedLED(700);
-        this.blinkGreenLED(700);
+        this.blinkRedLED(medium_blink);
+        this.blinkGreenLED(medium_blink);
     }
 };
 // }}}
 // ControlPanelAssistant.prototype.postFixesFailure = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     this.trackingHandle = undefined;
-    this.blinkRedLED(100);
-    this.blinkGreenLED(100);
+    this.blinkRedLED(short_blink);
+    this.blinkGreenLED(short_blink);
 };
 // }}}
 
@@ -405,7 +410,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
         if( !this.trackingFixRunning ) {
             this.trackingFixRunning = true;
 
-            this.blinkBlueLED(100);
+            this.blinkBlueLED(short_blink);
 
             this.controller.serviceRequest('palm://com.palm.location', {
                 method:     "getCurrentPosition",
@@ -466,8 +471,8 @@ ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result)
 
     Mojo.Log.info("ControlPanel::trackingFailedResponseHandler() = %s (%d)", errStr, errCode);
 
-    this.blinkRedLED(700);
-    this.blinkBlueLED(700);
+    this.blinkRedLED(medium_blink);
+    this.blinkBlueLED(medium_blink);
 };
 // }}}
 
@@ -561,7 +566,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 // ControlPanelAssistant.prototype.blinkRedLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkRedLED_2 = function() {
     $("r_led").src = "images/red_led.png";
-    setTimeout(this.blinkRedLED_3, 100);
+    setTimeout(this.blinkRedLED_3, blink_off_time);
 };
 // }}}
 // ControlPanelAssistant.prototype.blinkRedLED_3 = function() {{{
@@ -588,7 +593,7 @@ ControlPanelAssistant.prototype.blinkRedLED = function(duration) {
 // ControlPanelAssistant.prototype.blinkGreenLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkGreenLED_2 = function() {
     $("g_led").src = "images/green_led.png";
-    setTimeout(this.blinkGreenLED_3, 100);
+    setTimeout(this.blinkGreenLED_3, blink_off_time);
 };
 // }}}
 // ControlPanelAssistant.prototype.blinkGreenLED_3 = function() {{{
@@ -615,7 +620,7 @@ ControlPanelAssistant.prototype.blinkGreenLED = function(duration) {
 // ControlPanelAssistant.prototype.blinkBlueLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkBlueLED_2 = function() {
     $("b_led").src = "images/blue_led.png";
-    setTimeout(this.blinkBlueLED_3, 100);
+    setTimeout(this.blinkBlueLED_3, blink_off_time);
 };
 // }}}
 // ControlPanelAssistant.prototype.blinkBlueLED_3 = function() {{{
