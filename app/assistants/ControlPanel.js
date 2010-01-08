@@ -34,6 +34,9 @@ ControlPanelAssistant.prototype.setup = function() {
     this.greenLEDCount = [];
     this.blueLEDCount  = [];
 
+    this.fixCount = 0;
+    this.ackCount = 0;
+
     this.blinkRedLED_2   = this.blinkRedLED_2.bind(this);
     this.blinkRedLED_3   = this.blinkRedLED_3.bind(this);
     this.blinkGreenLED_2 = this.blinkGreenLED_2.bind(this);
@@ -311,7 +314,7 @@ ControlPanelAssistant.prototype.trackingChanged = function(event) {
     } else {
         if( this.trackingHandle ) {
             this.trackingHandle.cancel();
-            this.trackingHandle = undefined;
+            delete this.trackingHandle;
         }
 
         // Let the buffer check loop send it all... it'll bottom it out eventually.
@@ -344,6 +347,8 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 
                 this.blinkGreenLED(short_blink);
                 this.rmQueue(t);
+                this.ackCount ++;
+                $("desc1").innerHTML = this.fixCount + " fixe(s), " + this.ackCount + " received";
             }
 
         }
@@ -354,7 +359,8 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
             this.blinkGreenLED(medium_blink);
         }
 
-        this.runningRequest = undefined;
+        delete this.runningRequest;
+        $("desc2").innerHTML = "";
 
     } else {
         // if prototype doesn't know what happened, it thinks it's a success (eat my ass)
@@ -367,7 +373,8 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 // }}}
 // ControlPanelAssistant.prototype.postFixesFailure = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
-    this.trackingHandle = undefined;
+    $("desc2").innerHTML = "";
+    delete this.runningRequest;
     this.blinkRedLED(short_blink);
     this.blinkGreenLED(short_blink);
 };
@@ -375,11 +382,16 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
 
 // ControlPanelAssistant.prototype.bufferCheckLoop = function() {{{
 ControlPanelAssistant.prototype.bufferCheckLoop = function() {
+    Mojo.Log.info("ControlPanel::bufferCheckLoop() ... thingking (%d, %s)",
+        this.buffer.length, this.runningRequest ? "true" : "false");
+
     if( this.runningRequest )
         return;
 
     if( this.buffer.length > 0 ) {
         Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d [starting request]", this.buffer.length);
+
+        $("desc2").innerHTML = "HTTP running";
 
         this.runningRequest = new Ajax.Request(this.URLModel.value, {
             method: 'post',
@@ -449,6 +461,9 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
     */
 
     this.trackingFixRunning = false;
+    this.fixCount ++;
+
+    $("desc1").innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
 
     var item = {
         t:  result.timestamp,
