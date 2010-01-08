@@ -37,3 +37,11 @@
     font-size: 10px;
     font-weight: lighter;
 }
+
+#desc1, #desc2 { 
+    font-size: 10pt;
+    font-weight: lighter;
+}
+
+#desc1 { float: left; }
+#desc2 { float: right; }
