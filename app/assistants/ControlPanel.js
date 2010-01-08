@@ -382,8 +382,7 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
 
 // ControlPanelAssistant.prototype.bufferCheckLoop = function() {{{
 ControlPanelAssistant.prototype.bufferCheckLoop = function() {
-    Mojo.Log.info("ControlPanel::bufferCheckLoop() ... thingking (%d, %s)",
-        this.buffer.length, this.runningRequest ? "true" : "false");
+    // Mojo.Log.info("ControlPanel::bufferCheckLoop() ... thingking (%d, %s)", this.buffer.length, this.runningRequest ? "true" : "false");
 
     if( this.runningRequest )
         return;
