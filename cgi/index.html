@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Jet's GPS Location</title>
+    <script src="/jquery.js"></script>
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=your-key-here" type="text/javascript"></script>
+  </head>
+  <body style="margin: 0; padding: 0; height: 100%; width: 100%;">
+    <div id="map" style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; height: 100%; width: 100%; margin: 0; padding: 0;"></div>
+    <script type="text/javascript">
+
+    //<![CDATA[
+
+    var skydive_allegan, marker, map, going;
+
+    function showMe(loc, txt) {
+        marker.setLatLng(loc);
+        map.panTo(loc);
+        marker.openInfoWindowHtml("<p style='margin: 0; padding: 0; width: 2in'>" + txt + "</p>");
+    }
+
+    function result(data) {
+        if( data.found ) 
+            showMe(new GLatLng(data.l[0], data.l[1]), data.html);
+
+        else
+            showMe(skydive_allegan, "There hasn't been a lick of data from the Prē in quite a while.  Here's Skydive Allegan instead.</p>");
+
+        going = false;
+    }
+
+    function zoom(oEvent, delta) {
+        var new_zoom = map.getZoom();
+
+        if (delta > 1)
+            new_zoom++;
+        else
+            new_zoom--;
+
+        map.setZoom(new_zoom);
+
+        if (oEvent.preventDefault)
+            oEvent.preventDefault();
+    }
+
+    $(function() {
+        skydive_allegan = new GLatLng(42.5311, -85.825);
+        marker = new GMarker(skydive_allegan);
+        map = new GMap2(document.getElementById("map"));
+
+        map.addControl( new GLargeMapControl() );
+        map.addControl( new GMapTypeControl()  );
+        map.setCenter(skydive_allegan);
+        map.setZoom(14);
+        map.addOverlay( marker );
+
+        result({});
+
+        going = true;
+        $.ajaxSetup({timeout: 55*1000, error: function(){going = false} });
+        $.getJSON("j", {}, result);
+
+        setInterval(function(){
+            if( !going ) {
+                going = true;
+                $.getJSON("j", {}, result);
+            }
+
+        }, 10000);
+
+        try {
+
+            var d = document.getElementById("map");
+
+            if (document.body.addEventListener)
+                    d.addEventListener('DOMMouseScroll', function(oEvent) { zoom(oEvent, oEvent.detail * -40); }, false);
+            else
+                    d.onmousewheel = function() { zoom(event, event.wheelDelta); return false; }
+
+        } catch (ex) {}
+
+    });
+
+    //]]>
+    </script>
+  </body>
+</html>
