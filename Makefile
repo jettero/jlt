@@ -10,7 +10,10 @@ myinstall: clean build
 	scp *.ipk castle.vhb:
 	ssh castle.vhb
 
-build:
+framework_config.json: framework_config.json.in
+	perl -pe 's/\%([\w\d]+),([\w\d]+)\%/$$ENV{ "JLT_$$1"||$$2 }/eg' $< > $@
+
+build: framework.json
 	@-rm -vf *.ipk $(name) *.tar.gz ipkgtmp*
 	ln -sf ./ $(name) && \
         palm-package --exclude "*.tar.gz" --exclude .git --exclude cgi --exclude "*.ipk" \
