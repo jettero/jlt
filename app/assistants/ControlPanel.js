@@ -103,7 +103,7 @@ ControlPanelAssistant.prototype.setup = function() {
 
     this.updateIntervalAttributes = {
         minValue: 1,
-        maxValue: 180,
+        maxValue: 20,
         updateInterval: 0.1, // this is 100ms I guess, doesn't seem to do anything... who knows
         round: true
     };
@@ -114,7 +114,7 @@ ControlPanelAssistant.prototype.setup = function() {
 
     this.bufferSizeAttributes = {
         minValue: 1,
-        maxValue: 33,
+        maxValue: 20,
         updateInterval: 0.1, // this is 100ms I guess, doesn't seem to do anything... who knows
         round: true
     };
@@ -254,7 +254,24 @@ ControlPanelAssistant.prototype.URLChanged = function() {
 // }}}
 // ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {{{
 ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
-    this.updateIntervalModel.cv = parseInt(this.updateIntervalModel.value) * 5;
+    this.updateIntervalModel.cv = parseInt(this.updateIntervalModel.value);
+
+    if( this.updateIntervalModel.cv > 5 ) {
+        if( this.updateIntervalModel.cv > 10 ) {
+            if( this.updateIntervalModel.cv > 15 ) {
+                this.updateIntervalModel.cv *= 180;
+
+            } else {
+                this.updateIntervalModel.cv *= 90;
+            }
+
+        } else {
+                this.updateIntervalModel.cv *= 45;
+        }
+
+    } else {
+        this.updateIntervalModel.cv *= 5;
+    }
 
     Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", this.updateIntervalModel.cv);
 
@@ -278,7 +295,7 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
 // }}}
 // ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {{{
 ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
-    this.bufferSizeModel.cv = parseInt(this.bufferSizeModel.value) * 3;
+    this.bufferSizeModel.cv = parseInt(this.bufferSizeModel.value) * 5;
 
     Mojo.Log.info("ControlPanel::bufferSizeChanged(): %d messages", this.bufferSizeModel.cv);
 
