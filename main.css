@@ -13,8 +13,8 @@
 }
 
 .explanation.topsplain {
-    margin-left: 1em; margin-right: 1em;
-    /* font-style: italic; */
+    margin: 1em;
+    color: black;
 }
 
 .explanation {

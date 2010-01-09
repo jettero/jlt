@@ -5,7 +5,8 @@ function StageAssistant() {
 StageAssistant.prototype.setup = function() {
 	Mojo.Log.info("StageAssistant()::setup()")
 
-    this.controller.assistant.showScene('ControlPanel');
+    // this.controller.assistant.showScene('ControlPanel');
+    this.controller.assistant.showScene('About');
 }
 
 StageAssistant.prototype.showScene = function (sceneName, args) {
