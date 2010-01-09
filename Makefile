@@ -11,7 +11,7 @@ myinstall: clean build
 	ssh castle.vhb
 
 framework_config.json: framework_config.json.in
-	perl -pe 's/\%([\w\d]+),([\w\d]+)\%/$$ENV{ "JLT_$$1"||$$2 }/eg' $< > $@
+	perl -pe 's/\%([\w\d]+),([\w\d]+)\%/$$ENV{ "JLT_$$1" }||$$2/eg' $< > $@
 
 build: framework.json
 	@-rm -vf *.ipk $(name) *.tar.gz ipkgtmp*
