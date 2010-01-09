@@ -118,7 +118,7 @@ ControlPanelAssistant.prototype.setup = function() {
         updateInterval: 0.1, // this is 100ms I guess, doesn't seem to do anything... who knows
         round: true
     };
-    this.bufferSizeModel = { value: 10 };
+    this.bufferSizeModel = { value: 5 };
     this.controller.setupWidget('bufferSize', this.bufferSizeAttributes, this.bufferSizeModel);
     this.bufferSizeChanged = this.bufferSizeChanged.bindAsEventListener(this);
     Mojo.Event.listen($("bufferSize"), Mojo.Event.propertyChange, this.bufferSizeChanged);
@@ -259,16 +259,16 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
     Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", this.updateIntervalModel.cv);
 
     var s;
-    if( i >= 300 ) {
-        if( i >= 2700 ) {
-            s = (parseFloat(i)/3600).toFixed(2) + " hours";
+    if( this.updateIntervalModel.cv >= 300 ) {
+        if( this.updateIntervalModel.cv >= 2700 ) {
+            s = (parseFloat(this.updateIntervalModel.cv)/3600).toFixed(2) + " hours";
 
         } else {
-            s = (parseFloat(i)/60).toFixed(2) + " minutes";
+            s = (parseFloat(this.updateIntervalModel.cv)/60).toFixed(2) + " minutes";
         }
 
     } else {
-        s = i + " seconds";
+        s = this.updateIntervalModel.cv + " seconds";
     }
 
     $('updateIntervalCurrent').innerHTML = s;
@@ -282,7 +282,7 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
 
     Mojo.Log.info("ControlPanel::bufferSizeChanged(): %d messages", this.bufferSizeModel.cv);
 
-    $('bufferSizeCurrent').innerHTML = i + " messages";
+    $('bufferSizeCurrent').innerHTML = this.bufferSizeModel.cv + " messages";
 
     this.savePrefs();
 };
