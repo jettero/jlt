@@ -102,8 +102,8 @@ ControlPanelAssistant.prototype.setup = function() {
     Mojo.Event.listen($('postURL'), Mojo.Event.propertyChange, this.URLChanged);
 
     this.updateIntervalAttributes = {
-        minValue: 5,
-        maxValue: 1800,
+        minValue: 1,
+        maxValue: 180,
         updateInterval: 0.1, // this is 100ms I guess, doesn't seem to do anything... who knows
         round: true
     };
@@ -114,7 +114,7 @@ ControlPanelAssistant.prototype.setup = function() {
 
     this.bufferSizeAttributes = {
         minValue: 1,
-        maxValue: 100,
+        maxValue: 33,
         updateInterval: 0.1, // this is 100ms I guess, doesn't seem to do anything... who knows
         round: true
     };
@@ -254,12 +254,12 @@ ControlPanelAssistant.prototype.URLChanged = function() {
 // }}}
 // ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {{{
 ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
-    var i = parseInt(this.updateIntervalModel.value);
+    this.updateIntervalModel.cv = parseInt(this.updateIntervalModel.value) * 5;
 
-    Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", i);
+    Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", this.updateIntervalModel.cv);
 
     var s;
-    if( i >= 900 ) {
+    if( i >= 300 ) {
         if( i >= 2700 ) {
             s = (parseFloat(i)/3600).toFixed(2) + " hours";
 
@@ -278,9 +278,9 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
 // }}}
 // ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {{{
 ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
-    var i = parseInt(this.bufferSizeModel.value);
+    this.bufferSizeModel.cv = parseInt(this.bufferSizeModel.value) * 3;
 
-    Mojo.Log.info("ControlPanel::bufferSizeChanged(): %d messages", i);
+    Mojo.Log.info("ControlPanel::bufferSizeChanged(): %d messages", this.bufferSizeModel.cv);
 
     $('bufferSizeCurrent').innerHTML = i + " messages";
 
@@ -414,7 +414,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
 
     var now = (new Date()).getTime()/1000;
 
-    if( this.trackingLast + this.updateIntervalModel.value < now ) {
+    if( this.trackingLast + this.updateIntervalModel.cv < now ) {
         Mojo.Log.info("ControlPanel::trackingLoop() [loop true]");
         this.trackingLast = now;
 
@@ -435,7 +435,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
                     responseTimeA: 2,
 
                     // max age of cached result, default 0: do not use cached result
-                    maximumAge: this.updateIntervalModel.value-1,
+                    maximumAge: this.updateIntervalModel.cv - 1,
                 }
             });
         }
