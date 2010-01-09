@@ -18,6 +18,7 @@ build: framework.json
 	ln -sf ./ $(name) && \
         palm-package --exclude "*.tar.gz" --exclude .git --exclude cgi --exclude "*.ipk" \
                      --exclude $(name) --exclude contrib --exclude Makefile \
+                     --exclude demo-server.pl --exclude cgi \
         $(name) && rm $(name)
 clean:
 	git clean -dfx
