@@ -1,3 +1,3 @@
-function HelptAssistant() {
+function HelpAssistant() {
     Mojo.Log.info("Help()");
 }
