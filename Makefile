@@ -2,11 +2,13 @@ name=JetsLocationTracker
 
 default: test
 
-test: build
+test: clean
+	JLT_LOGLEVEL=99 make --no-print-directory build
 	palm-install *.ipk
 	/usr/local/bin/novacom/novacom -t open tty://; echo; echo
 
-myinstall: clean build
+myinstall: clean
+	JLT_LOGLEVEL=0 make --no-print-directory build
 	scp *.ipk castle.vhb:
 	ssh castle.vhb
 
