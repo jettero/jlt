@@ -12,17 +12,87 @@
     </div>
 
     <div class="topsplain explanation">
+        <h3>Indicator Meanings</h3>
+        <p> There are various text phrases that appear below the
+            indicators at the time.  Along the left, they describe the
+            number of readings taken and how many were accepted by the
+            webserver (e.g., 2 reads, 2 posted).  Along the right, the
+            app shows when an HTTP (aka AJAX) request is running (e.g.
+            HTTP running).
+        </p>
+
+        <p> In addition to the text messages, there is a slider and
+            there are three LEDs.  The slider indicates the buffer
+            fill status.  If the slider is full (filling left to
+            right), it indicates the buffer is full.  Consider
+            increasing the buffer size if this happens frequently.
+        </p>
+
+        <p> The blue LED indicates some type of GPS activity.  Usually
+            the blue LED indicates a new read being buffered, but it
+            can also indicate buffer overruns.  When a buffer overrun
+            occurs, the blue LED will light with the red LED
+            simultaneously.
+        </p>
+
+        <p> The green LED indicates some type of HTTP activity.
+            Usually this activity relates to a successful data POST.
+            However, when a POST fails, the green LED will light along
+            with the red LED.
+        </p>
+
         <h3>Post URL</h3>
-        <p> Until Google writes a Prē version of Latitude or documents the update proces, we (Prē owners)
-            are kinda stuck to building our own Latitude-a-likes.  Fortunately, Google Maps has an API that's
-            pretty straight forward.  There are <a href="http://github.com/jettero/jlt/tree/master/cgi/">samples</a>
+        <p> Until Google writes a Prē version of Latitude or documents
+            the update proces, we (Prē owners) are kinda stuck to
+            building our own Latitude-a-likes.  Fortunately, Google
+            Maps has an API that's pretty straight forward.  There are
+            <a href="http://github.com/jettero/jlt/tree/master/cgi/">samples</a>
             in several languages on github (see the About card).
         </p>
 
-        <p> Anyway, the Post URL is is the full path of the CGI that should collect your JSON location posts.
-            The format of the posts is listed in a file called
+        <p> Anyway, the Post URL is is the full path of the CGI that
+            should collect your JSON location posts.  The format of
+            the posts is listed in a file called
             &quot;<a href="http://github.com/jettero/jlt/blob/master/PROTOCOL">PROTOCOL</a>&quot;
             in the distribution (ibid).
+        </p>
+
+        <h3>Update Intervals</h3>
+        <p> There are two ways to acquire GPS data from the webOS.
+            First, you can ask for a fix, and second, you can
+            subscribe to the GPS system and it will give updates as
+            often as it likes.  In practice, this tends to be roughly
+            every second.  When switched to &quot;Continuous
+            Updates&quot;, your device will subscribe to the updates
+            and store them as often as they come.
+        </p>
+
+        <p> Alternatively, you can set the app to ask for a fix only
+            after waiting for a certain amount of time (called the
+            Update Interval) after receiving the last fix.
+        </p>
+
+        <h3>Buffer Size</h3>
+        <p> While waiting for upload confirmation, this app stores the
+            GPS fixes locally.  In slow network locations, a larger
+            buffer may help ensure successful uploads — however, it
+            will also consume more local resources.
+        </p>
+
+        <p> If the current GPS fix is &quot;very close&quot; to the
+            last location, the app will store additional timestamps
+            rather than duplicating the gps fix.  The buffer setting
+            affects this timestamp array also.  The app will store
+            up to five times the buffer size worth of timestamps in a
+            single message before over flowing.  That is, if the
+            buffer size is three messages, the app will store at most
+            fifteen timestamps per location entry and only three
+            locations; giving at most: fourty-five readings, if
+            everything happens to line up just right.
+        </p>
+
+        <p> When the buffer is full and a reading comes in, older
+            messages (or timestamps) will be shifted off in FIFO order.
         </p>
 
     </div>
