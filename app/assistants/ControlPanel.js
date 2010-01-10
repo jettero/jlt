@@ -373,7 +373,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
                 this.blinkGreenLED(short_blink);
                 this.rmQueue(t);
                 this.ackCount ++;
-                $("desc1").innerHTML = this.fixCount + " fixe(s), " + this.ackCount + " received";
+                $("desc1").innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
             }
 
         }
