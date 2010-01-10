@@ -18,7 +18,7 @@
             number of readings taken and how many were accepted by the
             webserver (e.g., 2 reads, 2 posted).  Along the right, the
             app shows when an HTTP (aka AJAX) request is running (e.g.
-            HTTP running).
+            HTTP running)<sup>1</sup>.
         </p>
 
         <p> In addition to the text messages, there is a slider and
@@ -94,6 +94,16 @@
             messages will be shifted off in FIFO order.  When the timestamp
             buffer of a fix object is full, it will push another message
             into the queue instead.
+        </p>
+
+        <h3>Side Notes</h3>
+        <p> <sup>1<sup> The number of posted messages will sometimes
+            lag behind the number of actual reads because of two
+            factors: 1) webserver acknowledgments do not contain a
+            count and 2) occasionally a reading will be lost when a
+            fix message is acknowledged but has gained timestamps
+            after the message was sent to the webserver.  This
+            behavior is not considered to be a bug at this time.
         </p>
 
     </div>
