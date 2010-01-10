@@ -79,20 +79,21 @@
             will also consume more local resources.
         </p>
 
-        <p> If the current GPS fix is &quot;very close&quot; to the
-            last location, the app will store additional timestamps
-            rather than duplicating the gps fix.  The buffer setting
-            affects this timestamp array also.  The app will store
-            up to five times the buffer size worth of timestamps in a
-            single message before over flowing.  That is, if the
-            buffer size is three messages, the app will store at most
-            fifteen timestamps per location entry and only three
-            locations; giving at most: fourty-five readings, if
-            everything happens to line up just right.
+        <p> If the current GPS fix is &quot;very close&quot; to the last
+            location, the app will store additional timestamps rather than
+            duplicating the gps fix.  The buffer setting affects this timestamp
+            queue also.  The app will store up to three times the buffer size
+            worth of timestamps in a single message before overflowing.  That
+            is, if the buffer size is five messages, the app will store at most
+            fifteen timestamps per location entry and only five locations;
+            giving at most: seventy-five readings, if everything happens to
+            line up just right.
         </p>
 
-        <p> When the buffer is full and a reading comes in, older
-            messages (or timestamps) will be shifted off in FIFO order.
+        <p> When the message buffer is full and a reading comes in, an older
+            messages will be shifted off in FIFO order.  When the timestamp
+            buffer of a fix object is full, it will push another message
+            into the queue instead.
         </p>
 
     </div>

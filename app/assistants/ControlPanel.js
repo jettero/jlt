@@ -195,19 +195,22 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
             if( typeof last.t === "number" ) {
                 last.t = [last.t, item.t];
 
-            } else {
-                last.t.push(item.t);
-            }
+                this.blinkBlueLED(short_blink);
+                return;
 
-            this.blinkBlueLED(short_blink);
-            return;
+            } else if( last.t.length < this.bufferSizeModel.tcv ) {
+                last.t.push(item.t);
+
+                this.blinkBlueLED(short_blink);
+                return;
+            }
         }
     }
 
     this.buffer.push(item);
 
-    if( this.buffer.length > this.bufferSizeModel.value ) {
-        while( this.buffer.length > this.bufferSizeModel.value ) {
+    if( this.buffer.length > this.bufferSizeModel.cv ) {
+        while( this.buffer.length > this.bufferSizeModel.cv ) {
             this.buffer.shift();
             this.blinkBlueLED(short_blink);
             this.blinkRedLED(short_blink);
@@ -217,7 +220,7 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
         this.blinkBlueLED(short_blink);
     }
 
-    this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
+    this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
     this.controller.modelChanged(this.bufferFillModel);
 
     Mojo.Log.info( "ControlPanel::pushQueue() -- buffer-fullness: "
@@ -240,7 +243,7 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
             // get rid of the undef
             this.buffer.splice(i,1);
 
-            this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.value;
+            this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
             this.controller.modelChanged(this.bufferFillModel);
 
             return; // we're all done here
@@ -300,7 +303,7 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
 // ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {{{
 ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
     this.bufferSizeModel.cv = parseInt(this.bufferSizeModel.value) * 5;
-    this.bufferSizeModel.bcv = this.bufferSizeModel.cv * 5;
+    this.bufferSizeModel.tcv = this.bufferSizeModel.cv * 3;
 
     Mojo.Log.info("ControlPanel::bufferSizeChanged(): %d messages", this.bufferSizeModel.cv);
 
