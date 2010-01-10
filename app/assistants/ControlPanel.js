@@ -30,6 +30,10 @@ function ControlPanelAssistant() {
 ControlPanelAssistant.prototype.setup = function() {
     Mojo.Log.info("ControlPanel::setup()");
 
+    this.SC = Mojo.Controller.stageController.assistant;
+    this.menuSetup = this.SC.menuSetup.bind(this);
+    this.menuSetup();
+
     this.redLEDCount   = [];
     this.greenLEDCount = [];
     this.blueLEDCount  = [];
@@ -296,6 +300,7 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
 // ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {{{
 ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
     this.bufferSizeModel.cv = parseInt(this.bufferSizeModel.value) * 5;
+    this.bufferSizeModel.bcv = this.bufferSizeModel.cv * 5;
 
     Mojo.Log.info("ControlPanel::bufferSizeChanged(): %d messages", this.bufferSizeModel.cv);
 
