@@ -8,7 +8,7 @@ use HTTP::Server::Simple;
 use base qw(HTTP::Server::Simple::CGI);
 use JSON;
 
-$0 = "demo-server.pl";
+$0 = "test-server.pl";
 my $json = JSON->new;
 my $start = "run";
 my $port  = 4000;
@@ -69,17 +69,15 @@ __END__
 
 =head1 NAME
 
-demo-server - a very simple demo tracking server
+test-server.pl - a very simple test tracking server
 
 =head1 DESCRIPTION
 
-This is just a quick little HTTP::Server::Simple demo GPS tracking server.
-Choose your own language (ruby, python, php) as the protocol is very simple!
-I'm a perl fan. :p
+This is just a quick little HTTP::Server::Simple GPS tracking server useful for testing purposes only.
 
 =head1 SYNOPSIS
 
-    demo-server.pl
+    test-server.pl
        --daemon --background -b -d   start the server in the background
        --port -p                     specify a port to use (default: 4000)
        -h                            short help
