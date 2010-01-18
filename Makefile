@@ -9,8 +9,8 @@ test: clean
 
 myinstall: clean
 	JLT_LOGLEVEL=0 make --no-print-directory build
-	scp *.ipk castle.vhb:
-	ssh castle.vhb
+	scp *.ipk $${INSTHOST:-castle.vhb}:
+	ssh $${INSTHOST:-castle.vhb}
 
 framework_config.json: framework_config.json.in
 	perl -pe 's/\%([\w\d]+),([\w\d]+)\%/$$ENV{ "JLT_$$1" }||$$2/eg' $< > $@
