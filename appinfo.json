@@ -1,9 +1,9 @@
 {
-	"id": "com.jettero.jlt",
+	"id": "com.voltar.org.jlt",
 	"version": "0.9.0",
 	"vendor": "voltar.org",
 	"type": "web",
 	"main": "index.html",
-	"title": "JLT",
+	"title": "JSON Location Tracker",
 	"icon": "icon.png"
 }
