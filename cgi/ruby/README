@@ -1,0 +1,7 @@
+To get going do the following:
+
+apt-get install rubygems
+gem install sinatra json
+ruby server.rb
+
+Yep it's really that easy.
