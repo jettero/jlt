@@ -1,8 +1,9 @@
+-=: POST DATA FORMAT :=--------------------------
 
 The JSON Location Tracker protocol is very simple.
 
-The JLT will "POST" http messages to any URL.  The post message will
-have a single paramater, "fixes" which will contain a JSON *string*:
+The JLT will "POST" http messages to any URL.  The post message will have a
+single paramater, "fixes" which will contain a JSON *string*:
 
     [
         {
@@ -27,13 +28,24 @@ The "t" index *may* be an array of timestamps as follows:
             va: result.vertAccuracy,
             al: result.altitude,
             vv: [ result.velocity, result.heading ]
-        }, 
+        },
 
         ...
     ]
 
-CGI data syncs *must* respond with *either* the timestamp of the
-message or the *first* timestamp of the message; foreach fix in the
-array of fixes:
+CGI data syncs *must* respond with *either* the timestamp of the message or the
+*first* timestamp of the message; for each fix in the array of fixes:
 
     { fix_tlist: [ timestamp, timestamp, timestamp, ... ]}
+
+
+-=: POST DATA UNITS :=--------------------------
+
+- timestamps (t) is measured in miliseconds since the epoch
+- latitude and longitude (ll) is a two tuple, measured in degrees
+- accuracy (ha, va) is measured in meters [presumably above mean sea level]
+- altitude (al) is in meters
+- velocity (vv) is a two tuple.  The first element is the speed in
+  meters/second and the second element is the direction in compass azimuth
+  degrees
+
