@@ -1,11 +1,13 @@
 name=JetsLocationTracker
+ssh=ssh -p 2222 -l root localhost
 
 default: test
 
 test: clean
 	JLT_LOGLEVEL=99 make --no-print-directory build
 	palm-install *.ipk
-	/usr/local/bin/novacom/novacom -t open tty://; echo; echo
+	$(ssh) luna-send -n 1 palm://com.palm.applicationManager/launch "'{\"id\":\"org.voltar.jlt\"}'"
+	$(ssh) tail -f /var/log/messages | ./log-parse.pl
 
 myinstall: clean
 	JLT_LOGLEVEL=0 make --no-print-directory build
