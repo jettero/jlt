@@ -739,3 +739,5 @@ ControlPanelAssistant.prototype.blinkBlueLED = function(duration) {
 };
 // }}}
 // }}}
+
+Mojo.Log.info('loaded(ControlPanelAssistant.js)');

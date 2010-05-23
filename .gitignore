@@ -2,3 +2,4 @@ JetsLocationTracker
 org.voltar.*.ipk
 framework_config.json
 *.tar.gz
+last_run.log
