@@ -105,14 +105,29 @@ ControlPanelAssistant.prototype.setup = function() {
     this.URLChanged = this.URLChanged.bind(this);
     Mojo.Event.listen($('postURL'), Mojo.Event.propertyChange, this.URLChanged);
 
-    this.updateIntervalAttributes = {
-        minValue: 1,
-        maxValue: 20,
-        updateInterval: 0.1, // this is 100ms I guess, doesn't seem to do anything... who knows
-        round: true
+    this.intervalSubmenu = { label: 'Interval Submenu', items: [
+        '5s', '10s', '15s', '1m', '3m', '5m', '10m', '1hour'
+    ]};
+	this.controller.setupWidget('interval-submenu', undefined, this.intervalSubmenu);
+
+    var intervalAttributes = {
+        label: "interval",
+        choices: [
+            {label: "5 seconds",    value:    5},
+            {label: "10 seconds",   value:   10},
+            {label: "15 seconds",   value:   15},
+            {label: "30 seconds",   value:   30},
+            {label: "1 minute",     value:   60},
+            {label: "3 minutes",    value:  180},
+            {label: "5 minutes",    value:  300},
+            {label: "10 minutes",   value:  600},
+            {label: "15 minutes",   value:  900},
+            {label: "30 minutes",   value: 1800},
+            {label: "1 hour",       value: 3600}
+        ]
     };
-    this.updateIntervalModel = { value: 900 };
-    this.controller.setupWidget('updateInterval', this.updateIntervalAttributes, this.updateIntervalModel);
+    this.updateIntervalModel = {value: 10, disabled: false};
+    this.controller.setupWidget('updateInterval', intervalAttributes, this.updateIntervalModel);
     this.updateIntervalChanged = this.updateIntervalChanged.bindAsEventListener(this);
     Mojo.Event.listen($("updateInterval"), Mojo.Event.propertyChange, this.updateIntervalChanged);
 
@@ -261,41 +276,7 @@ ControlPanelAssistant.prototype.URLChanged = function() {
 // }}}
 // ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {{{
 ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
-    this.updateIntervalModel.cv = parseInt(this.updateIntervalModel.value);
-
-    if( this.updateIntervalModel.cv > 5 ) {
-        if( this.updateIntervalModel.cv > 10 ) {
-            if( this.updateIntervalModel.cv > 15 ) {
-                this.updateIntervalModel.cv *= 180;
-
-            } else {
-                this.updateIntervalModel.cv *= 90;
-            }
-
-        } else {
-                this.updateIntervalModel.cv *= 45;
-        }
-
-    } else {
-        this.updateIntervalModel.cv *= 5;
-    }
-
-    Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", this.updateIntervalModel.cv);
-
-    var s;
-    if( this.updateIntervalModel.cv >= 300 ) {
-        if( this.updateIntervalModel.cv >= 2700 ) {
-            s = (parseFloat(this.updateIntervalModel.cv)/3600).toFixed(2) + " hours";
-
-        } else {
-            s = (parseFloat(this.updateIntervalModel.cv)/60).toFixed(2) + " minutes";
-        }
-
-    } else {
-        s = this.updateIntervalModel.cv + " seconds";
-    }
-
-    $('updateIntervalCurrent').innerHTML = s;
+    Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", this.updateIntervalModel.value);
 
     this.savePrefs();
 };
@@ -439,7 +420,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
 
     var now = (new Date()).getTime()/1000;
 
-    if( this.trackingLast + this.updateIntervalModel.cv < now ) {
+    if( this.trackingLast + this.updateIntervalModel.value < now ) {
         Mojo.Log.info("ControlPanel::trackingLoop() [loop true]");
         this.trackingLast = now;
 
@@ -460,7 +441,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
                     responseTimeA: 2,
 
                     // max age of cached result, default 0: do not use cached result
-                    maximumAge: this.updateIntervalModel.cv - 1,
+                    maximumAge: this.updateIntervalModel.value - 1,
                 }
             });
         }
