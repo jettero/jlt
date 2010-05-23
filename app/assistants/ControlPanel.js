@@ -90,7 +90,7 @@ ControlPanelAssistant.prototype.setup = function() {
     this.continuousChanged = this.continuousChanged.bindAsEventListener(this);
     Mojo.Event.listen($('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
 
-    this.URLAttributes = {
+    this.postURLAttributes = {
         hintText:      'http://mysite/cgi/path',
         textFieldName: 'postURL',
         maxLength:     2048,
@@ -100,10 +100,25 @@ ControlPanelAssistant.prototype.setup = function() {
         holdToEdit:    true, // otherwise it steals focus first thing
         multiline:     false
     };
-    this.URLModel = { original: '', value: '' };
-    this.controller.setupWidget('postURL', this.URLAttributes, this.URLModel);
-    this.URLChanged = this.URLChanged.bind(this);
-    Mojo.Event.listen($('postURL'), Mojo.Event.propertyChange, this.URLChanged);
+    this.postURLModel = { original: '', value: '' };
+    this.controller.setupWidget('postURL', this.postURLAttributes, this.postURLModel);
+    this.postURLChanged = this.postURLChanged.bindAsEventListener(this);
+    Mojo.Event.listen($('postURL'), Mojo.Event.propertyChange, this.postURLChanged);
+
+    this.viewURLAttributes = {
+        hintText:      'http://mysite/cgi/path',
+        textFieldName: 'viewURL',
+        maxLength:     2048,
+        textCase:      Mojo.Widget.steModeLowerCase,
+        autoFocus:     false,
+        enterSubmits:  true,
+        holdToEdit:    true, // otherwise it steals focus first thing
+        multiline:     false
+    };
+    this.viewURLModel = { original: '', value: '' };
+    this.controller.setupWidget('viewURL', this.viewURLAttributes, this.viewURLModel);
+    this.viewURLChanged = this.viewURLChanged.bindAsEventListener(this);
+    Mojo.Event.listen($('viewURL'), Mojo.Event.propertyChange, this.viewURLChanged);
 
     this.intervalSubmenu = { label: 'Interval Submenu', items: [
         '5s', '10s', '15s', '1m', '3m', '5m', '10m', '1hour'
@@ -267,9 +282,16 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
 };
 // }}}
 
-// ControlPanelAssistant.prototype.URLChanged = function() {{{
-ControlPanelAssistant.prototype.URLChanged = function() {
-    Mojo.Log.info("ControlPanel::URLChanged(): %s", this.URLModel.value);
+// ControlPanelAssistant.prototype.postURLChanged = function() {{{
+ControlPanelAssistant.prototype.postURLChanged = function() {
+    Mojo.Log.info("ControlPanel::postURLChanged(): %s", this.postURLModel.value);
+
+    this.savePrefs();
+};
+// }}}
+// ControlPanelAssistant.prototype.viewURLChanged = function() {{{
+ControlPanelAssistant.prototype.viewURLChanged = function() {
+    Mojo.Log.info("ControlPanel::viewURLChanged(): %s", this.viewURLModel.value);
 
     this.savePrefs();
 };
@@ -398,7 +420,7 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
 
         $("desc2").innerHTML = "HTTP running";
 
-        this.runningRequest = new Ajax.Request(this.URLModel.value, {
+        this.runningRequest = new Ajax.Request(this.postURLModel.value, {
             method: 'post',
 
             parameters: { fixes: Object.toJSON(this.buffer) },
@@ -510,12 +532,18 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
             this.updateIntervalModel.value = prefs.updateInterval;
             this.bufferSizeModel.value     = prefs.bufferSize;
             this.continuousModel.value     = prefs.continuous;
-            this.URLModel.value            = prefs.URL;
+            this.viewURLModel.value        = prefs.viewURL;
+
+            if( prefs.URL ) // leave this around for a few versions
+                this.postURLModel.value = prefs.URL;
+
+            this.postURLModel.value        = prefs.postURL;
 
             this.controller.modelChanged(this.updateIntervalModel);
             this.controller.modelChanged(this.bufferSizeModel);
             this.controller.modelChanged(this.continuousModel);
-            this.controller.modelChanged(this.URLModel);
+            this.controller.modelChanged(this.postURLModel);
+            this.controller.modelChanged(this.viewURLModel);
 
             this.bufferSizeChanged();
             this.updateIntervalChanged();
@@ -542,7 +570,8 @@ ControlPanelAssistant.prototype.savePrefs = function() {
         return;
 
     var prefs = {
-        URL:            this.URLModel.value,
+        postURL:        this.postURLModel.value,
+        viewURL:        this.viewURLModel.value,
         continuous:     this.continuousModel.value,
         updateInterval: this.updateIntervalModel.value,
         bufferSize:     this.bufferSizeModel.value

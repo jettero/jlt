@@ -46,20 +46,30 @@
             <div class="palm-row first">
                 <div class="palm-row-wrapper">
                     <div class="title">
-                        Post URL
+                        URLs and Messages
                         <div class='explanation'>
-                        The URL for the CGI data sink on your web site.
-
+                        The POST URL indicates the CGI data sink on your web site.
+                        The View URL (optional) indicates where others go to view your location.
+                        Both require a tap-and-hold to change.
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="palm-row last">
-                    <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
-                        <div class="title">
+            <div class="palm-row">
+                <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                    <div class="title">
+                        <div class="label">POST</div>
                         <div id="postURL" x-mojo-element="TextField"></div>
-                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="palm-row last">
+                <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                    <div class="title">
+                        <div class="label">View</div>
+                        <div id="viewURL" x-mojo-element="TextField"></div>
                     </div>
                 </div>
             </div>
