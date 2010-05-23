@@ -41,6 +41,19 @@ ControlPanelAssistant.prototype.setup = function() {
     this.fixCount = 0;
     this.ackCount = 0;
 
+    // eog $(find ../usr.palm.frameworks/ -name \*.png | grep menu-icon)
+    this.sendModel = { label: "Send", icon: 'send',          submenu: 'send-submenu' };
+    this.noteModel = { label: "Note", icon: 'conversation',  submenu: 'note-submenu' };
+
+    this.commandMenuModel = { label: 'ControlPanel Command Menu', items: [ this.noteModel, this.sendModel ] };
+	this.controller.setupWidget(Mojo.Menu.commandMenu, undefined, this.commandMenuModel);
+
+    this.sendSubmenu = { label: 'Send Submenu', items: [{label: "test1.l", command: 'test1.c'}] };
+    this.noteSubmenu = { label: 'Note Submenu', items: [{label: "test1.l", command: "test1.c"}] };
+
+	this.controller.setupWidget('send-submenu', undefined, this.sendSubmenu);
+	this.controller.setupWidget('note-submenu', undefined, this.noteSubmenu);
+
     this.blinkRedLED_2   = this.blinkRedLED_2.bind(this);
     this.blinkRedLED_3   = this.blinkRedLED_3.bind(this);
     this.blinkGreenLED_2 = this.blinkGreenLED_2.bind(this);
