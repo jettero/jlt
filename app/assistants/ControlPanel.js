@@ -624,6 +624,38 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 };
 // }}}
 
+/* {{{ */ ControlPanelAssistant.prototype.handleCommand = function(event) {
+    if (event.type === Mojo.Event.command) {
+        var s_a = event.command.split(/\s*(?:@@)\s*/);
+
+        switch (s_a[0]) {
+            case 'send-email':
+                Mojo.Log.info("handleCommand(send-email)");
+                break;
+
+            case 'send-imsms':
+                Mojo.Log.info("handleCommand(send-imsms)");
+                break;
+
+            case 'set-tag':
+                Mojo.Log.info("handleCommand(set-tag)");
+                break;
+
+            case 'send-poi':
+                Mojo.Log.info("handleCommand(send-poi)");
+                break;
+
+            default:
+                Mojo.Log.info("handleCommand(unknown command: %s)", Object.toJSON(s_a));
+                break;
+        }
+    }
+
+};
+
+/*}}}*/
+
+
 // LED functions {{{
 // ControlPanelAssistant.prototype.blinkRedLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkRedLED_2 = function() {
