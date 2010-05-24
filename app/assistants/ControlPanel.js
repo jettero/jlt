@@ -516,6 +516,14 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
         vv: [ result.velocity, result.heading ]
     };
 
+    if( this._poi ) {
+        item.poi = this._poi;
+        this._poi = false;
+    }
+
+    if( this._tag )
+        item.tag = this._tag;
+
     this.pushQueue(item);
 };
 // }}}
@@ -705,8 +713,14 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                 this.controller.showDialog({
                     template: 'dialogs/tag',
                     assistant: new ExtraInfoDialog(this.controller, {maxLength: 64, hintText: "trip name"},
-                        function(info){ this._tag = info; },
-                        function()    { this._tag = false;}
+                        function(info){
+                            this._tag = info;
+                            this.trackingLast = 0; // try to update right away so we can show the start of the tag
+                        },
+                        function() {
+                            this._tag = false;
+                            this.trackingLast = 0; // try to update right away so we can show the end of the tag
+                        }
                     )
                 });
                 break;
@@ -716,8 +730,12 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                 this.controller.showDialog({
                     template: 'dialogs/poi',
                     assistant: new ExtraInfoDialog(this.controller, {maxLength: 240, hintText: "This is so cool! :-P"},
-                        function(info){ this._poi = info; },
-                        function()    { this._poi = false; }
+                        function(info){
+                            this._poi = info;
+                            this.trackingLast = 0; // try to update right away so we get the POI in the right place
+                        },
+                        function() { this._poi = false; }
+                        // not going to show anything anyway... no need to reset trackingLast
                     )
                 });
                 break;
