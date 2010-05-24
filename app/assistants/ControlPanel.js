@@ -704,8 +704,10 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                 Mojo.Log.info("handleCommand(set-tag)");
                 this.controller.showDialog({
                     template: 'dialogs/tag',
-                    assistant: new ExtraInfoDialog(this, {maxLength: 64, hintText: "trip name"}, function(info){
-                    })
+                    assistant: new ExtraInfoDialog(this.controller, {maxLength: 64, hintText: "trip name"},
+                        function(info){ this._tag = info; },
+                        function()    { this._tag = false;}
+                    )
                 });
                 break;
 
@@ -713,9 +715,9 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                 Mojo.Log.info("handleCommand(send-poi)");
                 this.controller.showDialog({
                     template: 'dialogs/poi',
-                    assistant: new ExtraInfoDialog(
-                        this, {maxLength: 240, hintText: "This is so cool! :-P"}, function(info){
-                        }
+                    assistant: new ExtraInfoDialog(this.controller, {maxLength: 240, hintText: "This is so cool! :-P"},
+                        function(info){ this._poi = info; },
+                        function()    { this._poi = false; }
                     )
                 });
                 break;

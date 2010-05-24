@@ -2,10 +2,10 @@
 */
 /*global Mojo $ ExtraInfoDialog
 */
-function ExtraInfoDialog(sceneAssistant,attrs,gocb,stopcb) {
+function ExtraInfoDialog(sceneController,attrs,gocb,stopcb) {
     Mojo.Log.info("ExtraInfoDialog()");
 
-    this.controller = sceneAssistant.controller;
+    this.controller = sceneController;
     this.attrs = attrs ? attrs : {};
 
     this.go   = this.go.bind(this);
@@ -47,7 +47,7 @@ ExtraInfoDialog.prototype.go = function() {
     this.widget.mojo.close();
 
     if( this.gocb )
-        this.gocb();
+        this.gocb(this.tfModel.value);
 };
 
 ExtraInfoDialog.prototype.stop = function() {
@@ -57,6 +57,11 @@ ExtraInfoDialog.prototype.stop = function() {
 
     if( this.stopcb )
         this.stopcb();
+};
+
+ExtraInfoDialog.prototype.cleanup = function() {
+	Mojo.Event.stopListening(this.controller.get('go-b'),   Mojo.Event.tap, this.go);
+	Mojo.Event.stopListening(this.controller.get('stop-b'), Mojo.Event.tap, this.stop);
 };
 
 Mojo.Log.info('loaded(ExtraInfoDialog.js)');
