@@ -8,11 +8,13 @@ use Pod::Usage;
 
 my $on;
 my $less;
+my $me = qr(org\.voltar);
 
 Getopt::Long::Configure("bundling");
 GetOptions(
     "help|H" => sub { pod2usage(-verbose=>1) },
     "h"      => sub { pod2usage() },
+    "m=s"    => sub { $me = qr($_[1]) },
     "a"      => \$on,
 ) or pod2usage();
 
@@ -30,7 +32,8 @@ my $reg = qr|^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).+?LunaSysMgr.*?{Lu
    $reg = qr|^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).+?\[\d+\] \S+ \S+ |;
 
 while(<STDIN>) {
-    $on = 1 if m/$start.*?Info.*?loaded\(\w+\.js\)/;
+    $on = 1 if m/$start/;
+    next unless $_ =~ $me;
 
     if( s/$reg// ) {
         my ($year, $month, $day, $hour, $min, $sec) = ($1, $2, $3, $4, $5, $6);
@@ -38,6 +41,7 @@ while(<STDIN>) {
         my $esec = timegm_nocheck($sec,$min,$hour,$day,$month,$year);
         my $time = strftime('%H:%M:%S', localtime($esec));
 
+        s(LunaSysMgr:\s+{LunaSysMgrJS}:\s+)();
         s(, file://.*)();
         s(, palmInitFramework\d+:\d+)();
 
@@ -65,25 +69,16 @@ blarg
        -h           help
        --help -H    full help
 
-       -a           show all lines, rather than waiting for the app to start up
+       -m RE        regular expression describing lines from this app (default: org\.voltar)
+                    use . to just show everything.
 
-=head1 OPTIONS
-
-=over
-
-=item B<-h>
-
-Short help.
-
-=item B<-H> B<--help>
-
-Long help (this).
-
-=back
+       -a           By default, the app doesn't start showing things until it finds a line
+                    from around +/- one second ago. -a instructs the log parser to skip that
+                    check.
 
 =head1 COPYRIGHT
 
-Copyright 2009 -- Paul Miller C<< <jettero@cpan.org> >>
+Copyright 2010 -- Paul Miller C<< <jettero@cpan.org> >>
 
 Licensed under the current version of the GPL.
 
