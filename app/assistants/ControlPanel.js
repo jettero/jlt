@@ -702,10 +702,22 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 
             case 'set-tag':
                 Mojo.Log.info("handleCommand(set-tag)");
+                this.controller.showDialog({
+                    template: 'dialogs/tag',
+                    assistant: new ExtraInfoDialog(this, {maxLength: 64, hintText: "trip name"}, function(info){
+                    })
+                });
                 break;
 
             case 'send-poi':
                 Mojo.Log.info("handleCommand(send-poi)");
+                this.controller.showDialog({
+                    template: 'dialogs/poi',
+                    assistant: new ExtraInfoDialog(
+                        this, {maxLength: 240, hintText: "This is so cool! :-P"}, function(info){
+                        }
+                    )
+                });
                 break;
 
             default:
