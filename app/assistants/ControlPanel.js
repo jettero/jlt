@@ -632,23 +632,21 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
             case 'send':
                 Mojo.Log.info("handleCommand(send: %s)", s_a[1]);
                 if( !this.viewURLModel.value ) {
+
+                    $("viewURL")._mojoController.assistant.makeTextfieldEditable();
                     Mojo.Controller.errorDialog("Please set a view URL first.");
 
-                    // XXX: I'd like to set focus to the view textfield,
-                    //      but the method isn't exposed and there's no (known)
-                    //      way to get the widget object, only the HTMLDIV. :(
+                    // I'd like to set focus to the view textfield, but the
+                    // method isn't exposed and there's no (known) way to get
+                    // the widget object, only the HTMLDIV. :(
                     //
                     // var vu = this.controller.???("viewURL");
                     // vu.disabled = false;
                     // vu.updateEnabledState();
                     // vu.focus();
 
-                    // XXX: hrm, this might work (nope)
-                    // var holdEvent = Mojo.Event.send($("viewURL"), Mojo.Event.hold, {count: 1e5});
-                    // Mojo.Log.info("hrm: %s", holdEvent);
-
-                    // XXX: this, and some source diving, is how I found the
-                    //      widget controller and object ref:
+                    // this (and some source diving in palmInitFramework330.js)
+                    // is how I found the widget controller and object ref:
 
                     /// /// for(var k in $("viewURL"))
                     /// ///     Mojo.Log.info("hrm: %s", k);
@@ -661,10 +659,6 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 
                     /// /// for(var k in $("viewURL")._mojoController.assistant)
                     /// ///     Mojo.Log.info("hrm4: %s", k);
-
-                    // XXX: This doesn't work, but it's probably pretty close
-                    // to what I need:
-                    $("viewURL")._mojoController.assistant.makeTextfieldEditable();
 
                     return;
                 }
