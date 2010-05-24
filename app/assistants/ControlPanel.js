@@ -680,6 +680,17 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                         );
                         break;
 
+                    case "imsms":
+                        this.controller.serviceRequest('palm://com.palm.applicationManager', {
+                             method: 'launch',
+                             parameters: {
+                                 id: 'com.palm.app.messaging',
+                                 params: {
+                                     messageText: 'You can track my location realtime here: ' + this.viewURLModel.value
+                                 }
+                             },
+                         });
+
                     default:
                         Mojo.Log.info("handleCommand(unknown send-command target elm[1]: %s)", Object.toJSON(s_a));
                         break;
