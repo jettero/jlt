@@ -662,6 +662,29 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 
                     return;
                 }
+
+                switch(s_a[1]) {
+                    case "email":
+                        this.controller.serviceRequest("palm://com.palm.applicationManager", {
+                                method: 'open',
+                                parameters: {
+                                    id: "com.palm.app.email",
+                                    params: {
+                                        summary: "[JLT] Track My Location in Real-Time",
+                                        text: "<p>I have an app on my phone that lets me upload tracking information to websites."
+                                        + "  The information can be tracked real time if you know the URL for it.<p.It is located here:<br><br>"
+                                        + "<a href='" + this.viewURLModel.value + "'>" + this.viewURLModel.value + "</a>"
+                                    }
+                                }
+                            }
+                        );
+                        break;
+
+                    default:
+                        Mojo.Log.info("handleCommand(unknown send-command target elm[1]: %s)", Object.toJSON(s_a));
+                        break;
+                }
+
                 break;
 
             case 'set-tag':
