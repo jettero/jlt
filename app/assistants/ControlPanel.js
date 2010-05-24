@@ -48,8 +48,8 @@ ControlPanelAssistant.prototype.setup = function() {
     this.commandMenuModel = { label: 'ControlPanel Command Menu', items: [ this.noteModel, this.sendModel ] };
 	this.controller.setupWidget(Mojo.Menu.commandMenu, undefined, this.commandMenuModel);
 
-    this.sendSubmenu = { label: 'Send Submenu', items: [{label: "test1.l", command: 'test1.c'}] };
-    this.noteSubmenu = { label: 'Note Submenu', items: [{label: "test1.l", command: "test1.c"}] };
+    this.sendSubmenu = { label: 'Send Submenu', items: [{label: "email", command: 'send@@email'}, {label: "IM or SMS", command: "send@@imsms"}] };
+    this.noteSubmenu = { label: 'Note Submenu', items: [{label: "set trip tag", command: "set-tag"}, {label: 'send POI', command: "send-poi"}] };
 
 	this.controller.setupWidget('send-submenu', undefined, this.sendSubmenu);
 	this.controller.setupWidget('note-submenu', undefined, this.noteSubmenu);
@@ -626,15 +626,48 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 
 /* {{{ */ ControlPanelAssistant.prototype.handleCommand = function(event) {
     if (event.type === Mojo.Event.command) {
-        var s_a = event.command.split(/\s*(?:@@)\s*/);
+        var s_a = event.command.split(/\s*[@][@]\s*/);
 
         switch (s_a[0]) {
-            case 'send-email':
-                Mojo.Log.info("handleCommand(send-email)");
-                break;
+            case 'send':
+                Mojo.Log.info("handleCommand(send: %s)", s_a[1]);
+                if( !this.viewURLModel.value ) {
+                    Mojo.Controller.errorDialog("Please set a view URL first.");
 
-            case 'send-imsms':
-                Mojo.Log.info("handleCommand(send-imsms)");
+                    // XXX: I'd like to set focus to the view textfield,
+                    //      but the method isn't exposed and there's no (known)
+                    //      way to get the widget object, only the HTMLDIV. :(
+                    //
+                    // var vu = this.controller.???("viewURL");
+                    // vu.disabled = false;
+                    // vu.updateEnabledState();
+                    // vu.focus();
+
+                    // XXX: hrm, this might work (nope)
+                    // var holdEvent = Mojo.Event.send($("viewURL"), Mojo.Event.hold, {count: 1e5});
+                    // Mojo.Log.info("hrm: %s", holdEvent);
+
+                    // XXX: this, and some source diving, is how I found the
+                    //      widget controller and object ref:
+
+                    /// /// for(var k in $("viewURL"))
+                    /// ///     Mojo.Log.info("hrm: %s", k);
+
+                    /// /// for(var k in $("viewURL").mojo)
+                    /// ///     Mojo.Log.info("hrm2: %s", k);
+
+                    /// /// for(var k in $("viewURL")._mojoController)
+                    /// ///     Mojo.Log.info("hrm3: %s", k);
+
+                    /// /// for(var k in $("viewURL")._mojoController.assistant)
+                    /// ///     Mojo.Log.info("hrm4: %s", k);
+
+                    // XXX: This doesn't work, but it's probably pretty close
+                    // to what I need:
+                    $("viewURL")._mojoController.assistant.makeTextfieldEditable();
+
+                    return;
+                }
                 break;
 
             case 'set-tag':
