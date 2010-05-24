@@ -380,8 +380,12 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
     Mojo.Log.info("ControlPanel::postFixesSuccess(%d)", transport.status);
 
     if( transport.status >= 200 && transport.status < 300 ) {
+        var js;
+
         try {
-            var rt = transport.responseText.evalJSON().fix_tlist;
+            var rt = (js = transport.responseText.evalJSON()).fix_tlist;
+
+            acks = rt.length;
 
             for(var i=0; i<rt.length; i++) {
                 var t = rt[i];
@@ -389,6 +393,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
                 this.blinkGreenLED(short_blink);
                 this.rmQueue(t);
                 this.ackCount ++;
+
                 $("desc1").innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
             }
 
@@ -402,6 +407,32 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 
         delete this.runningRequest;
         $("desc2").innerHTML = "";
+
+        try {
+            var meta = js.meta;
+
+            // NOTE: "" + meta.blarg is a weak (very) way of sanitizing the inputs.
+
+            if( meta.auth_url ) {
+                this._already_authing = true;
+
+                if( !this._alrady_authing ) {
+                    this.controller.showDialog({
+                        template: 'dialogs/auth',
+                        assistant: new WebviewDialog(this.controller, "" + meta.auth_url,
+                            function(){ this._already_authing = false; }.bind(this))
+                    });
+                }
+            }
+
+            if( meta.view_url )
+                this.viewURLModel.value = "" + meta.view_url;
+
+            // TODO: other things should probably be configurable this way also
+
+        }
+
+        catch(e) {/* we just ignore failures here */}
 
     } else {
         // if prototype doesn't know what happened, it thinks it's a success (eat my ass)
