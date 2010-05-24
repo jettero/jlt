@@ -415,7 +415,9 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 // ControlPanelAssistant.prototype.postFixesFailure = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     $("desc2").innerHTML = "";
-    delete this.runningRequest;
+
+    setTimeout(function(){ delete this.runningRequest }.bind(this), 2e3);
+
     this.blinkRedLED(short_blink);
     this.blinkGreenLED(short_blink);
 };
