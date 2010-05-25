@@ -11,7 +11,8 @@ function WebviewDialog(sceneController,title,url,donecb) {
     this.donecb     = donecb;
     this.title      = title;
 
-    this.donebutton = this.donebutton.bind(this);
+    this.donebutton   = this.donebutton.bind(this);
+    this.titlechanged = this.titlechanged.bind(this);
 }
 
 WebviewDialog.prototype.setup = function(widget) {
@@ -33,6 +34,14 @@ WebviewDialog.prototype.setup = function(widget) {
     this.controller.get("title").innerHTML = this.title;
 
     Mojo.Event.listen(this.controller.get('web-finished'), Mojo.Event.tap, this.donebutton);
+    Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewTitleChanged, this.titlechanged);
+};
+
+WebviewDialog.prototype.titlechanged = function(title) {
+    Mojo.Log.info("WebviewDialog::titlechanged(%s)", title);
+
+    if( title.match(/[[]done/[]]/) )
+        this.donebutton(); // if the title says [done] press the done button
 };
 
 WebviewDialog.prototype.donebutton = function() {
