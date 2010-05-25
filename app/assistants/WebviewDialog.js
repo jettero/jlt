@@ -19,7 +19,7 @@ WebviewDialog.prototype.setup = function(widget) {
     this.controller.setupWidget("WebId",
         this.attributes = {
             url: 'http://kfr.me/',
-            minFontSize: 18, virtualpagewidth: 20, virtualpageheight: 10
+            minFontSize: 18
         },
 
         this.model = {
