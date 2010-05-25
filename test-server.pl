@@ -13,12 +13,18 @@ my $json = JSON->new;
 my $start = "run";
 my $port  = 4000;
 my $sleep;
+my $auth_url;
+my $view_url;
 
 Getopt::Long::Configure("bundling");
 GetOptions(
     "background|daemon|b|d" => sub { $start = "background" },
     "port|p=i" => \$port,
     "sleep|s=i" => \$sleep,
+
+    "auth_url|a=s" => \$auth_url,
+    "view_url|v=s" => \$view_url,
+
     "help|H" => sub { pod2usage(-verbose=>1) },
     "h"      => sub { pod2usage() },
 
@@ -83,6 +89,9 @@ This is just a quick little HTTP::Server::Simple GPS tracking server useful for 
        -h                            short help
        --help -H                     full help
 
+       --view_url -v    URL to deliver to the client as the view url
+       --auth_url -a    URL to deliver to the client as the auth url
+
 =head1 OPTIONS
 
 =over
@@ -98,6 +107,14 @@ Speicify a port to run on.
 =item B<--sleep> B<-s>
 
 Randomly sleep for 0 - x seconds during the handler process.
+
+=item B<--auth> B<-a>
+
+Auth url to deliver to the client.
+
+=item B<--view> B<-v>
+
+Auth url to deliver to the client.
 
 =item B<-h>
 
