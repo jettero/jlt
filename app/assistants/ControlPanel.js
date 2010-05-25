@@ -1,6 +1,6 @@
 /*jslint white: false, onevar: false
 */
-/*global Mojo $ ControlPanelAssistant
+/*global Mojo $ ControlPanelAssistant setInterval setTimeout WebviewDialog Ajax ExtraInfoDialog
 */
 
 /*
@@ -283,8 +283,8 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
 
     for(var i=0; i<this.buffer.length; i++) {
         if( typeof this.buffer[i].t === "number"
-            ? this.buffer[i].t    == timestamp      // there only is one timestamp
-            : this.buffer[i].t[0] == timestamp ) {  // we're concerned with the first timestamp only
+            ? this.buffer[i].t    === timestamp      // there only is one timestamp
+            : this.buffer[i].t[0] === timestamp ) {  // we're concerned with the first timestamp only
 
             // NOTE: I have no idea how garbage collection works in js, but I *wish*
             // this would recursively delete the object at pos[i]; who knows...
@@ -325,7 +325,7 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
 // }}}
 // ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {{{
 ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
-    this.bufferSizeModel.cv = parseInt(this.bufferSizeModel.value) * 5;
+    this.bufferSizeModel.cv = parseInt(this.bufferSizeModel.value, 10) * 5;
     this.bufferSizeModel.tcv = this.bufferSizeModel.cv * 3;
 
     Mojo.Log.info("ControlPanel::bufferSizeChanged(): %d messages", this.bufferSizeModel.cv);
@@ -385,7 +385,7 @@ ControlPanelAssistant.prototype.continuousChanged = function(event) {
 /* {{{ */ ControlPanelAssistant.prototype.doneAuthing = function() {
     if( this.runningRequest ) {
         Mojo.Log.info("ControlPannel::doneAuthing [request still running, coming back in a couple seconds]");
-        setTimeout(function(){ this.doneAuthing }.bind(this), 2e3);
+        setTimeout(function(){ this.doneAuthing(); }.bind(this), 2e3);
         return;
     }
 
@@ -404,8 +404,6 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 
         try {
             var rt = (js = transport.responseText.evalJSON()).fix_tlist;
-
-            acks = rt.length;
 
             for(var i=0; i<rt.length; i++) {
                 var t = rt[i];
@@ -432,6 +430,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
             var meta = js.meta;
 
             if( meta ) {
+
                 // NOTE: "" + meta.blarg is a weak (very) way of sanitizing the inputs.
 
                 if( meta.auth_url ) {
@@ -444,8 +443,8 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 
                         this.controller.showDialog({
                             template: 'dialogs/webview',
-                            assistant: new WebviewDialog(this.controller, "Authenitcation Requested", "" + meta.auth_url,
-                                this.doneAuthing)
+                            assistant: new WebviewDialog(this.controller, "Authentication Requested",
+                                "" + meta.auth_url, this.doneAuthing)
                         });
 
                     } else {
@@ -478,7 +477,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     $("desc2").innerHTML = "";
 
-    setTimeout(function(){ delete this.runningRequest }.bind(this), 2e3);
+    setTimeout(function(){ delete this.runningRequest; }.bind(this), 2e3);
 
     this.blinkRedLED(short_blink);
     this.blinkGreenLED(short_blink);
@@ -540,7 +539,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
                     responseTimeA: 2,
 
                     // max age of cached result, default 0: do not use cached result
-                    maximumAge: this.updateIntervalModel.value - 1,
+                    maximumAge: this.updateIntervalModel.value - 1
                 }
             });
         }
@@ -760,7 +759,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                                  params: {
                                      messageText: 'You can track my location realtime here: ' + this.viewURLModel.value
                                  }
-                             },
+                             }
                          });
 
                     default:
@@ -835,7 +834,7 @@ ControlPanelAssistant.prototype.blinkRedLED = function(duration) {
     if( duration < 100 ) duration = 100;
     this.redLEDCount.push(duration);
 
-    if( this.redLEDCount.length == 1 ) {
+    if( this.redLEDCount.length === 1 ) {
         $("r_led").src = "images/red_led_lighted.png";
         setTimeout(this.blinkRedLED_2, duration);
     }
@@ -862,7 +861,7 @@ ControlPanelAssistant.prototype.blinkGreenLED = function(duration) {
     if( duration < 100 ) duration = 100;
     this.greenLEDCount.push(duration);
 
-    if( this.greenLEDCount.length == 1 ) {
+    if( this.greenLEDCount.length === 1 ) {
         $("g_led").src = "images/green_led_lighted.png";
         setTimeout(this.blinkGreenLED_2, duration);
     }
@@ -889,7 +888,7 @@ ControlPanelAssistant.prototype.blinkBlueLED = function(duration) {
     if( duration < 100 ) duration = 100;
     this.blueLEDCount.push(duration);
 
-    if( this.blueLEDCount.length == 1 ) {
+    if( this.blueLEDCount.length === 1 ) {
         $("b_led").src = "images/blue_led_lighted.png";
         setTimeout(this.blinkBlueLED_2, duration);
     }
