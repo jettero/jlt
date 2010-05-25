@@ -66,7 +66,12 @@ sub handle_request {
         $this->handle_fix( $_, $fix_tlist ) for @$fixes;
     }
 
-    my $j = $json->encode({ fix_tlist=>$fix_tlist });
+    my $response = { fix_tlist=>$fix_tlist };
+
+    $response->{meta}{view_url} = $view_url if $view_url;
+    $response->{meta}{auth_url} = $auth_url if $auth_url;
+
+    my $j = $json->encode($response);
     print "HTTP/1.0 200 OK\r\nContent-Type: text/javascript\r\n\r\n$j\r\n";
     warn "json: $j\n" if $start ne "background";
 }
