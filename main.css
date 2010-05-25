@@ -1,3 +1,12 @@
+#webview-node {
+    /* NOTE: ripped from com.palm.browser *with* comment
+
+	/* Without this style keyboard events are not sent to the browser-adapter */
+	/* because WebKit thinks the node is not editable. Also, this style must  */
+	/* be specified here and not in the HTML style attribute or via code.     */
+	-webkit-user-modify: read-write;
+}
+
 .palm-page-header .icon.jlt {
 	background-image: url(header-icon.png);
 }
