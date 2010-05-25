@@ -443,6 +443,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 
                     this.viewURLModel.value = "" + meta.view_url;
                     this.controller.modelChanged(this.viewURLModel);
+                    this.viewURLChanged(); // tell the prefs system to save this
                 }
 
                 // TODO: other things should probably be configurable this way also
