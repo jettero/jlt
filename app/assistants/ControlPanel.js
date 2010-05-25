@@ -493,7 +493,11 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
         return;
 
     if( this._authing ) {
+        Mojo.Log.info("ControlPanel::bufferCheckLoop() [skipping request since we are authing]", this.buffer.length);
+
         if( this.trackingModel.value ) {
+            Mojo.Log.info("ControlPanel::bufferCheckLoop() [disabling tracking because we are authing]", this.buffer.length);
+
             // NOTE: I actually have mixed feelings about this.  should
             // probably be an option.  If the buffer is big enough it may be
             // worth collecting data while the user is unauthed.
