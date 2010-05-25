@@ -489,7 +489,7 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
 ControlPanelAssistant.prototype.bufferCheckLoop = function() {
     // Mojo.Log.info("ControlPanel::bufferCheckLoop() ... thingking (%d, %s)", this.buffer.length, this.runningRequest ? "true" : "false");
 
-    if( this.runningRequest )
+    if( this.runningRequest || this._authing )
         return;
 
     if( this.buffer.length > 0 ) {
