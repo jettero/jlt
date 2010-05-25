@@ -186,10 +186,10 @@ ControlPanelAssistant.prototype.setup = function() {
 ControlPanelAssistant.prototype.activate = function(event) {
     Mojo.Log.info("ControlPanel::activate()");
 
-    // this.controller.showDialog({
-    //     template: 'dialogs/auth',
-    //     assistant: new WebviewDialog(this.controller, "http://kfr.me/")
-    // });
+    this.controller.showDialog({
+        template: 'dialogs/webview',
+        assistant: new WebviewDialog(this.controller, "Just Testing [kick fucking rad]", "http://kfr.me/")
+    });
 
     this.restorePrefs();
 };
@@ -428,8 +428,8 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
                         this._already_authing = true;
 
                         this.controller.showDialog({
-                            template: 'dialogs/auth',
-                            assistant: new WebviewDialog(this.controller, "" + meta.auth_url, function(){
+                            template: 'dialogs/webview',
+                            assistant: new WebviewDialog(this.controller, "Authenitcation Requested", "" + meta.auth_url, function(){
 
                                 Mojo.Log.info("ControlPannel::postFixesSuccess auth_url dialog closed");
 
