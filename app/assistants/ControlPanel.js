@@ -180,6 +180,8 @@ ControlPanelAssistant.prototype.setup = function() {
     this.buffer = [];
 
     this.restoring = false;
+
+    this.doneAuthing = this.doneAuthing.bind(this);
 };
 // }}}
 // ControlPanelAssistant.prototype.activate = function(event) {{{
@@ -380,6 +382,19 @@ ControlPanelAssistant.prototype.continuousChanged = function(event) {
 };
 // }}}
 
+/* {{{ */ ControlPanelAssistant.prototype.doneAuthing = function() {
+    if( this.runningRequest ) {
+        Mojo.Log.info("ControlPannel::doneAuthing [request still running, coming back in a couple seconds]");
+        setTimeout(function(){ this.doneAuthing }.bind(this), 2e3);
+        return;
+    }
+
+    Mojo.Log.info("ControlPannel::doneAuthing [done]");
+    this._authing = false;
+};
+
+/*}}}*/
+
 // ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
     Mojo.Log.info("ControlPanel::postFixesSuccess(%d)", transport.status);
@@ -422,20 +437,15 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
                 if( meta.auth_url ) {
                     Mojo.Log.info("ControlPannel::postFixesSuccess found auth_url in meta section: %s", meta.auth_url);
 
-                    if( !this._already_authing ) {
+                    if( !this._authing ) {
                         Mojo.Log.info("ControlPannel::postFixesSuccess opening auth_url dialog");
 
-                        this._already_authing = true;
+                        this._authing = true;
 
                         this.controller.showDialog({
                             template: 'dialogs/webview',
-                            assistant: new WebviewDialog(this.controller, "Authenitcation Requested", "" + meta.auth_url, function(){
-
-                                Mojo.Log.info("ControlPannel::postFixesSuccess auth_url dialog closed");
-
-                                this._already_authing = false;
-
-                            }.bind(this))
+                            assistant: new WebviewDialog(this.controller, "Authenitcation Requested", "" + meta.auth_url,
+                                this.doneAuthing)
                         });
 
                     } else {
