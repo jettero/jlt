@@ -408,31 +408,36 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
         delete this.runningRequest;
         $("desc2").innerHTML = "";
 
-        try {
+        if( js ) {
             var meta = js.meta;
 
-            // NOTE: "" + meta.blarg is a weak (very) way of sanitizing the inputs.
+            if( meta ) {
+                // NOTE: "" + meta.blarg is a weak (very) way of sanitizing the inputs.
 
-            if( meta.auth_url ) {
-                this._already_authing = true;
+                if( meta.auth_url ) {
+                    Mojo.Log.info("ControlPannel::postFixesSuccess found auth_url in meta section: %s", meta.auth_url);
 
-                if( !this._alrady_authing ) {
-                    this.controller.showDialog({
-                        template: 'dialogs/auth',
-                        assistant: new WebviewDialog(this.controller, "" + meta.auth_url,
-                            function(){ this._already_authing = false; }.bind(this))
-                    });
+                    this._already_authing = true;
+
+                    if( !this._alrady_authing ) {
+                        this.controller.showDialog({
+                            template: 'dialogs/auth',
+                            assistant: new WebviewDialog(this.controller, "" + meta.auth_url,
+                                function(){ this._already_authing = false; }.bind(this))
+                        });
+                    }
                 }
+
+                if( meta.view_url ) {
+                    Mojo.Log.info("ControlPannel::postFixesSuccess found view_url in meta section: %s", meta.view_url);
+
+                    this.viewURLModel.value = "" + meta.view_url;
+                    this.controller.modelChanged(this.viewURLModel);
+                }
+
+                // TODO: other things should probably be configurable this way also
             }
-
-            if( meta.view_url )
-                this.viewURLModel.value = "" + meta.view_url;
-
-            // TODO: other things should probably be configurable this way also
-
         }
-
-        catch(e) {/* we just ignore failures here */}
 
     } else {
         // if prototype doesn't know what happened, it thinks it's a success (eat my ass)
