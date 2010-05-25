@@ -417,14 +417,24 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
                 if( meta.auth_url ) {
                     Mojo.Log.info("ControlPannel::postFixesSuccess found auth_url in meta section: %s", meta.auth_url);
 
-                    this._already_authing = true;
+                    if( !this._already_authing ) {
+                        Mojo.Log.info("ControlPannel::postFixesSuccess opening auth_url dialog");
 
-                    if( !this._alrady_authing ) {
+                        this._already_authing = true;
+
                         this.controller.showDialog({
                             template: 'dialogs/auth',
-                            assistant: new WebviewDialog(this.controller, "" + meta.auth_url,
-                                function(){ this._already_authing = false; }.bind(this))
+                            assistant: new WebviewDialog(this.controller, "" + meta.auth_url, function(){
+
+                                Mojo.Log.info("ControlPannel::postFixesSuccess auth_url dialog closed");
+
+                                this._already_authing = false;
+
+                            }.bind(this))
                         });
+
+                    } else {
+                        Mojo.Log.info("ControlPannel::postFixesSuccess auth_url dialog already running");
                     }
                 }
 
