@@ -405,16 +405,17 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
         try {
             var rt = (js = transport.responseText.evalJSON()).fix_tlist;
 
-            for(var i=0; i<rt.length; i++) {
-                var t = rt[i];
+            if( rt ) {
+                for(var i=0; i<rt.length; i++) {
+                    var t = rt[i];
 
-                this.blinkGreenLED(short_blink);
-                this.rmQueue(t);
-                this.ackCount ++;
+                    this.blinkGreenLED(short_blink);
+                    this.rmQueue(t);
+                    this.ackCount ++;
 
-                $("desc1").innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
+                    $("desc1").innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
+                }
             }
-
         }
 
         catch(e) {
