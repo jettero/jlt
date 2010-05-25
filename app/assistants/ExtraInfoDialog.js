@@ -2,6 +2,7 @@
 */
 /*global Mojo $ ExtraInfoDialog
 */
+
 function ExtraInfoDialog(sceneController,attrs,gocb,stopcb) {
     Mojo.Log.info("ExtraInfoDialog()");
 
