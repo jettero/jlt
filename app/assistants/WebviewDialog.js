@@ -5,6 +5,10 @@
 
 function WebviewDialog(sceneController,url,donecb) {
     Mojo.Log.info("WebviewDialog()");
+
+    this.controller = sceneController;
+    this.url        = url;
+    this.donecb     = donecb;
 }
 
 WebviewDialog.prototype.setup = function(widget) {

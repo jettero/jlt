@@ -3,5 +3,6 @@
     { "source": "app/assistants/Help.js" },
     { "source": "app/assistants/ControlPanel.js" },
     { "source": "app/assistants/ExtraInfoDialog.js" },
+    { "source": "app/assistants/WebviewDialog.js" },
     { "source": "stage-assistant.js" }
 ]
