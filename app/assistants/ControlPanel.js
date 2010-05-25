@@ -336,7 +336,7 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
 };
 // }}}
 // ControlPanelAssistant.prototype.trackingChanged = function(event) {{{
-ControlPanelAssistant.prototype.trackingChanged = function(event) {
+ControlPanelAssistant.prototype.trackingChanged = function() {
     Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
 
     if( this.trackingModel.value ) {
@@ -489,8 +489,24 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
 ControlPanelAssistant.prototype.bufferCheckLoop = function() {
     // Mojo.Log.info("ControlPanel::bufferCheckLoop() ... thingking (%d, %s)", this.buffer.length, this.runningRequest ? "true" : "false");
 
-    if( this.runningRequest || this._authing )
+    if( this.runningRequest )
         return;
+
+    if( this._authing ) {
+        if( this.trackingModel.value ) {
+            // NOTE: I actually have mixed feelings about this.  should
+            // probably be an option.  If the buffer is big enough it may be
+            // worth collecting data while the user is unauthed.
+
+            this.trackingModel.value = false;
+            this.controller.modelChanged(this.trackingModel);
+            this.trackingChanged();
+        }
+
+        // If we're authing, there's really no reason to keep trying to post data to the collector
+
+        return;
+    }
 
     if( this.buffer.length > 0 ) {
         Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d [starting request]", this.buffer.length);
