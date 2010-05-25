@@ -186,6 +186,11 @@ ControlPanelAssistant.prototype.setup = function() {
 ControlPanelAssistant.prototype.activate = function(event) {
     Mojo.Log.info("ControlPanel::activate()");
 
+    // this.controller.showDialog({
+    //     template: 'dialogs/auth',
+    //     assistant: new WebviewDialog(this.controller, "http://kfr.me/")
+    // });
+
     this.restorePrefs();
 };
 // }}}
