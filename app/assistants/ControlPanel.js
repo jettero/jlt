@@ -190,7 +190,7 @@ ControlPanelAssistant.prototype.activate = function(event) {
 
     this.controller.showDialog({
         template: 'dialogs/webview',
-        assistant: new WebviewDialog(this.controller, "Just Testing", "https://voltar.org/id")
+        assistant: new WebviewDialog(this.controller, "Just Testing", "https://voltar.org/testclicks/")
     });
 
     this.restorePrefs();
