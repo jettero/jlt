@@ -31,7 +31,7 @@ WebviewDialog.prototype.setup = function(widget) {
 
     );
 
-    this.controller.get("title").innerHTML = this.title;
+    this.controller.get("web-title").innerHTML = this.title;
 
     Mojo.Event.listen(this.controller.get('web-finished'), Mojo.Event.tap, this.donebutton);
     Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewTitleChanged, this.titlechanged);

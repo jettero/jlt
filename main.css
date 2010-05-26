@@ -7,6 +7,10 @@
 	-webkit-user-modify: read-write;
 }
 
+#web-scroller {
+     border: 1px solid black; height: 2.5in;
+}
+
 .palm-page-header .icon.jlt {
 	background-image: url(header-icon.png);
 }
