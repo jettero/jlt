@@ -188,7 +188,6 @@ ControlPanelAssistant.prototype.setup = function() {
 ControlPanelAssistant.prototype.activate = function(event) {
     Mojo.Log.info("ControlPanel::activate()");
 
-    this.SC.showScene("Webview", {title: "Just Testing", URL: "https://voltar.org/testclicks/"});
     this.restorePrefs();
 };
 // }}}
@@ -438,10 +437,10 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 
                         this._authing = true;
 
-                        this.controller.showDialog({
-                            template: 'dialogs/webview',
-                            assistant: new WebviewDialog(this.controller, "Authentication Requested",
-                                "" + meta.auth_url, this.doneAuthing)
+                        this.SC.showScene("Webview", {
+                            title: "Authentication Requested",
+                            URL: "" + meta.auth_url,
+                            donecb: this.doneAuthing
                         });
 
                     } else {
