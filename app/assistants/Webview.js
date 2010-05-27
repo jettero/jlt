@@ -33,7 +33,7 @@ WebviewAssistant.prototype.setup = function() {
     Mojo.Event.listen(this.controller.get('web-finished'), Mojo.Event.tap, this.donebutton);
     Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewTitleChanged, this.titlechanged);
 
-    this.controller.get("web-title").innerHTML = title;
+    this.controller.get("web-title").innerHTML = this.title;
 };
 
 WebviewAssistant.prototype.titlechanged = function(title) {
