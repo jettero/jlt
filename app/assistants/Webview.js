@@ -3,26 +3,21 @@
 /*global Mojo $ WebviewDialog
 */
 
-function WebviewDialog(sceneController,title,url,donecb) {
-    Mojo.Log.info("WebviewDialog()");
+function WebviewAssistant() {
+    Mojo.Log.info("WebviewAssistant()");
 
-    this.controller = sceneController;
-    this.title      = title;
-    this.url        = url;
-    this.donecb     = donecb;
+    this.ready = false;
 
     this.donebutton   = this.donebutton.bind(this);
     this.titlechanged = this.titlechanged.bind(this);
 }
 
-WebviewDialog.prototype.setup = function(widget) {
-    Mojo.Log.info("WebviewDialog::setup()");
-
-    this.widget = widget;
+WebviewAssistant.prototype.setup = function() {
+    Mojo.Log.info("WebviewAssistant::setup()");
 
     this.controller.setupWidget("webview-node",
         this.attributes = {
-            url: this.url,
+            url: "file:///tmp/404",
             minFontSize: 18
         },
 
@@ -31,21 +26,19 @@ WebviewDialog.prototype.setup = function(widget) {
 
     );
 
-    this.controller.get("web-title").innerHTML = this.title;
-
     Mojo.Event.listen(this.controller.get('web-finished'), Mojo.Event.tap, this.donebutton);
     Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewTitleChanged, this.titlechanged);
 };
 
-WebviewDialog.prototype.titlechanged = function(title) {
-    Mojo.Log.info("WebviewDialog::titlechanged(%s)", title);
+WebviewAssistant.prototype.titlechanged = function(title) {
+    Mojo.Log.info("WebviewAssistant::titlechanged(%s)", title);
 
     if( title.match(/\[done\]/) )
         this.donebutton(); // if the title says [done] press the done button
 };
 
-WebviewDialog.prototype.donebutton = function() {
-    Mojo.Log.info("WebviewDialog::donebutton()");
+WebviewAssistant.prototype.donebutton = function() {
+    Mojo.Log.info("WebviewAssistant::donebutton()");
 
     this.widget.mojo.close();
 
@@ -53,8 +46,8 @@ WebviewDialog.prototype.donebutton = function() {
         this.donecb();
 };
 
-WebviewDialog.prototype.cleanup = function() {
+WebviewAssistant.prototype.cleanup = function() {
 	Mojo.Event.stopListening(this.controller.get('web-finished'), Mojo.Event.tap, this.donebutton);
 };
 
-Mojo.Log.info('loaded(WebviewDialog.js)');
+Mojo.Log.info('loaded(WebviewAssistant.js)');
