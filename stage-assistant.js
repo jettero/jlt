@@ -13,6 +13,10 @@ StageAssistant.prototype.setup = function() {
     this.controller.assistant.showScene('ControlPanel');
 };
 
+StageAssistant.prototype.popScene = function() {
+    this.controller.popScene();
+};
+
 StageAssistant.prototype.showScene = function (sceneName, args) {
 	Mojo.Log.info("StageAssistant()::showScene(%s)", sceneName);
 

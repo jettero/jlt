@@ -188,11 +188,7 @@ ControlPanelAssistant.prototype.setup = function() {
 ControlPanelAssistant.prototype.activate = function(event) {
     Mojo.Log.info("ControlPanel::activate()");
 
-    this.controller.showDialog({
-        template: 'dialogs/webview',
-        assistant: new WebviewDialog(this.controller, "Just Testing", "https://voltar.org/testclicks/")
-    });
-
+    this.SC.showScene("Webview", {title: "Just Testing", URL: "https://voltar.org/testclicks/"});
     this.restorePrefs();
 };
 // }}}
