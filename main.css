@@ -1,8 +1,3 @@
-.palm-dialog-box     { padding: 0; margin: 0; }
-.palm-dialog-wrapper { padding: 0; margin: 0; }
-.palm-dialog-content { padding: 0; margin: 0; }
-.palm-dialog-content .dialog-message { margin: 0; padding: 0; }
-
 #webview-node {
     /* NOTE: ripped from com.palm.browser *with* comment
 
@@ -10,12 +5,10 @@
 	/* because WebKit thinks the node is not editable. Also, this style must  */
 	/* be specified here and not in the HTML style attribute or via code.     */
 	-webkit-user-modify: read-write;
-    margin: 0; padding: 0; position: fixed; top: 0; left: 0;
 }
 
 #web-scroller {
-     border: 1px solid black; height: 2.5in;
-    margin: 0; padding: 0; position: fixed; top: 0; left: 0;
+    border: 1px solid black; height: 2.5in;
 }
 
 .palm-page-header .icon.jlt {
