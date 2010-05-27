@@ -46,10 +46,21 @@ WebviewAssistant.prototype.titlechanged = function(title) {
 WebviewAssistant.prototype.donebutton = function() {
     Mojo.Log.info("WebviewAssistant::donebutton()");
 
-    if( this.donecb )
+    if( this.donecb ) {
         this.donecb();
+        delete this.donecb;
+    }
 
     this.SC.popScene(); // bye!!
+};
+
+WebviewAssistant.prototype.deactivate = function() {
+    Mojo.Log.info("WebviewAssistant::deactivate()");
+
+    if( this.donecb ) {
+        this.donecb();
+        delete this.donecb;
+    }
 };
 
 WebviewAssistant.prototype.cleanup = function() {
