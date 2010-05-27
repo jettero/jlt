@@ -1,15 +1,19 @@
 /*jslint white: false, onevar: false
 */
-/*global Mojo $ WebviewDialog
+/*global Mojo $ WebviewAssistnat
 */
 
-function WebviewAssistant() {
-    Mojo.Log.info("WebviewAssistant()");
+function WebviewAssistant(args) {
+    Mojo.Log.info("WebviewAssistant(title: %s, URL: %s)", args.title, args.URL);
 
-    this.ready = false;
+    this.title  = args.title;
+    this.URL    = args.URL;
+    this.donecb = args.donecb;
 
     this.donebutton   = this.donebutton.bind(this);
     this.titlechanged = this.titlechanged.bind(this);
+
+    this.SC = Mojo.Controller.stageController.assistant;
 }
 
 WebviewAssistant.prototype.setup = function() {
@@ -17,7 +21,7 @@ WebviewAssistant.prototype.setup = function() {
 
     this.controller.setupWidget("webview-node",
         this.attributes = {
-            url: "file:///tmp/404",
+            url: this.URL,
             minFontSize: 18
         },
 
@@ -28,6 +32,8 @@ WebviewAssistant.prototype.setup = function() {
 
     Mojo.Event.listen(this.controller.get('web-finished'), Mojo.Event.tap, this.donebutton);
     Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewTitleChanged, this.titlechanged);
+
+    this.controller.get("web-title").innerHTML = title;
 };
 
 WebviewAssistant.prototype.titlechanged = function(title) {
@@ -40,10 +46,10 @@ WebviewAssistant.prototype.titlechanged = function(title) {
 WebviewAssistant.prototype.donebutton = function() {
     Mojo.Log.info("WebviewAssistant::donebutton()");
 
-    this.widget.mojo.close();
-
     if( this.donecb )
         this.donecb();
+
+    this.SC.popScene(); // bye!!
 };
 
 WebviewAssistant.prototype.cleanup = function() {
