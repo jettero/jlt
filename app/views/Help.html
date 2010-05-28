@@ -56,6 +56,11 @@
             in the distribution (ibid).
         </p>
 
+        <h3>View URL</h3>
+        <p> The view url isn't used internally.  It is only used when sending
+            your location to friends, where it is effectively pasted into the
+            message. </p>
+
         <h3>Update Intervals</h3>
         <p> There are two ways to acquire GPS data from the webOS.
             First, you can ask for a fix, and second, you can
@@ -94,6 +99,36 @@
             buffer of a fix object is full, it will push another message
             into the queue instead.
         </p>
+
+        <h3> Tags and POI </h3>
+        <p> In the lower left of the control panel is a submenu for tags and POI. </p>
+        <p> If you have noticed a Point of Interest (POI), click POI to send a
+            note to the webserver.  This message will be transmitted exactly
+            once and the interface will attempt to get a fix as soon as
+            possible &mdash; despite any slower update intervals, as above
+            described. </p>
+
+        <p> Trip tags, on the other hand, are sent with each fix.  They're
+            intended to give text labels to each fix (e.g., "drive to work", "drive
+            to cottage"). </p>
+
+        <h3> Send View </h3>
+        <p> As a convenient, the JLT may be instructed to prefill an IM/SMS or
+            Email with the viewing location of your gps data.  The contents of
+            the message will be little more than the view url (if set) above
+            described. </p>
+
+        <h3>Authentication</h3>
+        <p> Authentication (if required) depends on the endpoint and related
+            negotiation.  If requested, the JLT will pop open a browser for
+            authentication purpopses.  WebOS keeps browsers and apps completely
+            separate though, so the only way to get the authentication token
+            from the website to the application is to cut and paste it over. </p>
+
+        <p> For this reason, the browser has an <em>(i)</em> button you can
+            press that will pop up a token request window.   Simply copy your
+            auth token &mdash; typically the id of a session on the webserver
+            &mdash; to the dialog and press the set button. </p>
 
         <h3>Side Notes</h3>
         <p> <sup>1</sup> The number of posted messages will sometimes
