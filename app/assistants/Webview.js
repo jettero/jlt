@@ -1,6 +1,6 @@
 /*jslint white: false, onevar: false
 */
-/*global Mojo $ WebviewAssistnat
+/*global Mojo $ WebviewAssistnat ExtraInfoDialog
 */
 
 function WebviewAssistant(args) {
@@ -12,13 +12,20 @@ function WebviewAssistant(args) {
 
     this.donebutton   = this.donebutton.bind(this);
     this.titlechanged = this.titlechanged.bind(this);
-    this.docloaded    = this.docloaded.bind(this);
+
+    this.progress = this.progress.bind(this);
+    this.started  = this.started.bind(this);
+    this.stopped  = this.stopped.bind(this);
+    this.finished = this.finished.bind(this);
 
     this.SC = Mojo.Controller.stageController.assistant;
 
     // eog $(find ../usr.palm.frameworks/ -name \*.png | grep menu-icon)
-    this.tokenModel = { label: "ID", icon: 'info', command: 'enter-token' };
-    this.commandMenuModel = { label: 'Webview Command Menu', items: [ this.tokenModel ] };
+
+    this.reloadModel      = { label: 'Reload', icon: 'refresh', command: 'refresh' };
+    this.stopModel        = { label: 'Stop', icon: 'load-progress', command: 'stop' };
+    this.tokenModel       = { label: "ID", icon: 'info', command: 'enter-token' };
+    this.commandMenuModel = { label: 'Webview Command Menu', items: [ this.tokenModel, this.reloadModel ] };
 }
 
 WebviewAssistant.prototype.setup = function() {
@@ -38,31 +45,17 @@ WebviewAssistant.prototype.setup = function() {
 
     );
 
+    this.controller.get("web-title").innerHTML = this.title;
+
     Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewTitleChanged, this.titlechanged);
 
-    // no point in attaching to this, unless further experiments are in store...
-    // Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewLoadStopped,  this.docloaded);
+    Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewLoadProgress, this.progress);
+    Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewLoadStarted, this.started);
+    Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewLoadStopped, this.stopped);
+    Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewLoadFailed, this.stopped);
+    Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewDidFinishDocumentLoad, this.stopped);
+    Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewDownloadFinished, this.finished);
 
-    this.controller.get("web-title").innerHTML = this.title;
-};
-
-WebviewAssistant.prototype.docloaded = function() {
-    Mojo.Log.info("WebviewAssistant::docloaded()");
-
-    // NOTE: there is no way to get the contents of the webview, any cookies,
-    // nonces or tokens from it.  ... it simply cannot be done.  Pfft.  Unless
-    // you're writing a web browser, what good is this stupid widget?  Oh, and
-    // webos already has a web browser.
-
-
-    // this doesn't help at all.
-    // this.controller.get("webview-node").setAcceptCookies(true);
-
-    // this doesn't help at all
-    // this.controller.get("webview-node").copy(function(copy){
-    // this.controller.get("webview-node")._mojoController.assistant.adapter.copy(function(copy){
-    //     Mojo.Log.info("copy: " + copy);
-    // });
 };
 
 WebviewAssistant.prototype.titlechanged = function(title) {
@@ -116,11 +109,83 @@ WebviewAssistant.prototype.handleCommand = function(event) {
                 });
                 break;
 
+            case 'refresh':
+                this.controller.get("webview-node")._mojoController.assistant.reloadPage();
+                break;
+
+            case 'stop':
+                this.controller.get("webview-node")._mojoController.assistant.stopLoad();
+                break;
+
             default:
                 Mojo.Log.info("handleCommand(unknown command: %s)", Object.toJSON(s_a));
                 break;
         }
     }
+};
+
+// NOTE: started, stopped, finished and progress are all ripped from the
+// UIWidgets example, basically unchanged !!!
+
+WebviewAssistant.prototype.started = function() {
+    this.commandMenuModel.items.pop(this.reloadModel);
+    this.commandMenuModel.items.push(this.stopModel);
+    this.controller.modelChanged(this.commandMenuModel);
+
+    this.currLoadProgressImage = 0;
+    this.currentLoadPercent    = 0;
+};
+
+WebviewAssistant.prototype.stopped = function() {
+    this.commandMenuModel.items.pop(this.stopModel);
+    this.commandMenuModel.items.push(this.reloadModel);
+    this.controller.modelChanged(this.commandMenuModel);
+};
+
+WebviewAssistant.prototype.finished = function() {
+};
+
+WebviewAssistant.prototype.progress = function(event) {
+    var percent = event.progress;
+
+    try {
+        if (percent > 100) {
+            percent = 100;
+
+        } else if (percent < 0) {
+            percent = 0;
+        }
+
+        if( percent < this.currentLoadPercent )
+            return;
+
+        this.currentLoadPercent = percent;
+
+        // Convert the percentage complete to an image number
+        // Image must be from 0 to 23 (24 images available)
+        var image = Math.round(percent / 3.9);
+        if (image > 26)
+            image = 26;
+
+        Mojo.Log.info("[webview progress computer] percent: %d; image: %d", percent, image);
+
+        if (image < this.currLoadProgressImage)
+            return;
+
+        // Has the progress changed?
+        if (this.currLoadProgressImage != image) {
+            var icon = this.controller.select('div.load-progress')[0];
+
+            if( icon )
+                icon.setStyle({'background-position': "0px -" + (image * 48) + "px"});
+
+            this.currLoadProgressImage = image;
+        }
+
+    } catch (e) {
+        Mojo.Log.logException(e, e.description);
+    }
+
 };
 
 Mojo.Log.info('loaded(WebviewAssistant.js)');
