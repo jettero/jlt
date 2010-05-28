@@ -67,7 +67,7 @@ WebviewAssistant.prototype.donebutton = function() {
     Mojo.Log.info("WebviewAssistant::donebutton()");
 
     if( this.donecb ) {
-        this.donecb();
+        this.donecb(this._token);
         delete this.donecb;
     }
 
@@ -78,7 +78,7 @@ WebviewAssistant.prototype.deactivate = function() {
     Mojo.Log.info("WebviewAssistant::deactivate()");
 
     if( this.donecb ) {
-        this.donecb();
+        this.donecb(this._token);
         delete this.donecb;
     }
 
