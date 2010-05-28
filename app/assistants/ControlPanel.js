@@ -188,11 +188,11 @@ ControlPanelAssistant.prototype.setup = function() {
 ControlPanelAssistant.prototype.activate = function(event) {
     Mojo.Log.info("ControlPanel::activate()");
 
-    this.SC.showScene("Webview", {
-        title: "Authentication Requested",
-        URL: "https://voltar.org/",
-        donecb: this.doneAuthing
-    });
+    // this.SC.showScene("Webview", {
+    //     title: "Authentication Requested",
+    //     URL: "https://voltar.org/",
+    //     donecb: this.doneAuthing
+    // });
 
     this.restorePrefs();
 };
