@@ -12,6 +12,7 @@ function WebviewAssistant(args) {
 
     this.donebutton   = this.donebutton.bind(this);
     this.titlechanged = this.titlechanged.bind(this);
+    this.docloaded    = this.docloaded.bind(this);
 
     this.SC = Mojo.Controller.stageController.assistant;
 }
@@ -31,8 +32,28 @@ WebviewAssistant.prototype.setup = function() {
     );
 
     Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewTitleChanged, this.titlechanged);
+    Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewLoadStopped,  this.docloaded);
 
     this.controller.get("web-title").innerHTML = this.title;
+};
+
+WebviewAssistant.prototype.docloaded = function() {
+    Mojo.Log.info("WebviewAssistant::docloaded()");
+
+    // NOTE: there is no way to get the contents of the webview, any cookies,
+    // nonces or tokens from it.  ... it simply cannot be done.  Pfft.  Unless
+    // you're writing a web browser, what good is this stupid widget?  Oh, and
+    // webos already has a web browser.
+
+
+    // this doesn't help at all.
+    // this.controller.get("webview-node").setAcceptCookies(true);
+
+    // this doesn't help at all
+    // this.controller.get("webview-node").copy(function(copy){
+    // this.controller.get("webview-node")._mojoController.assistant.adapter.copy(function(copy){
+    //     Mojo.Log.info("copy: " + copy);
+    // });
 };
 
 WebviewAssistant.prototype.titlechanged = function(title) {
@@ -60,6 +81,7 @@ WebviewAssistant.prototype.deactivate = function() {
         this.donecb();
         delete this.donecb;
     }
+
 };
 
 WebviewAssistant.prototype.cleanup = function() {
