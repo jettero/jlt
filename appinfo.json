@@ -1,6 +1,6 @@
 {
 	"id": "org.voltar.jlt",
-	"version": "0.9.1",
+	"version": "0.91.0",
 	"vendor": "voltar.org",
 	"type": "web",
 	"main": "index.html",
