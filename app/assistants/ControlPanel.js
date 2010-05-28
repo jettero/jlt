@@ -297,6 +297,15 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
 };
 // }}}
 
+/* {{{ */ ControlPanelAssistant.prototype.setToken = function(token) {
+    Mojo.Log.info("ControlPanel::setToken(): %s", token);
+
+    this._token = token;
+    this.savePrefs();
+};
+
+/*}}}*/
+
 // ControlPanelAssistant.prototype.postURLChanged = function() {{{
 ControlPanelAssistant.prototype.postURLChanged = function() {
     Mojo.Log.info("ControlPanel::postURLChanged(): %s", this.postURLModel.value);
@@ -633,6 +642,7 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
             this.bufferSizeModel.value     = prefs.bufferSize;
             this.continuousModel.value     = prefs.continuous;
             this.viewURLModel.value        = prefs.viewURL;
+            this._token                    = prefs.token;
 
             if( prefs.URL ) // leave this around for a few versions
                 this.postURLModel.value = prefs.URL;
@@ -674,7 +684,8 @@ ControlPanelAssistant.prototype.savePrefs = function() {
         viewURL:        this.viewURLModel.value,
         continuous:     this.continuousModel.value,
         updateInterval: this.updateIntervalModel.value,
-        bufferSize:     this.bufferSizeModel.value
+        bufferSize:     this.bufferSizeModel.value,
+        token:          this._token
     };
 
     this.dbo.simpleAdd("prefs", prefs,
