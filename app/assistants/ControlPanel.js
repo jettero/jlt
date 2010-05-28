@@ -522,10 +522,15 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
 
         $("desc2").innerHTML = "HTTP running";
 
+        var p = { fixes: Object.toJSON(this.buffer) };
+
+        if( this._token )
+            p.token = this._token;
+
         this.runningRequest = new Ajax.Request(this.postURLModel.value, {
             method: 'post',
 
-            parameters: { fixes: Object.toJSON(this.buffer) },
+            parameters: p,
 
             requestTimeout: 50,
 
