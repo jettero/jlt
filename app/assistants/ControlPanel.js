@@ -45,7 +45,7 @@ ControlPanelAssistant.prototype.setup = function() {
     this.sendModel = { label: "Send", icon: 'send',          submenu: 'send-submenu' };
     this.noteModel = { label: "Note", icon: 'conversation',  submenu: 'note-submenu' };
 
-    this.commandMenuModel = { label: 'ControlPanel Command Menu', items: [ this.noteModel, this.sendModel ] };
+    this.commandMenuModel = { label: 'ControlPanel Command Menu', items: [ this.noteModel ] };
 	this.controller.setupWidget(Mojo.Menu.commandMenu, undefined, this.commandMenuModel);
 
     this.sendSubmenu = { label: 'Send Submenu', items: [{label: "email", command: 'send@@email'}, {label: "IM or SMS", command: "send@@imsms"}] };
@@ -316,6 +316,15 @@ ControlPanelAssistant.prototype.postURLChanged = function() {
 // ControlPanelAssistant.prototype.viewURLChanged = function() {{{
 ControlPanelAssistant.prototype.viewURLChanged = function() {
     Mojo.Log.info("ControlPanel::viewURLChanged(): %s", this.viewURLModel.value);
+
+    if( this.viewURLModel.value.match(/[a-zA-Z]/) ) {
+        this.commandMenuModel.items = [ this.noteModel, this.sendModel ];
+        this.controller.modelChanged(this.commandMenuModel);
+
+    } else {
+        this.commandMenuModel.items = [ this.noteModel ];
+        this.controller.modelChanged(this.commandMenuModel);
+    }
 
     this.savePrefs();
 };
@@ -660,6 +669,8 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
             this.controller.modelChanged(this.continuousModel);
             this.controller.modelChanged(this.postURLModel);
             this.controller.modelChanged(this.viewURLModel);
+
+            this.viewURLChanged(); // this does some additional stuff, the others don't really do
 
             this.bufferSizeChanged();
             this.updateIntervalChanged();
