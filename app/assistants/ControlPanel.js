@@ -386,7 +386,7 @@ ControlPanelAssistant.prototype.continuousChanged = function(event) {
 };
 // }}}
 
-/* {{{ */ ControlPanelAssistant.prototype.doneAuthing = function() {
+/* {{{ */ ControlPanelAssistant.prototype.doneAuthing = function(token) {
     if( this.runningRequest ) {
         Mojo.Log.info("ControlPannel::doneAuthing [request still running, coming back in a couple seconds]");
         setTimeout(function(){ this.doneAuthing(); }.bind(this), 2e3);
@@ -395,6 +395,7 @@ ControlPanelAssistant.prototype.continuousChanged = function(event) {
 
     Mojo.Log.info("ControlPannel::doneAuthing [done]");
     this._authing = false;
+    this.setToken(token);
 };
 
 /*}}}*/
