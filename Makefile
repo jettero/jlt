@@ -27,5 +27,13 @@ build: framework_config.json
                      --exclude $(name) --exclude contrib --exclude Makefile \
                      --exclude demo-server.pl --exclude cgi \
         $(name) && rm $(name)
+
+README: app/views/About.html app/views/Help.html Makefile
+	@ echo -----=: app/views/About.html  > README
+	@ elinks -dump app/views/About.html >> README
+	@ echo                              >> README
+	@ echo -----=: app/views/Help.html  >> README
+	@ elinks -dump app/views/Help.html  >> README
+	
 clean:
 	git clean -dfx
