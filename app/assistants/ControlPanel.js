@@ -341,7 +341,7 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
     var sv;
     Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", sv=this.updateIntervalModel.value);
 
-    this.updateIntervalModel.value = new Number(sv);
+    this.updateIntervalModel.value = parseInt(sv);
     this.savePrefs();
 };
 // }}}
