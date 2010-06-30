@@ -338,8 +338,10 @@ ControlPanelAssistant.prototype.viewURLChanged = function() {
 // }}}
 // ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {{{
 ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
-    Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", this.updateIntervalModel.value);
+    var sv;
+    Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", sv=this.updateIntervalModel.value);
 
+    this.updateIntervalModel.value = new Number(sv);
     this.savePrefs();
 };
 // }}}
@@ -618,6 +620,11 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
         return;
 
     var now = (new Date()).getTime()/1000;
+
+    // Mojo.Log.info("(tL:%d + uIMv:%d):%d < now:%d",
+    //     this.trackingLast, this.updateIntervalModel.value,
+    //     (this.trackingLast+this.updateIntervalModel.value),
+    //     now );
 
     if( this.trackingLast + this.updateIntervalModel.value < now ) {
         Mojo.Log.info("ControlPanel::trackingLoop() [loop true]");
