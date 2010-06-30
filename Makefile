@@ -12,7 +12,7 @@ test: clean
 myinstall: clean
 	@+ JLT_LOGLEVEL=0 make --no-print-directory build
 	scp *.ipk $${INSTHOST:-castle.vhb}:
-	ssh $${INSTHOST:-castle.vhb}
+	ssh $${INSTHOST:-castle.vhb} /usr/bin/ipkg -o /media/cryptofs/apps install *.ipk
 
 framework_config.json: framework_config.json.in
 	@echo build $@
