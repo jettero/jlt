@@ -63,6 +63,7 @@ ControlPanelAssistant.prototype.setup = function() {
 
     this.postFixesSuccess = this.postFixesSuccess.bind(this);
     this.postFixesFailure = this.postFixesFailure.bind(this);
+    this.postFixes4xxFail = this.postFixes4xxFail.bind(this);
 
     this.trackingLoop    = this.trackingLoop.bind(this);
     this.bufferCheckLoop = this.bufferCheckLoop.bind(this);
@@ -417,7 +418,7 @@ ControlPanelAssistant.prototype.continuousChanged = function(event) {
 
 // ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
-    Mojo.Log.info("ControlPanel::postFixesSuccess(%d)", transport.status);
+    Mojo.Log.info("ControlPanel::postFixesSuccess() %d: %s", transport.status, transport.statusText);
 
     if( transport.status >= 200 && transport.status < 300 ) {
         var js;
@@ -496,6 +497,8 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 // }}}
 // ControlPanelAssistant.prototype.postFixesFailure = function(transport) {{{
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
+    Mojo.Log.info("ControlPanel::postFixesFailure() %d: %s", transport.status, transport.statusText);
+
     $("desc2").innerHTML = "";
 
     setTimeout(function(){ delete this.runningRequest; }.bind(this), 2e3);
@@ -504,10 +507,59 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     this.blinkGreenLED(short_blink);
 };
 // }}}
+// ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {{{
+ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {
+    var s,st;
+    Mojo.Log.info("ControlPanel::postFixes4xxFail() %d: %s", s=transport.status, st=transport.statusText);
+
+    if( st ) {
+        error = st;
+
+        if( !error.match(s) )
+            error = s + " " + error;
+
+    } else {
+        switch(s) {
+            case 403:
+                error = "400 permission denied";
+                break;
+
+            case 404:
+                error = "400 resource not found";
+                break;
+
+            default:
+                error = s + " error unknown";
+        }
+    }
+
+    Mojo.Log.info("ControlPanel::postFixes4xxFail() [dialog]: ", error);
+    Mojo.Controller.errorDialog("Error posting fixes: " + error);
+
+    $("desc2").innerHTML = "(http suspended)";
+
+    setTimeout(function(){ delete this.runningRequest; }.bind(this), 2e3);
+
+    this._4xxFailURL = this.postURLModel.value;
+
+    this.trackingModel.value = false;
+    this.controller.modelChanged(this.trackingModel);
+
+    this.blinkRedLED(long_blink);
+    this.blinkGreenLED(long_blink);
+};
+// }}}
 
 // ControlPanelAssistant.prototype.bufferCheckLoop = function() {{{
 ControlPanelAssistant.prototype.bufferCheckLoop = function() {
     // Mojo.Log.info("ControlPanel::bufferCheckLoop() ... thingking (%d, %s)", this.buffer.length, this.runningRequest ? "true" : "false");
+
+    if( this._4xxFailURL ) {
+        if( this._4xxFailURL === this.postURLModel.value )
+            return;
+
+        delete this._4xxFailURL;
+    }
 
     if( this.runningRequest )
         return;
@@ -548,6 +600,9 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
             parameters: p,
 
             requestTimeout: 50,
+
+            on403: this.postFixes4xxFail,
+            on404: this.postFixes4xxFail,
 
             onSuccess:   this.postFixesSuccess,
             onFailure:   this.postFixesFailure,
