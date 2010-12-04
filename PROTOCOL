@@ -7,15 +7,15 @@ single paramater, "fixes" which will contain a JSON *string*:
 
     [
         {
-            t:  result.timestamp,
-            ll: [ result.latitude, result.longitude ],
-            ha: result.horizAccuracy,
-            va: result.vertAccuracy,
-            al: result.altitude,
-            vv: [ result.velocity, result.heading ]
+            "t":  result.timestamp,
+            "ll": [ result.latitude, result.longitude ],
+            "ha": result.horizAccuracy,
+            "va": result.vertAccuracy,
+            "al": result.altitude,
+            "vv": [ result.velocity, result.heading ]
 
-            tag: "string here", /* optional, may be omitted */
-            poi: "string here", /* optional */
+            "tag": "string here", /* optional, may be omitted */
+            "poi": "string here", /* optional */
         },
 
         ...,
@@ -25,12 +25,12 @@ The "t" index *may* be an array of timestamps as follows:
 
     [
         {
-            t:  [timestamp, timestamp, timestamp, timestamp, ... ],
-            ll: [ result.latitude, result.longitude ],
-            ha: result.horizAccuracy,
-            va: result.vertAccuracy,
-            al: result.altitude,
-            vv: [ result.velocity, result.heading ]
+            "t":  [ timestamp, timestamp, timestamp, timestamp, ... ],
+            "ll": [ result.latitude, result.longitude ],
+            "ha": result.horizAccuracy,
+            "va": result.vertAccuracy,
+            "al": result.altitude,
+            "vv": [ result.velocity, result.heading ]
         },
 
         ...
@@ -39,7 +39,7 @@ The "t" index *may* be an array of timestamps as follows:
 CGI data syncs *must* respond with *either* the timestamp of the message or the
 *first* timestamp of the message; for each fix in the array of fixes:
 
-    { fix_tlist: [ timestamp, timestamp, timestamp, ... ]}
+    { "fix_tlist": [ timestamp, timestamp, timestamp, ... ]}
 
 
 -=: POST DATA UNITS :=--------------------------
@@ -57,10 +57,10 @@ CGI data syncs *must* respond with *either* the timestamp of the message or the
 
 The CGI response *may* contain a meta section as follows
 
-    { fix_tlist: [ timestamp, timestamp, timestamp, ... ],
-      meta: {
-          view_url: "http://blarg/",
-          auth_url: "http://blarg/",
+    { "fix_tlist": [ timestamp, timestamp, timestamp, ... ],
+      "meta": {
+          "view_url": "http://blarg/",
+          "auth_url": "http://blarg/",
       }
     }
 
