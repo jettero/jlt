@@ -14,7 +14,7 @@ single paramater, "fixes" which will contain a JSON *string*:
             al: result.altitude,
             vv: [ result.velocity, result.heading ]
 
-            tag: "string here", /* optional, may not be provided */
+            tag: "string here", /* optional, may be omitted */
             poi: "string here", /* optional */
         },
 
