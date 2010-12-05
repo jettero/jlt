@@ -3,3 +3,4 @@ org.voltar.*.ipk
 framework_config.json
 *.tar.gz
 last_run.log
+build_date.json
