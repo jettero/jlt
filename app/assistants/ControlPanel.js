@@ -884,14 +884,16 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                 this.controller.showDialog({
                     template: 'dialogs/tag',
                     assistant: new ExtraInfoDialog(this.controller, {maxLength: 64, hintText: "trip name"},
+
                         function(info){
                             this._tag = info;
                             this.trackingLast = 0; // try to update right away so we can show the start of the tag
-                        },
+                        }.bind(this),
+
                         function() {
                             this._tag = false;
                             this.trackingLast = 0; // try to update right away so we can show the end of the tag
-                        }
+                        }.bind(this)
                     )
                 });
                 break;
@@ -901,11 +903,14 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                 this.controller.showDialog({
                     template: 'dialogs/poi',
                     assistant: new ExtraInfoDialog(this.controller, {maxLength: 240, hintText: "This is so cool! :-P"},
+
                         function(info){
                             this._poi = info;
                             this.trackingLast = 0; // try to update right away so we get the POI in the right place
-                        },
-                        function() { this._poi = false; }
+                        }.bind(this),
+
+                        function() { this._poi = false; }.bind(this)
+
                         // not going to show anything anyway... no need to reset trackingLast
                     )
                 });
