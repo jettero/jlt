@@ -1,4 +1,6 @@
 [
+    { "source": "codeJanitorAjaxTimeoutExtension.js" },
+
     { "source": "app/assistants/About.js" },
     { "source": "app/assistants/Help.js" },
     { "source": "app/assistants/ControlPanel.js" },

@@ -601,14 +601,11 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
 
             parameters: p,
 
-            requestTimeout: 50,
-
             on403: this.postFixes4xxFail,
             on404: this.postFixes4xxFail,
 
             onSuccess:   this.postFixesSuccess,
             onFailure:   this.postFixesFailure,
-            onTimeout:   this.postFixesFailure,
             onException: this.postFixesFailure
         });
     }
