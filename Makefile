@@ -18,6 +18,9 @@ framework_config.json: framework_config.json.in
 	@echo build $@
 	@perl -pe 's/\%([\w\d]+),([\w\d]+)\%/$$ENV{ "JLT_$$1" }||$$2/eg' $< > $@
 
+lc logcontinue cl continuelog:
+	$(ssh) tail -n 0 -f /var/log/messages | ./log-parse.pl -ca
+
 build_date:
 	@ echo "\"$$(date)\"" > build_date.json
 

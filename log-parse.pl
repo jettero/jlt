@@ -9,6 +9,7 @@ use Pod::Usage;
 my $on;
 my $less;
 my $me = qr(org\.voltar);
+my $continue;
 
 Getopt::Long::Configure("bundling");
 GetOptions(
@@ -16,6 +17,7 @@ GetOptions(
     "h"      => sub { pod2usage() },
     "m=s"    => sub { $me = qr($_[1]) },
     "a"      => \$on,
+    "c"      => \$continue,
 ) or pod2usage();
 
 $SIG{INT} = sub { print "\nbye\n"; exit 0 };
@@ -23,7 +25,7 @@ $SIG{INT} = sub { print "\nbye\n"; exit 0 };
 my @start = ( map { strftime('%H:%M:%S', gmtime(time() + $_)) } (0,-1,+1) );
 my $start = do { local $" = "|"; qr(@start) };
 
-open my $dump, ">", "last_run.log" or die $!;
+open my $dump, ($continue ? ">>":">"), "last_run.log" or die $!;
 
 { my $old = select STDIN; $| = 1; select $old }
 
@@ -40,6 +42,8 @@ while(<STDIN>) {
         $month =~ s/^0//; $month --;
         my $esec = timegm_nocheck($sec,$min,$hour,$day,$month,$year);
         my $time = strftime('%H:%M:%S', localtime($esec));
+
+        s/ $me [.\w]*: \s+ //x;
 
         s(LunaSysMgr:\s+{LunaSysMgrJS}:\s+)();
         s(, file://.*)();
