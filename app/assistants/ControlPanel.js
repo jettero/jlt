@@ -587,14 +587,15 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
     }
 
     if( this.buffer.length > 0 ) {
-        Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d [starting request]", this.buffer.length);
-
         $("desc2").innerHTML = "HTTP running";
 
         var p = { fixes: Object.toJSON(this.buffer) };
 
         if( this._token )
             p.token = this._token;
+
+        Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d [starting request] fixes params: %s",
+            this.buffer.length, Object.toJSON(p));
 
         this.runningRequest = new Ajax.Request(this.postURLModel.value, {
             method: 'post',
