@@ -358,8 +358,9 @@ ControlPanelAssistant.prototype.viewURLTapped = function() {
 // }}}
 // ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {{{
 ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
-    var sv;
-    Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", sv=this.updateIntervalModel.value);
+    var sv = this.updateIntervalModel.value;
+
+    Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", sv);
 
     this.updateIntervalModel.value = parseInt(sv, 10);
     this.savePrefs();
