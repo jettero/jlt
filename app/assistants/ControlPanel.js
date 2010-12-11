@@ -656,6 +656,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
             this.blinkBlueLED(short_blink);
             this.updateAction("request fix");
 
+            if( this.viewURLModel.value )
             this.controller.serviceRequest('palm://com.palm.location', {
                 method:     "getCurrentPosition",
                 onSuccess:  this.trackingSuccessResponseHandler,
