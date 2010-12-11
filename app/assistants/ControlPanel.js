@@ -132,7 +132,9 @@ ControlPanelAssistant.prototype.setup = function() {
     this.viewURLModel = { original: '', value: '' };
     this.controller.setupWidget('viewURL', this.viewURLAttributes, this.viewURLModel);
     this.viewURLChanged = this.viewURLChanged.bindAsEventListener(this);
+    this.viewURLTapped  = this.viewURLTapped.bindAsEventListener(this);
     Mojo.Event.listen($('viewURL'), Mojo.Event.propertyChange, this.viewURLChanged);
+    Mojo.Event.listen($('viewURL'), Mojo.Event.tap, this.viewURLTapped);
 
     this.intervalSubmenu = { label: 'Interval Submenu', items: [
         '5s', '10s', '15s', '1m', '3m', '5m', '10m', '1hour'
@@ -336,6 +338,22 @@ ControlPanelAssistant.prototype.viewURLChanged = function() {
     }
 
     this.savePrefs();
+};
+// }}}
+// ControlPanelAssistant.prototype.viewURLTapped = function() {{{
+ControlPanelAssistant.prototype.viewURLTapped = function() {
+    var url = this.viewURLModel.value;
+    Mojo.Log.info("ControlPanel::viewURLTapped(): %s", url);
+
+    if( url.match(/[a-zA-Z]/) ) {
+        this.controller.serviceRequest("palm://com.palm.applicationManager", {
+            method: "open",
+            parameters:  {
+               id: 'com.palm.app.browser',
+               params: { target: url }
+            }
+        });
+    }
 };
 // }}}
 // ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {{{
