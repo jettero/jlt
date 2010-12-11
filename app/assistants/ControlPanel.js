@@ -1,6 +1,6 @@
 /*jslint white: false, onevar: false, laxbreak: true, maxerr: 500000
 */
-/*global Mojo $ ControlPanelAssistant setInterval setTimeout WebviewDialog Ajax ExtraInfoDialog
+/*global Mojo $ ControlPanelAssistant clearTimeout setInterval setTimeout WebviewDialog Ajax ExtraInfoDialog
 */
 
 /*
@@ -924,12 +924,26 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 /*}}}*/
 
 /* {{{ */ ControlPanelAssistant.prototype.updateReads = function() {
-    this.controller.get("desc1").innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
+    var d1 = this.controller.get("desc1");
+
+    d1.innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
+
+    if( this.d1TimeoutID )
+        clearTimeout(this.d1TimeoutID);
+
+    this.d1TimeoutID = setTimeout(function(){ d1.innerHTML = "" }, 2e3);
 };
 
 /*}}}*/
 /* {{{ */ ControlPanelAssistant.prototype.updateAction = function(action) {
-    this.controller.get("desc2").innerHTML = action;
+    var d2 = this.controller.get("desc2");
+
+    d2.innerHTML = action;
+
+    if( this.d2TimeoutID )
+        clearTimeout(this.d2TimeoutID);
+
+    this.d2TimeoutID = setTimeout(function(){ d2.innerHTML = "" }, 2e3);
 };
 
 /*}}}*/
