@@ -105,7 +105,7 @@ ControlPanelAssistant.prototype.setup = function() {
     Mojo.Event.listen($('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
 
     this.postURLAttributes = {
-        hintText:      'http://www.jgps.me/input',
+        hintText:      'http://db.JGPS.me/input',
         textFieldName: 'postURL',
         maxLength:     2048,
         textCase:      Mojo.Widget.steModeLowerCase,
@@ -114,7 +114,7 @@ ControlPanelAssistant.prototype.setup = function() {
         holdToEdit:    true, // otherwise it steals focus first thing
         multiline:     false
     };
-    this.postURLModel = { value: '' };
+    this.postURLModel = { value: 'http://db.JGPS.me/input' };
     this.controller.setupWidget('postURL', this.postURLAttributes, this.postURLModel);
     this.postURLChanged = this.postURLChanged.bindAsEventListener(this);
     Mojo.Event.listen($('postURL'), Mojo.Event.propertyChange, this.postURLChanged);
@@ -619,7 +619,7 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
         Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d [starting request] fixes params: %s",
             this.buffer.length, Object.toJSON(p));
 
-        this.runningRequest = new Ajax.Request(this.postURLModel.value||"http://www.jgps.me/input", {
+        this.runningRequest = new Ajax.Request(this.postURLModel.value||"http://db.JGPS.me/input", {
             method: 'post',
 
             parameters: p,
