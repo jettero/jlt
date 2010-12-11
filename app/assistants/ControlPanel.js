@@ -448,7 +448,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
             Mojo.Log.info("ControlPanel::postFixesSuccess, error processing js: %s", e);
             this.blinkRedLED(medium_blink);
             this.blinkGreenLED(medium_blink);
-            this.updateAction("response error")
+            this.updateAction("response error");
         }
 
         delete this.runningRequest;
@@ -941,7 +941,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     if( this.d1TimeoutID )
         clearTimeout(this.d1TimeoutID);
 
-    this.d1TimeoutID = setTimeout(function(){ d1.innerHTML = "" }, 10e3);
+    this.d1TimeoutID = setTimeout(function(){ d1.innerHTML = ""; }, 10e3);
 };
 
 /*}}}*/
@@ -953,7 +953,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     if( this.d2TimeoutID )
         clearTimeout(this.d2TimeoutID);
 
-    this.d2TimeoutID = setTimeout(function(){ d2.innerHTML = "" }, 2e3);
+    this.d2TimeoutID = setTimeout(function(){ d2.innerHTML = ""; }, 2e3);
 };
 
 /*}}}*/
@@ -977,7 +977,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     if( this.d3TimeoutID )
         clearTimeout(this.d3TimeoutID);
 
-    this.d3TimeoutID = setTimeout(function(){ d3.innerHTML = "" }, 7e3);
+    this.d3TimeoutID = setTimeout(function(){ d3.innerHTML = ""; }, 7e3);
 };
 
 /*}}}*/
