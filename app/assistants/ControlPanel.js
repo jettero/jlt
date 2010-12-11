@@ -749,10 +749,6 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
             this.continuousModel.value     = prefs.continuous;
             this.viewURLModel.value        = prefs.viewURL;
             this._token                    = prefs.token;
-
-            if( prefs.URL ) // leave this around for a few versions
-                this.postURLModel.value = prefs.URL;
-
             this.postURLModel.value        = prefs.postURL;
 
             this.controller.modelChanged(this.updateIntervalModel);
