@@ -345,7 +345,7 @@ ControlPanelAssistant.prototype.viewURLTapped = function() {
     var url = this.viewURLModel.value;
     Mojo.Log.info("ControlPanel::viewURLTapped(): %s", url);
 
-    if( url.match(/[a-zA-Z]/) ) {
+    if( url && url.match(/[a-zA-Z]/) ) {
         this.controller.serviceRequest("palm://com.palm.applicationManager", {
             method: "open",
             parameters:  {
@@ -656,7 +656,6 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
             this.blinkBlueLED(short_blink);
             this.updateAction("request fix");
 
-            if( this.viewURLModel.value )
             this.controller.serviceRequest('palm://com.palm.location', {
                 method:     "getCurrentPosition",
                 onSuccess:  this.trackingSuccessResponseHandler,
