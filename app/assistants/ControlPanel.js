@@ -953,8 +953,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 
     var to = 10e3;
     if( !this.continuousModel.value )
-        if( this.updateIntervalModel.value > to )
-            to = this.updateIntervalModel.value;
+        to += this.updateIntervalModel.value * 1e3;
 
     d1.innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
 
@@ -982,8 +981,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 
     var to = 7e3;
     if( !this.continuousModel.value )
-        if( this.updateIntervalModel.value > to )
-            to = this.updateIntervalModel.value;
+        to += this.updateIntervalModel.value * 1e3;
 
     lat = lat.toFixed(5) + "⁰";
     lon = lon.toFixed(5) + "⁰";
