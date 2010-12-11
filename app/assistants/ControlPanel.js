@@ -951,12 +951,17 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 /* {{{ */ ControlPanelAssistant.prototype.updateReads = function() {
     var d1 = this.controller.get("desc1");
 
+    var to = 10e3;
+    if( !this.continuousModel.value )
+        if( this.updateIntervalModel.value > to )
+            to = this.updateIntervalModel.value;
+
     d1.innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
 
     if( this.d1TimeoutID )
         clearTimeout(this.d1TimeoutID);
 
-    this.d1TimeoutID = setTimeout(function(){ d1.innerHTML = ""; }, 10e3);
+    this.d1TimeoutID = setTimeout(function(){ d1.innerHTML = ""; }, to);
 };
 
 /*}}}*/
@@ -975,6 +980,11 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 /* {{{ */ ControlPanelAssistant.prototype.updateFixDesc = function(lat,lon,alt,vel,head,poi,tag) {
     var d3 = this.controller.get("desc3");
 
+    var to = 7e3;
+    if( !this.continuousModel.value )
+        if( this.updateIntervalModel.value > to )
+            to = this.updateIntervalModel.value;
+
     lat = lat.toFixed(5) + "⁰";
     lon = lon.toFixed(5) + "⁰";
     alt = alt + "m";
@@ -992,7 +1002,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     if( this.d3TimeoutID )
         clearTimeout(this.d3TimeoutID);
 
-    this.d3TimeoutID = setTimeout(function(){ d3.innerHTML = ""; }, 7e3);
+    this.d3TimeoutID = setTimeout(function(){ d3.innerHTML = ""; }, to);
 };
 
 /*}}}*/
