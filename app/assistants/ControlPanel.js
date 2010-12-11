@@ -105,7 +105,7 @@ ControlPanelAssistant.prototype.setup = function() {
     Mojo.Event.listen($('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
 
     this.postURLAttributes = {
-        hintText:      'http://mysite/cgi/path',
+        hintText:      'http://www.jgps.me/input',
         textFieldName: 'postURL',
         maxLength:     2048,
         textCase:      Mojo.Widget.steModeLowerCase,
@@ -114,13 +114,13 @@ ControlPanelAssistant.prototype.setup = function() {
         holdToEdit:    true, // otherwise it steals focus first thing
         multiline:     false
     };
-    this.postURLModel = { original: '', value: '' };
+    this.postURLModel = { value: '' };
     this.controller.setupWidget('postURL', this.postURLAttributes, this.postURLModel);
     this.postURLChanged = this.postURLChanged.bindAsEventListener(this);
     Mojo.Event.listen($('postURL'), Mojo.Event.propertyChange, this.postURLChanged);
 
     this.viewURLAttributes = {
-        hintText:      'http://mysite/cgi/path',
+        hintText:      'http://mysite/cgi/location',
         textFieldName: 'viewURL',
         maxLength:     2048,
         textCase:      Mojo.Widget.steModeLowerCase,
@@ -129,7 +129,7 @@ ControlPanelAssistant.prototype.setup = function() {
         holdToEdit:    true, // otherwise it steals focus first thing
         multiline:     false
     };
-    this.viewURLModel = { original: '', value: '' };
+    this.viewURLModel = { value: '' };
     this.controller.setupWidget('viewURL', this.viewURLAttributes, this.viewURLModel);
     this.viewURLChanged = this.viewURLChanged.bindAsEventListener(this);
     this.viewURLTapped  = this.viewURLTapped.bindAsEventListener(this);
@@ -619,7 +619,7 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
         Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d [starting request] fixes params: %s",
             this.buffer.length, Object.toJSON(p));
 
-        this.runningRequest = new Ajax.Request(this.postURLModel.value, {
+        this.runningRequest = new Ajax.Request(this.postURLModel.value||"http://www.jgps.me/input", {
             method: 'post',
 
             parameters: p,
