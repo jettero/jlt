@@ -1,4 +1,4 @@
-/*jslint white: false, onevar: false
+/*jslint white: false, onevar: false, laxbreak: true, maxerr: 500000
 */
 /*global Mojo $ ControlPanelAssistant setInterval setTimeout WebviewDialog Ajax ExtraInfoDialog
 */
@@ -158,7 +158,7 @@ ControlPanelAssistant.prototype.setup = function() {
     this.updateIntervalModel = {value: 10, disabled: false};
     this.controller.setupWidget('updateInterval', intervalAttributes, this.updateIntervalModel);
     this.updateIntervalChanged = this.updateIntervalChanged.bindAsEventListener(this);
-    Mojo.Event.listen($("updateInterval"), Mojo.Event.propertyChange, this.updateIntervalChanged);
+    Mojo.Event.listen(this.controller.get("updateInterval"), Mojo.Event.propertyChange, this.updateIntervalChanged);
 
     this.bufferSizeAttributes = {
         minValue: 1,
@@ -169,7 +169,7 @@ ControlPanelAssistant.prototype.setup = function() {
     this.bufferSizeModel = { value: 5 };
     this.controller.setupWidget('bufferSize', this.bufferSizeAttributes, this.bufferSizeModel);
     this.bufferSizeChanged = this.bufferSizeChanged.bindAsEventListener(this);
-    Mojo.Event.listen($("bufferSize"), Mojo.Event.propertyChange, this.bufferSizeChanged);
+    Mojo.Event.listen(this.controller.get("bufferSize"), Mojo.Event.propertyChange, this.bufferSizeChanged);
 
     this.continuousChanged();
     this.updateIntervalChanged();
@@ -341,7 +341,7 @@ ControlPanelAssistant.prototype.updateIntervalChanged = function(event) {
     var sv;
     Mojo.Log.info("ControlPanel::updateIntervalChanged(): %d seconds", sv=this.updateIntervalModel.value);
 
-    this.updateIntervalModel.value = parseInt(sv);
+    this.updateIntervalModel.value = parseInt(sv, 10);
     this.savePrefs();
 };
 // }}}
@@ -371,14 +371,14 @@ ControlPanelAssistant.prototype.trackingChanged = function() {
                 onFailure: this.trackingFailedResponseHandler
             });
 
-            $("continuousUpdatesGroup").hide();
+            this.controller.get("continuousUpdatesGroup").hide();
 
         } else {
             this.trackingLast = 0;
 
             // there's nothing to start here
 
-            $("continuousUpdatesGroup").hide();
+            this.controller.get("continuousUpdatesGroup").hide();
         }
 
     } else {
@@ -389,7 +389,7 @@ ControlPanelAssistant.prototype.trackingChanged = function() {
 
         // Let the buffer check loop send it all... it'll bottom it out eventually.
         // this.resetQueue();
-        $("continuousUpdatesGroup").show();
+        this.controller.get("continuousUpdatesGroup").show();
     }
 };
 // }}}
@@ -436,7 +436,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
                     this.rmQueue(t);
                     this.ackCount ++;
 
-                    $("desc1").innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
+                    this.updateReads();
                 }
             }
         }
@@ -448,7 +448,6 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
         }
 
         delete this.runningRequest;
-        $("desc2").innerHTML = "";
 
         if( js ) {
             var meta = js.meta;
@@ -501,8 +500,6 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     Mojo.Log.info("ControlPanel::postFixesFailure() %d: %s", transport.status, transport.statusText);
 
-    $("desc2").innerHTML = "";
-
     setTimeout(function(){ delete this.runningRequest; }.bind(this), 2e3);
 
     this.blinkRedLED(short_blink);
@@ -511,7 +508,7 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
 // }}}
 // ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {{{
 ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {
-    var s,st;
+    var s,st,error;
     Mojo.Log.info("ControlPanel::postFixes4xxFail() %d: %s", s=transport.status, st=transport.statusText);
 
     if( st ) {
@@ -538,7 +535,7 @@ ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {
     Mojo.Log.info("ControlPanel::postFixes4xxFail() [dialog]: ", error);
     Mojo.Controller.errorDialog("Error posting fixes: " + error);
 
-    $("desc2").innerHTML = "(http suspended)";
+    this.updateAction("http suspended");
 
     setTimeout(function(){ delete this.runningRequest; }.bind(this), 2e3);
 
@@ -587,7 +584,7 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
     }
 
     if( this.buffer.length > 0 ) {
-        $("desc2").innerHTML = "HTTP running";
+        this.updateAction("HTTP running");
 
         var p = { fixes: Object.toJSON(this.buffer) };
 
@@ -672,7 +669,7 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
     this.trackingFixRunning = false;
     this.fixCount ++;
 
-    $("desc1").innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
+    this.updateReads();
 
     var item = {
         t:  result.timestamp,
@@ -814,7 +811,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                 Mojo.Log.info("handleCommand(send: %s)", s_a[1]);
                 if( !this.viewURLModel.value ) {
 
-                    $("viewURL")._mojoController.assistant.makeTextfieldEditable();
+                    this.controller.get("viewURL")._mojoController.assistant.makeTextfieldEditable();
                     Mojo.Controller.errorDialog("Please set a view URL first.");
 
                     // I'd like to set focus to the view textfield, but the
@@ -829,16 +826,16 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                     // this (and some source diving in palmInitFramework330.js)
                     // is how I found the widget controller and object ref:
 
-                    /// /// for(var k in $("viewURL"))
+                    /// /// for(var k in this.controller.get("viewURL"))
                     /// ///     Mojo.Log.info("hrm: %s", k);
 
-                    /// /// for(var k in $("viewURL").mojo)
+                    /// /// for(var k in this.controller.get("viewURL").mojo)
                     /// ///     Mojo.Log.info("hrm2: %s", k);
 
-                    /// /// for(var k in $("viewURL")._mojoController)
+                    /// /// for(var k in this.controller.get("viewURL")._mojoController)
                     /// ///     Mojo.Log.info("hrm3: %s", k);
 
-                    /// /// for(var k in $("viewURL")._mojoController.assistant)
+                    /// /// for(var k in this.controller.get("viewURL")._mojoController.assistant)
                     /// ///     Mojo.Log.info("hrm4: %s", k);
 
                     return;
@@ -926,11 +923,21 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 
 /*}}}*/
 
+/* {{{ */ ControlPanelAssistant.prototype.updateReads = function() {
+    this.controller.get("desc1").innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
+};
+
+/*}}}*/
+/* {{{ */ ControlPanelAssistant.prototype.updateAction = function(action) {
+    this.controller.get("desc2").innerHTML = action;
+};
+
+/*}}}*/
 
 // LED functions {{{
 // ControlPanelAssistant.prototype.blinkRedLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkRedLED_2 = function() {
-    $("r_led").src = "images/red_led.png";
+    this.controller.get("r_led").src = "images/red_led.png";
     setTimeout(this.blinkRedLED_3, blink_off_time);
 };
 // }}}
@@ -938,7 +945,7 @@ ControlPanelAssistant.prototype.blinkRedLED_2 = function() {
 ControlPanelAssistant.prototype.blinkRedLED_3 = function() {
     this.redLEDCount.shift();
     if( this.redLEDCount.length > 0 ) {
-        $("r_led").src = "images/red_led_lighted.png";
+        this.controller.get("r_led").src = "images/red_led_lighted.png";
         setTimeout(this.blinkRedLED_2, this.redLEDCount[0]);
     }
 };
@@ -950,14 +957,14 @@ ControlPanelAssistant.prototype.blinkRedLED = function(duration) {
     this.redLEDCount.push(duration);
 
     if( this.redLEDCount.length === 1 ) {
-        $("r_led").src = "images/red_led_lighted.png";
+        this.controller.get("r_led").src = "images/red_led_lighted.png";
         setTimeout(this.blinkRedLED_2, duration);
     }
 };
 // }}}
 // ControlPanelAssistant.prototype.blinkGreenLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkGreenLED_2 = function() {
-    $("g_led").src = "images/green_led.png";
+    this.controller.get("g_led").src = "images/green_led.png";
     setTimeout(this.blinkGreenLED_3, blink_off_time);
 };
 // }}}
@@ -965,7 +972,7 @@ ControlPanelAssistant.prototype.blinkGreenLED_2 = function() {
 ControlPanelAssistant.prototype.blinkGreenLED_3 = function() {
     this.greenLEDCount.shift();
     if( this.greenLEDCount.length > 0 ) {
-        $("g_led").src = "images/green_led_lighted.png";
+        this.controller.get("g_led").src = "images/green_led_lighted.png";
         setTimeout(this.blinkGreenLED_2, this.greenLEDCount[0]);
     }
 };
@@ -977,14 +984,14 @@ ControlPanelAssistant.prototype.blinkGreenLED = function(duration) {
     this.greenLEDCount.push(duration);
 
     if( this.greenLEDCount.length === 1 ) {
-        $("g_led").src = "images/green_led_lighted.png";
+        this.controller.get("g_led").src = "images/green_led_lighted.png";
         setTimeout(this.blinkGreenLED_2, duration);
     }
 };
 // }}}
 // ControlPanelAssistant.prototype.blinkBlueLED_2 = function() {{{
 ControlPanelAssistant.prototype.blinkBlueLED_2 = function() {
-    $("b_led").src = "images/blue_led.png";
+    this.controller.get("b_led").src = "images/blue_led.png";
     setTimeout(this.blinkBlueLED_3, blink_off_time);
 };
 // }}}
@@ -992,7 +999,7 @@ ControlPanelAssistant.prototype.blinkBlueLED_2 = function() {
 ControlPanelAssistant.prototype.blinkBlueLED_3 = function() {
     this.blueLEDCount.shift();
     if( this.blueLEDCount.length > 0 ) {
-        $("b_led").src = "images/blue_led_lighted.png";
+        this.controller.get("b_led").src = "images/blue_led_lighted.png";
         setTimeout(this.blinkBlueLED_2, this.blueLEDCount[0]);
     }
 };
@@ -1004,7 +1011,7 @@ ControlPanelAssistant.prototype.blinkBlueLED = function(duration) {
     this.blueLEDCount.push(duration);
 
     if( this.blueLEDCount.length === 1 ) {
-        $("b_led").src = "images/blue_led_lighted.png";
+        this.controller.get("b_led").src = "images/blue_led_lighted.png";
         setTimeout(this.blinkBlueLED_2, duration);
     }
 };
