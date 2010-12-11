@@ -697,7 +697,7 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
         item.tag = this._tag;
 
     this.pushQueue(item);
-    this.updateFixDesc(result.latitude, result.longitude, result.altitude, result.velocity, result.heading);
+    this.updateFixDesc(result.latitude, result.longitude, result.altitude, result.velocity, result.heading, item.poi, item.tag);
 };
 // }}}
 // ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result) {{{
@@ -957,7 +957,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
 };
 
 /*}}}*/
-/* {{{ */ ControlPanelAssistant.prototype.updateFixDesc = function(lat,lon,alt,vel,head) {
+/* {{{ */ ControlPanelAssistant.prototype.updateFixDesc = function(lat,lon,alt,vel,head,poi,tag) {
     var d3 = this.controller.get("desc3");
 
     lat = lat.toFixed(5) + "⁰";
@@ -966,6 +966,13 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     vel = vel.toFixed(0) + "m/s";
 
     d3.innerHTML = [ "[" + lat + "," + lon + "]", "(" + vel, "@", head + "⁰)", alt ].join(" ");
+
+    if( poi || tag ) {
+        d3.innerHTML += "<br>";
+
+        if(tag) d3.innerHTML += "tag: " + tag + (poi ? "; " : "");
+        if(poi) d3.innerHTML += "poi: " + poi;
+    }
 
     if( this.d3TimeoutID )
         clearTimeout(this.d3TimeoutID);
