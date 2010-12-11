@@ -67,10 +67,12 @@ div.load-progress {
     font-weight: lighter;
 }
 
-#desc1, #desc2 { 
+#desc1, #desc2, #desc3 {
     font-size: 10pt;
     font-weight: lighter;
+    /* border: 1px dotted red; */
 }
 
 #desc1 { float: left; }
 #desc2 { float: right; }
+#desc3 { margin-top: 0.25em; }

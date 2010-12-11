@@ -225,6 +225,7 @@ ControlPanelAssistant.prototype.resetQueue = function() {
     this.controller.modelChanged(this.bufferFillModel);
 
     this.blinkBlueLED(long_blink);
+    this.updateAction("reset queue");
 };
 // }}}
 // ControlPanelAssistant.prototype.pushQueue = function(item) {{{
@@ -260,6 +261,7 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
     }
 
     this.buffer.push(item);
+    this.updateAction("got fix");
 
     if( this.buffer.length > this.bufferSizeModel.cv ) {
         while( this.buffer.length > this.bufferSizeModel.cv ) {
@@ -437,6 +439,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
                     this.ackCount ++;
 
                     this.updateReads();
+                    this.updateAction("posted fixes");
                 }
             }
         }
@@ -445,6 +448,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
             Mojo.Log.info("ControlPanel::postFixesSuccess, error processing js: %s", e);
             this.blinkRedLED(medium_blink);
             this.blinkGreenLED(medium_blink);
+            this.updateAction("response error")
         }
 
         delete this.runningRequest;
@@ -493,6 +497,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
         this.postFixesFailure(transport);
         this.blinkRedLED(medium_blink);
         this.blinkGreenLED(medium_blink);
+        this.updateAction("HTTP error");
     }
 };
 // }}}
@@ -504,6 +509,7 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
 
     this.blinkRedLED(short_blink);
     this.blinkGreenLED(short_blink);
+    this.updateAction("HTTP error");
 };
 // }}}
 // ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {{{
@@ -546,6 +552,7 @@ ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {
 
     this.blinkRedLED(long_blink);
     this.blinkGreenLED(long_blink);
+    this.updateAction("HTTP error");
 };
 // }}}
 
@@ -629,6 +636,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
             this.trackingFixRunning = true;
 
             this.blinkBlueLED(short_blink);
+            this.updateAction("request fix");
 
             this.controller.serviceRequest('palm://com.palm.location', {
                 method:     "getCurrentPosition",
@@ -689,6 +697,7 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
         item.tag = this._tag;
 
     this.pushQueue(item);
+    this.updateFixDesc(result.latitude, result.longitude, result.altitude, result.velocity, result.heading);
 };
 // }}}
 // ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result) {{{
@@ -702,6 +711,7 @@ ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result)
 
     this.blinkRedLED(medium_blink);
     this.blinkBlueLED(medium_blink);
+    this.updateAction("fix error");
 };
 // }}}
 
@@ -931,7 +941,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     if( this.d1TimeoutID )
         clearTimeout(this.d1TimeoutID);
 
-    this.d1TimeoutID = setTimeout(function(){ d1.innerHTML = "" }, 2e3);
+    this.d1TimeoutID = setTimeout(function(){ d1.innerHTML = "" }, 10e3);
 };
 
 /*}}}*/
@@ -944,6 +954,23 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
         clearTimeout(this.d2TimeoutID);
 
     this.d2TimeoutID = setTimeout(function(){ d2.innerHTML = "" }, 2e3);
+};
+
+/*}}}*/
+/* {{{ */ ControlPanelAssistant.prototype.updateFixDesc = function(lat,lon,alt,vel,head) {
+    var d3 = this.controller.get("desc3");
+
+    lat = lat.toFixed(5) + "⁰";
+    lon = lon.toFixed(5) + "⁰";
+    alt = alt + "m";
+    vel = vel.toFixed(0) + "m/s";
+
+    d3.innerHTML = [ "[" + lat + "," + lon + "]", "(" + vel, "@", head + "⁰)", alt ].join(" ");
+
+    if( this.d3TimeoutID )
+        clearTimeout(this.d3TimeoutID);
+
+    this.d3TimeoutID = setTimeout(function(){ d3.innerHTML = "" }, 7e3);
 };
 
 /*}}}*/
