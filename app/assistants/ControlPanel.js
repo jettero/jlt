@@ -392,15 +392,14 @@ ControlPanelAssistant.prototype.trackingChanged = function() {
                 onFailure: this.trackingFailedResponseHandler
             });
 
-            this.controller.get("continuousUpdatesGroup").hide();
-
         } else {
             this.trackingLast = 0;
 
             // there's nothing to start here
-
-            this.controller.get("continuousUpdatesGroup").hide();
         }
+
+        this.controller.get("continuousUpdatesGroup").hide();
+        $$("div.explanation").each(function(i){i.hide();});
 
     } else {
         if( this.trackingHandle ) {
@@ -410,7 +409,9 @@ ControlPanelAssistant.prototype.trackingChanged = function() {
 
         // Let the buffer check loop send it all... it'll bottom it out eventually.
         // this.resetQueue();
+
         this.controller.get("continuousUpdatesGroup").show();
+        $$("div.explanation").each(function(i){i.show();});
     }
 };
 // }}}
