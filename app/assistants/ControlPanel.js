@@ -678,6 +678,25 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
 };
 // }}}
 
+/* {{{ */ ControlPanelAssistant.prototype.validateItem = function(item) {
+    if( !item.t ) {
+        Mojo.Log.error("ControlPanel::validateItem(): [fail] no timestamp");
+        return false;
+    }
+
+    if( (typeof item.ll !== 'object') || !item.ll[0] || !item.ll[1] ) {
+        Mojo.Log.error("ControlPanel::validateItem(): [fail] bad location");
+        return false;
+    }
+
+    // ... we can maybe do other things here at some point ...
+    // (This was mainly to fix https://github.com/jettero/jlt/issues/#issue/3)
+
+    return true;
+};
+
+/*}}}*/
+
 // ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {{{
 ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result) {
     /* var asJSON = Object.toJSON(result);
@@ -715,6 +734,13 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
 
     if( this._tag )
         item.tag = this._tag;
+
+    if( !this.validateItem( item ) ) {
+        this.blinkRedLED(short_blink);
+        this.blinkBlueLED(short_blink);
+        this.updateAction("skip bad fix");
+        return;
+    }
 
     this.pushQueue(item);
     this.updateFixDesc(result.latitude, result.longitude, result.altitude, result.velocity, result.heading, item.poi, item.tag);
