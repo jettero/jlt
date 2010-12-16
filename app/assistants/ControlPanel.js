@@ -287,7 +287,7 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
 ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
     Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d)", timestamp);
 
-    for(var i=0; i<this.buffer.length; i++) {
+    for(var i=this.buffer.length-1; i<=0; i--) {
         if( typeof this.buffer[i].t === "number"
             ? this.buffer[i].t    === timestamp      // there only is one timestamp
             : this.buffer[i].t[0] === timestamp ) {  // we're concerned with the first timestamp only
