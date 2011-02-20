@@ -3,8 +3,13 @@
 /*global Mojo $ StageAssistant
 */
 
+var OPT;
+
 function StageAssistant() {
 	Mojo.Log.info("StageAssistant()");
+
+    // OPT = Mojo.loadJSONFile(Mojo.appPath + "runtime_options.json");
+    OPT = {};
 }
 
 StageAssistant.prototype.setup = function() {
@@ -37,15 +42,28 @@ StageAssistant.prototype.handleCommand = function(event) {
         var a;
         if( a = event.command.match(/^myshow-(.+)/) )
             Mojo.Controller.stageController.assistant.showScene(a[1]);
+
+        if( a = event.command.match(/^json-gps/) )
+            if( OPT._thisScene )
+                OPT._thisScene.controller.serviceRequest("palm://com.palm.applicationManager", {
+                    method: "open",
+                    parameters:  {
+                       id: 'com.palm.app.browser',
+                       params: { target: "http://db.jgps.me/user" }
+                    }
+                });
     }
 };
 
 StageAssistant.prototype.menuSetup = function() {
+    OPT._thisScene = this;
+
     this.appMenuModel = {
         visible: true,
         items: [
-            { label: "Help",  command: 'myshow-Help' },
-            { label: "About", command: 'myshow-About' }
+            { label: "Help",    command: 'myshow-Help'  },
+            { label: "About",   command: 'myshow-About' },
+            { label: "JGPS.me", command: 'json-gps'     }
         ]
     };
 
