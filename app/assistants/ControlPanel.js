@@ -40,6 +40,7 @@ ControlPanelAssistant.prototype.setup = function() {
 
     this.fixCount = 0;
     this.ackCount = 0;
+    this._request_no = 0;
 
     // eog $(find ../usr.palm.frameworks/ -name \*.png | grep menu-icon)
     this.sendModel = { label: "Send", icon: 'send',          submenu: 'send-submenu' };
@@ -382,6 +383,8 @@ ControlPanelAssistant.prototype.bufferSizeChanged = function(event) {
 ControlPanelAssistant.prototype.trackingChanged = function() {
     Mojo.Log.info("ControlPanel::trackingChanged()", this.trackingModel.value ? "on" : "off");
 
+    this._request_no = 0;
+
     if( this.trackingModel.value ) {
         if( this.continuousModel.value ) {
 
@@ -615,12 +618,16 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
 
         var p = { fixes: Object.toJSON(this.buffer) };
 
+        if( this._request_no === 0 )
+            p.send_view_url = true;
+
         if( this._token )
             p.token = this._token;
 
         Mojo.Log.info("ControlPanel::bufferCheckLoop() todo: %d [starting request] fixes params: %s",
             this.buffer.length, Object.toJSON(p));
 
+        this._request_no ++;
         this.runningRequest = new Ajax.Request(this.postURLModel.value||"http://db.JGPS.me/input", {
             method: 'post',
 
