@@ -3,25 +3,29 @@
 
   About
 
-   Written from scratch by [1]Paul Miller in frustration of the absence of
-   Google Latitude for the Prē. At the time of this writing, there did exist
-   other homebrew projects with similar functionality, but none on Github —
-   or with the precise feature-set desired. It was later discovered that
-   Latitude is already (kindof) on the phone and that you can do a lot more
-   with the Google Maps API than you can with Latitude anyway.
+   Written by [1]Paul Miller in frustration of the absence of Google Latitude
+   for the prē. At the time of this writing, there did exist other homebrew
+   projects with similar functionality, but none on Github — or with the
+   precise feature-set desired. It was later discovered that Latitude is
+   already (kindof) on the phone. But you can do a lot more with the Google
+   Maps API than you can with [2]Latitude anyway.
 
-   This is version 0.91.0 of JLT.
-
-   Bugs and problems should be reported in the Github issue tracking system:
-   [2]http://github.com/jettero/jlt/issues
+   Bugs and problems should be reported in the Github issue tracking system.
+   If that is not possible or not desireable, use the [3]feedback email
+   address instead.
+   [4]http://github.com/jettero/jlt/issues
 
    The entire source for this app and sample websites in various languages
    can be found here:
-   [3]http://github.com/jettero/jlt
+   [5]http://github.com/jettero/jlt
+
+   Further release candidates and unreleased versions are usually available
+   here first:
+   [6]http://jettero.github.com/jlt
 
   Copyright
 
-   This app and most of the CGI code is Copyright Paul Miller 2010.
+   This app and most of the CGI code is Copyright Paul Miller 2011.
 
   License
 
@@ -32,22 +36,31 @@
 
    There were additional contributions made by the following people:
 
-     * [4]Matt Colyer
+     * [7]Matt Colyer
+     * [8]DJCP
+     * [9]NateVW
 
   Latitude?
 
    This app is not intended to complete with or connect to Google Latitude,
    which has a similar mission. It may interest you to know that Google
-   already pushes Latitude functionality to the Prē, but it's [5]hidden.
+   already pushes Latitude functionality to the Prē, but it's hidden. Turn it
+   on by tapping here:
+   [10]http://maps.google.com/maps/m?mode=latitude
 
 References
 
    Visible links
-   1. http://jettero.github.com/
-   2. http://github.com/jettero/jlt/issues
-   3. http://github.com/jettero/jlt
-   4. http://github.com/MattColyer
-   5. http://maps.google.com/maps/m?mode=latitude
+   1. https://voltar.org/
+   2. file:///home/jettero/code/webos/jlt/app/views/About.html#latitude
+   3. mailto:jlt-feedback@voltar.org
+   4. http://github.com/jettero/jlt/issues
+   5. http://github.com/jettero/jlt
+   6. http://jettero.github.com/jlt
+   7. http://github.com/MattColyer
+   8. http://github.com/djcp
+   9. http://github.com/natevw
+  10. http://maps.google.com/maps/m?mode=latitude
 
 -----=: app/views/Help.html
    JSON Location Tracker
@@ -58,7 +71,7 @@ References
    time. Along the left, they describe the number of readings taken and how
    many were accepted by the webserver (e.g., 2 reads, 2 posted). Along the
    right, the app shows when an HTTP (aka AJAX) request is running (e.g. HTTP
-   running)1.
+   running)^1.
 
    In addition to the text messages, there is a slider and there are three
    LEDs. The slider indicates the buffer fill status. If the slider is full
@@ -127,7 +140,7 @@ References
 
    If you have noticed a Point of Interest (POI), click POI to send a note to
    the webserver. This message will be transmitted exactly once and the
-   interface will attempt to get a fix as soon as possible -- despite any
+   interface will attempt to get a fix as soon as possible — despite any
    slower update intervals, as above described.
 
    Trip tags, on the other hand, are sent with each fix. They're intended to
@@ -135,7 +148,7 @@ References
 
   Send View
 
-   As a convenient, the JLT may be instructed to prefill an IM/SMS or Email
+   As a convenience, the JLT may be instructed to prefill an IM/SMS or Email
    with the viewing location of your gps data. The contents of the message
    will be little more than the view url (if set) above described.
 
@@ -148,12 +161,12 @@ References
    website to the application is to cut and paste it over.
 
    For this reason, the browser has an (i) button you can press that will pop
-   up a token request window. Simply copy your auth token -- typically the id
-   of a session on the webserver -- to the dialog and press the set button.
+   up a token request window. Simply copy your auth token — typically the id
+   of a session on the webserver — to the dialog and press the set button.
 
   Side Notes
 
-   1 The number of posted messages will sometimes lag behind the number of
+   ^1 The number of posted messages will sometimes lag behind the number of
    actual reads because of two factors: 1) webserver acknowledgments do not
    contain a count and 2) occasionally a reading will be lost when a fix
    message is acknowledged but has gained timestamps after the message was
@@ -164,4 +177,4 @@ References
 
    Visible links
    1. http://github.com/jettero/jlt/tree/master/cgi/
-   2. http://github.com/jettero/jlt/blob/master/PROTOCOL
+   2. https://github.com/jettero/jlt/raw/master/PROTOCOL
