@@ -289,6 +289,36 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
     Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d)", timestamp);
 
     for(var i=this.buffer.length-1; i<=0; i--) {
+        if( typeof this.buffer[i].t === "number" ) {
+            if( this.buffer[i].t === timestamp ) {
+                delete this.buffer[i];
+                this.buffer.splice(i,1);
+                this.ackCount ++;
+                this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
+                this.controller.modelChanged(this.bufferFillModel);
+                return;
+
+            } else {
+                for(var j=this.buffer[i].length-1; j<=0; j--) {
+                    if( this.buffer[i][j].t === timestamp ) {
+                        delete this.buffer[i][j];
+                        this.buffer[i].splice(j,1);
+                        this.ackCount ++;
+
+                        if( this.buffer[i].length < 1 ) {
+                            delete this.buffer[i];
+                            this.buffer.splice(i,1);
+                            this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
+                            this.controller.modelChanged(this.bufferFillModel);
+                        }
+
+                        return;
+                    }
+                }
+            }
+        }
+
+        /*
         if( typeof this.buffer[i].t === "number"
             ? this.buffer[i].t    === timestamp      // there only is one timestamp
             : this.buffer[i].t[0] === timestamp ) {  // we're concerned with the first timestamp only
@@ -296,6 +326,7 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
             // NOTE: I have no idea how garbage collection works in js, but I *wish*
             // this would recursively delete the object at pos[i]; who knows...
             delete this.buffer[i];
+            this.ackCount ++;
 
             // get rid of the undef
             this.buffer.splice(i,1);
@@ -305,6 +336,7 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
 
             return; // we're all done here
         }
+        */
     }
 };
 // }}}
@@ -459,7 +491,6 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 
                     this.blinkGreenLED(short_blink);
                     this.rmQueue(t);
-                    this.ackCount ++;
 
                     this.updateReads();
                     this.updateAction("posted fixes");
