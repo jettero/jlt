@@ -502,6 +502,12 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
                     }
                 }
 
+                if( !this.postURLModel.value ) {
+                    this.postURLModel.value = "http://db.JGPS.me/input";
+                    this.controller.modelChanged(this.postURLModel);
+                    this.savePrefs();
+                }
+
                 if( meta.view_url ) {
                     Mojo.Log.info("ControlPannel::postFixesSuccess found view_url in meta section: %s", meta.view_url);
 

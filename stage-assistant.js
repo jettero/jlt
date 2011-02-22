@@ -49,7 +49,7 @@ StageAssistant.prototype.handleCommand = function(event) {
                     method: "open",
                     parameters:  {
                        id: 'com.palm.app.browser',
-                       params: { target: "http://db.jgps.me/user" }
+                       params: { target: "http://db.JGPS.me/user" }
                     }
                 });
     }
