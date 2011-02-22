@@ -296,6 +296,7 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
                 this.ackCount ++;
                 this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
                 this.controller.modelChanged(this.bufferFillModel);
+                Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [dequeued single [i].t]", timestamp);
                 return;
 
             } else {
@@ -305,11 +306,14 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
                         this.buffer[i].splice(j,1);
                         this.ackCount ++;
 
+                        Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [dequeued array [i][j].t]", timestamp);
+
                         if( this.buffer[i].length < 1 ) {
                             delete this.buffer[i];
                             this.buffer.splice(i,1);
                             this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
                             this.controller.modelChanged(this.bufferFillModel);
+                            Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [nuked array]]", timestamp);
                         }
 
                         return;
@@ -317,26 +321,6 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
                 }
             }
         }
-
-        /*
-        if( typeof this.buffer[i].t === "number"
-            ? this.buffer[i].t    === timestamp      // there only is one timestamp
-            : this.buffer[i].t[0] === timestamp ) {  // we're concerned with the first timestamp only
-
-            // NOTE: I have no idea how garbage collection works in js, but I *wish*
-            // this would recursively delete the object at pos[i]; who knows...
-            delete this.buffer[i];
-            this.ackCount ++;
-
-            // get rid of the undef
-            this.buffer.splice(i,1);
-
-            this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
-            this.controller.modelChanged(this.bufferFillModel);
-
-            return; // we're all done here
-        }
-        */
     }
 };
 // }}}
