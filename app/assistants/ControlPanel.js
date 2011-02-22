@@ -288,7 +288,9 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
 ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
     Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [bl: %d]", timestamp, this.buffer.length);
 
-    for(var i=this.buffer.length-1; i<=0; i--) {
+    for(var i=this.buffer.length-1; i>=0; i--) {
+        Mojo.Log.info(" bugger: %d", i);
+
         if( typeof this.buffer[i].t === "number" ) {
             if( this.buffer[i].t === timestamp ) {
                 delete this.buffer[i];
@@ -303,7 +305,7 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
             }
 
         } else {
-            for(var j=this.buffer[i].t.length-1; j<=0; j--) {
+            for(var j=this.buffer[i].t.length-1; j>=0; j--) {
                 if( this.buffer[i].t[j] === timestamp ) {
                     delete this.buffer[i].t[j];
                     this.buffer[i].t.splice(j,1);
