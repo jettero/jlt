@@ -286,7 +286,7 @@ ControlPanelAssistant.prototype.pushQueue = function(item) {
 // }}}
 // ControlPanelAssistant.prototype.rmQueue = function(item) {{{
 ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
-    Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d)", timestamp);
+    Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [bl: %d]", timestamp, this.buffer.length);
 
     for(var i=this.buffer.length-1; i<=0; i--) {
         if( typeof this.buffer[i].t === "number" ) {
@@ -296,24 +296,27 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
                 this.ackCount ++;
                 this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
                 this.controller.modelChanged(this.bufferFillModel);
-                Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [dequeued single [i].t]", timestamp);
+                Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [bl: %d; dequeued single [i].t]",
+                    timestamp, this.buffer.length);
                 return;
 
             } else {
-                for(var j=this.buffer[i].length-1; j<=0; j--) {
-                    if( this.buffer[i][j].t === timestamp ) {
-                        delete this.buffer[i][j];
-                        this.buffer[i].splice(j,1);
+                for(var j=this.buffer[i].t.length-1; j<=0; j--) {
+                    if( this.buffer[i].t[j] === timestamp ) {
+                        delete this.buffer[i].t[j];
+                        this.buffer[i].t.splice(j,1);
                         this.ackCount ++;
 
-                        Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [dequeued array [i][j].t]", timestamp);
+                        Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [bl: %d; dequeued array [i].t[j]]",
+                            timestamp, this.buffer.length);
 
-                        if( this.buffer[i].length < 1 ) {
+                        if( this.buffer[i].t.length < 1 ) {
                             delete this.buffer[i];
                             this.buffer.splice(i,1);
                             this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
                             this.controller.modelChanged(this.bufferFillModel);
-                            Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [nuked array]]", timestamp);
+                            Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [bl: %d; nuked array]",
+                                timestamp, this.buffer.length);
                         }
 
                         return;
