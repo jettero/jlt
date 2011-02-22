@@ -300,27 +300,28 @@ ControlPanelAssistant.prototype.rmQueue = function(timestamp) {
                     timestamp, this.buffer.length);
                 return;
 
-            } else {
-                for(var j=this.buffer[i].t.length-1; j<=0; j--) {
-                    if( this.buffer[i].t[j] === timestamp ) {
-                        delete this.buffer[i].t[j];
-                        this.buffer[i].t.splice(j,1);
-                        this.ackCount ++;
+            }
 
-                        Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [bl: %d; dequeued array [i].t[j]]",
+        } else {
+            for(var j=this.buffer[i].t.length-1; j<=0; j--) {
+                if( this.buffer[i].t[j] === timestamp ) {
+                    delete this.buffer[i].t[j];
+                    this.buffer[i].t.splice(j,1);
+                    this.ackCount ++;
+
+                    Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [bl: %d; dequeued array [i].t[j]]",
+                        timestamp, this.buffer.length);
+
+                    if( this.buffer[i].t.length < 1 ) {
+                        delete this.buffer[i];
+                        this.buffer.splice(i,1);
+                        this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
+                        this.controller.modelChanged(this.bufferFillModel);
+                        Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [bl: %d; nuked array]",
                             timestamp, this.buffer.length);
-
-                        if( this.buffer[i].t.length < 1 ) {
-                            delete this.buffer[i];
-                            this.buffer.splice(i,1);
-                            this.bufferFillModel.value = (1.0*this.buffer.length) / this.bufferSizeModel.cv;
-                            this.controller.modelChanged(this.bufferFillModel);
-                            Mojo.Log.info("ControlPanel::rmQueue(timestamp=%d) [bl: %d; nuked array]",
-                                timestamp, this.buffer.length);
-                        }
-
-                        return;
                     }
+
+                    return;
                 }
             }
         }
