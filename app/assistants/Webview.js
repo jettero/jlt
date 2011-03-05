@@ -75,8 +75,6 @@ WebviewAssistant.prototype.donebutton = function() {
         this.donecb(this._token);
         delete this.donecb;
     }
-
-    this.SC.popScene(); // bye!!
 };
 
 WebviewAssistant.prototype.deactivate = function() {
@@ -90,7 +88,6 @@ WebviewAssistant.prototype.deactivate = function() {
 };
 
 WebviewAssistant.prototype.cleanup = function() {
-	Mojo.Event.stopListening(this.controller.get('web-finished'), Mojo.Event.tap, this.donebutton);
 };
 
 WebviewAssistant.prototype.handleCommand = function(event) {
@@ -143,11 +140,6 @@ WebviewAssistant.prototype.stopped = function() {
     this.commandMenuModel.items.pop(this.stopModel);
     this.commandMenuModel.items.push(this.reloadModel);
     this.controller.modelChanged(this.commandMenuModel);
-
-    if( this._t_val.match(/^[0-9a-fA-F]{7,}$/) ) {
-        this._token = this._t_val;
-        this.donebutton();
-    }
 };
 
 WebviewAssistant.prototype.progress = function(event) {
@@ -167,12 +159,14 @@ WebviewAssistant.prototype.progress = function(event) {
                     PalmSystem.paste();
                     var val = t_mojo.getValue();
                     if( val ) {
-                        this._t_val = val;
-                        t_mojo.setValue("");
+                        if( val.match(/^[0-9a-fA-F]{7,}$/) ) {
+                            Mojo.Log.info("found token \"%s\", using", val);
+                            t_mojo.setValue("");
+                            this._token = val;
+                            this.donebutton();
+                        }
                     }
                 }
-
-                Mojo.Log.info("_t_val: %s", this._t_val);
             }
         }.bind(this));
 
