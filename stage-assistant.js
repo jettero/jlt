@@ -15,13 +15,16 @@ function StageAssistant() {
 StageAssistant.prototype.setup = function() {
 	Mojo.Log.info("StageAssistant()::setup()");
 
-    // this.controller.assistant.showScene('ControlPanel');
+    this.controller.assistant.showScene('ControlPanel');
 
-    this.showScene("Webview", {
-        title: "Frobby Debug",
-        URL: "https://voltar.org/id?tr=1",
-        donecb: function(){}
-    });
+    /* DEBUG
+    ** this.showScene("Webview", {
+    **     title: "Frobby Debug",
+    **     URL: "https://voltar.org/id?tr=1",
+    **     donecb: function(){}
+    ** });
+    */
+
 };
 
 StageAssistant.prototype.popScene = function() {
