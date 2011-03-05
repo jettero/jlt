@@ -1,6 +1,6 @@
 /*jslint white: false, onevar: false
 */
-/*global Mojo $ WebviewAssistnat ExtraInfoDialog
+/*global Mojo $ WebviewAssistnat ExtraInfoDialog PalmSystem
 */
 
 function WebviewAssistant(args) {
@@ -16,7 +16,6 @@ function WebviewAssistant(args) {
     this.progress = this.progress.bind(this);
     this.started  = this.started.bind(this);
     this.stopped  = this.stopped.bind(this);
-    this.finished = this.finished.bind(this);
 
     this.SC = Mojo.Controller.stageController.assistant;
 
@@ -33,6 +32,7 @@ WebviewAssistant.prototype.setup = function() {
 
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {menuClass: 'no-fade'}, this.commandMenuModel);
 
+    this.controller.setupWidget("token", {}, {});
     this.controller.setupWidget("webview-node",
         this.attributes = {
             url: this.URL,
@@ -54,7 +54,6 @@ WebviewAssistant.prototype.setup = function() {
     Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewLoadStopped, this.stopped);
     Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewLoadFailed, this.stopped);
     Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewDidFinishDocumentLoad, this.stopped);
-    Mojo.Event.listen(this.controller.get('webview-node'), Mojo.Event.webViewDownloadFinished, this.finished);
 
 };
 
@@ -142,11 +141,35 @@ WebviewAssistant.prototype.stopped = function() {
     this.controller.modelChanged(this.commandMenuModel);
 };
 
-WebviewAssistant.prototype.finished = function() {
-};
-
 WebviewAssistant.prototype.progress = function(event) {
     var percent = event.progress;
+
+    try {
+        var w_node = this.controller.get("webview-node");
+        var w_mojo = w_node.mojo;
+
+        var t_node = this.controller.get("token");
+        var t_mojo = t_node.mojo;
+
+        w_mojo.copy(function(a){
+            if( a ) {
+                if(PalmSystem && PalmSystem.paste) {
+                    t_mojo.focus();
+                    PalmSystem.paste();
+                    var val = t_mojo.getValue();
+                    if( val ) {
+                        this._t_val = val;
+                        t_mojo.setValue("");
+                    }
+                }
+
+                Mojo.Log.info("_t_val: %s", this._t_val);
+            }
+        }.bind(this));
+
+    } catch(e) {
+        Mojo.Log.logException(e, e.description);
+    }
 
     try {
         if (percent > 100) {
