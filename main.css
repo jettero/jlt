@@ -17,6 +17,10 @@ div.load-progress {
     margin-top: -8px;
 }
 
+.generically-hidden {
+    height: 0px !important;
+}
+
 .palm-page-header .icon.jlt {
 	background-image: url(header-icon.png);
 }

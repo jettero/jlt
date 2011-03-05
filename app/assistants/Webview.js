@@ -27,6 +27,10 @@ function WebviewAssistant(args) {
     this.commandMenuModel = { label: 'Webview Command Menu', items: [ this.tokenModel, this.reloadModel ] };
 }
 
+WebviewAssistant.prototype.activate = function() {
+    this.controller.get("token").addClassName("generically-hidden");
+};
+
 WebviewAssistant.prototype.setup = function() {
     Mojo.Log.info("WebviewAssistant::setup()");
 
