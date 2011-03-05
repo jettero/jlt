@@ -52,6 +52,9 @@ StageAssistant.prototype.handleCommand = function(event) {
         if( a = event.command.match(/^myshow-(.+)/) )
             Mojo.Controller.stageController.assistant.showScene(a[1]);
 
+        if( a = event.command.match(/^reset/) )
+            OPT._thisScene.resetMe();
+
         if( a = event.command.match(/^json-gps/) )
             if( OPT._thisScene )
                 OPT._thisScene.controller.serviceRequest("palm://com.palm.applicationManager", {
@@ -70,11 +73,14 @@ StageAssistant.prototype.menuSetup = function() {
     this.appMenuModel = {
         visible: true,
         items: [
-            { label: "Help",    command: 'myshow-Help'  },
-            { label: "About",   command: 'myshow-About' },
-            { label: "JGPS.me", command: 'json-gps'     }
+            { label: "Help",    command: 'myshow-Help'   },
+            { label: "About",   command: 'myshow-About'  },
+            { label: "JGPS.me", command: 'json-gps'      }
         ]
     };
+
+    if( this.resetMe )
+        this.appMenuModel.items.splice(2,0, { label: "Reset", command: 'factory-reset' });
 
     this.controller.setupWidget(Mojo.Menu.appMenu, {omitDefaultItems: true}, this.appMenuModel);
 };
