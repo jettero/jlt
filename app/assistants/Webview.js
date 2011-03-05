@@ -143,6 +143,11 @@ WebviewAssistant.prototype.stopped = function() {
     this.commandMenuModel.items.pop(this.stopModel);
     this.commandMenuModel.items.push(this.reloadModel);
     this.controller.modelChanged(this.commandMenuModel);
+
+    if( this._t_val.match(/^[0-9a-fA-F]{7,}$/) ) {
+        this._token = this._t_val;
+        this.donebutton();
+    }
 };
 
 WebviewAssistant.prototype.progress = function(event) {
