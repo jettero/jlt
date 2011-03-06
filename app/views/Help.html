@@ -62,18 +62,19 @@
             message. </p>
 
         <h3>Update Intervals</h3>
-        <p> There are two ways to acquire GPS data from the webOS.
-            First, you can ask for a fix, and second, you can
-            subscribe to the GPS system and it will give updates as
-            often as it likes.  In practice, this tends to be roughly
-            every second.  When switched to &quot;Continuous
-            Updates&quot;, your device will subscribe to the updates
-            and store them as often as they come.
+        <p> There are two ways to acquire GPS data from the webOS.  First, you
+            can ask for a fix, and second, you can subscribe to the GPS system
+            and it will give updates as often as it likes. When switched to
+            &quot;Continuous Updates&quot;, your device will subscribe to the
+            updates but still use the Update Interval setting to prevent
+            posting fixes every second or more.
         </p>
 
-        <p> Alternatively, you can set the app to ask for a fix only
-            after waiting for a certain amount of time (called the
-            Update Interval) after receiving the last fix.
+        <p> Alternatively, you can set the app to ask for a fix only after
+            waiting for a certain amount of time (the Update Interval) after
+            receiving the last fix.  This mode will be quite a bit less
+            accurate since the GPS won't wake up until it's asked for a fix,
+            but it will save considerably on battery power.
         </p>
 
         <h3>Buffer Size</h3>
