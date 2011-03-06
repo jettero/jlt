@@ -77,17 +77,17 @@ StageAssistant.prototype.menuSetup = function() {
         visible: true,
         items: [
             Mojo.Menu.editItem,
+            { label: "JGPS.me", command: 'json-gps'      }
             { label: "Help",    command: 'myshow-Help'   },
             { label: "About",   command: 'myshow-About'  },
-            { label: "JGPS.me", command: 'json-gps'      }
         ]
     };
 
     if( this.resetMe )
-        this.appMenuModel.items.splice(2,0, { label: "Reset all Settings", command: 'factory-reset' });
+        this.appMenuModel.items.push({ label: "Reset all Settings", command: 'factory-reset' });
 
-    if( this.clearToken && this._token )
-        this.appMenuModel.items.splice(2,0, { label: "Clear Token", command: 'clear-token' });
+    if( this.clearToken )
+        this.appMenuModel.items.push({ label: "Clear Token", command: 'clear-token' });
 
     this.controller.setupWidget(Mojo.Menu.appMenu, {omitDefaultItems: true}, this.appMenuModel);
 };
