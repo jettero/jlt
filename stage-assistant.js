@@ -77,9 +77,9 @@ StageAssistant.prototype.menuSetup = function() {
         visible: true,
         items: [
             Mojo.Menu.editItem,
-            { label: "JGPS.me", command: 'json-gps'      }
+            { label: "JGPS.me", command: 'json-gps'      },
             { label: "Help",    command: 'myshow-Help'   },
-            { label: "About",   command: 'myshow-About'  },
+            { label: "About",   command: 'myshow-About'  }
         ]
     };
 
