@@ -189,7 +189,7 @@ ControlPanelAssistant.prototype.setup = function() {
 
     for( var _k in this ) {
         if( _k.match(/Model$/) )
-            _k.def = _k.value;
+            this[_k].def = this[_k].value;
     }
 };
 // }}}
