@@ -911,7 +911,9 @@ ControlPanelAssistant.prototype.resetMe = function() {
             } else {
                 Mojo.Log.info("ControlPannel::resetMe() [equivocating]");
             }
-        },
+
+        }.bind(this),
+
         title:   "Reset all Settings",
         message: "Are you sure you want to reset everything??",
         choices:[
