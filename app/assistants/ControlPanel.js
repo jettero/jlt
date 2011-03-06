@@ -441,8 +441,10 @@ ControlPanelAssistant.prototype.trackingChanged = function() {
 ControlPanelAssistant.prototype.continuousChanged = function(event) {
     Mojo.Log.info("ControlPanel::continuousChanged(): %s", this.continuousModel.value ? "on" : "off");
 
-    if( this.continuousModel.value ) $('updateIntervalGroup').hide();
-    else $('updateIntervalGroup').show();
+    /*
+    ** if( this.continuousModel.value ) $('updateIntervalGroup').hide();
+    ** else $('updateIntervalGroup').show();
+    */
 
     this.savePrefs();
 };
@@ -924,7 +926,7 @@ ControlPanelAssistant.prototype.resetMe = function() {
 };
 // }}}
 // ControlPanelAssistant.prototype.clearToken = function() {{{
-ControlPanelAssistant.prototype.resetMe = function() {
+ControlPanelAssistant.prototype.clearToken = function() {
     Mojo.Log.info("ControlPannel::clearToken()");
 
     this.controller.showAlertDialog({
