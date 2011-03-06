@@ -17,8 +17,6 @@ function WebviewAssistant(args) {
     this.started  = this.started.bind(this);
     this.stopped  = this.stopped.bind(this);
 
-    this.SC = Mojo.Controller.stageController.assistant;
-
     // eog $(find ../usr.palm.frameworks/ -name \*.png | grep menu-icon)
 
     this.reloadModel      = { label: 'Reload', icon: 'refresh', command: 'refresh' };
@@ -33,6 +31,10 @@ WebviewAssistant.prototype.activate = function() {
 
 WebviewAssistant.prototype.setup = function() {
     Mojo.Log.info("WebviewAssistant::setup()");
+
+    this.SC = Mojo.Controller.stageController.assistant;
+    this.menuSetup = this.SC.menuSetup.bind(this);
+    this.menuSetup();
 
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {menuClass: 'no-fade'}, this.commandMenuModel);
 
