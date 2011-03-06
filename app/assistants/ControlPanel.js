@@ -915,9 +915,33 @@ ControlPanelAssistant.prototype.resetMe = function() {
         }.bind(this),
 
         title:   "Reset all Settings",
-        message: "Are you sure you want to reset everything??",
+        message: "Are you sure you want to reset everything?",
         choices:[
             {label: "Reset",  value:"reset",  type:'negative'},
+            {label: "Cancel", value:"cancel", type:'dismiss'}
+        ]
+    });
+};
+// }}}
+// ControlPanelAssistant.prototype.clearToken = function() {{{
+ControlPanelAssistant.prototype.resetMe = function() {
+    Mojo.Log.info("ControlPannel::clearToken()");
+
+    this.controller.showAlertDialog({
+        onChoose: function(value) {
+            if( value === "clear" ) {
+                this.setToken('');
+
+            } else {
+                Mojo.Log.info("ControlPannel::resetMe() [equivocating]");
+            }
+
+        }.bind(this),
+
+        title:   "Clear Token",
+        message: "Are you sure you want to clear the authentication token?",
+        choices:[
+            {label: "Clear",  value:"clear",  type:'negative'},
             {label: "Cancel", value:"cancel", type:'dismiss'}
         ]
     });

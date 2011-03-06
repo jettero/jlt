@@ -55,6 +55,9 @@ StageAssistant.prototype.handleCommand = function(event) {
         if( a = event.command.match(/reset/) )
             OPT._thisScene.resetMe();
 
+        if( a = event.command.match(/clear-token/) )
+            OPT._thisScene.clearToken();
+
         if( a = event.command.match(/^json-gps/) )
             if( OPT._thisScene )
                 OPT._thisScene.controller.serviceRequest("palm://com.palm.applicationManager", {
@@ -81,6 +84,9 @@ StageAssistant.prototype.menuSetup = function() {
 
     if( this.resetMe )
         this.appMenuModel.items.splice(2,0, { label: "Reset all Settings", command: 'factory-reset' });
+
+    if( this.clearToken && this._token )
+        this.appMenuModel.items.splice(2,0, { label: "Clear Token", command: 'clear-token' });
 
     this.controller.setupWidget(Mojo.Menu.appMenu, {omitDefaultItems: true}, this.appMenuModel);
 };
