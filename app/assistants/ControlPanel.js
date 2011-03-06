@@ -874,10 +874,12 @@ ControlPanelAssistant.prototype.resetMe = function() {
             if( value === "reset" ) {
                 Mojo.Log.info("ControlPannel::resetMe() [resetting]");
 
+                Mojo.Log.info("   killing tracking");
                 this.trackingModel.value = false;
                 this.controller.modelChanged(this.trackingModel);
                 this.trackingChanged();
 
+                Mojo.Log.info("   resetting counts");
                 this.fixCount = 0;
                 this.ackCount = 0;
 
@@ -887,6 +889,12 @@ ControlPanelAssistant.prototype.resetMe = function() {
                 this.updateIntervalModel.value = this.updateIntervalModel.def;
                 this.bufferSizeModel.value     = this.bufferSizeModel.def;
                 this._token = '';
+
+                Mojo.Log.info("   resetting models [postURLModel: %s]",        this.postURLModel.value);
+                Mojo.Log.info("   resetting models [viewURLModel: %s]",        this.viewURLModel.value);
+                Mojo.Log.info("   resetting models [continuousModel: %s]",     this.continuousModel.value);
+                Mojo.Log.info("   resetting models [updateIntervalModel: %s]", this.updateIntervalModel.value);
+                Mojo.Log.info("   resetting models [bufferSizeModel: %s]",     this.bufferSizeModel.value);
 
                 // this.savePrefs(); // these three below all save anyway
 
