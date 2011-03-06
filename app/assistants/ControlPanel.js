@@ -97,13 +97,13 @@ ControlPanelAssistant.prototype.setup = function() {
     this.trackingModel = { value: false };
     this.controller.setupWidget('trackingToggle', this.trackingOpts, this.trackingModel);
     this.trackingChanged = this.trackingChanged.bindAsEventListener(this);
-    Mojo.Event.listen($('trackingToggle'), Mojo.Event.propertyChange, this.trackingChanged);
+    Mojo.Event.listen(this.controller.get('trackingToggle'), Mojo.Event.propertyChange, this.trackingChanged);
 
     this.continuousOpts = {};
     this.continuousModel = { value: false };
     this.controller.setupWidget('continuousUpdates', this.continuousOpts, this.continuousModel);
     this.continuousChanged = this.continuousChanged.bindAsEventListener(this);
-    Mojo.Event.listen($('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
+    Mojo.Event.listen(this.controller.get('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
 
     this.postURLAttributes = {
         hintText:      'http://db.JGPS.me/input',
@@ -118,7 +118,7 @@ ControlPanelAssistant.prototype.setup = function() {
     this.postURLModel = { value: '' };
     this.controller.setupWidget('postURL', this.postURLAttributes, this.postURLModel);
     this.postURLChanged = this.postURLChanged.bindAsEventListener(this);
-    Mojo.Event.listen($('postURL'), Mojo.Event.propertyChange, this.postURLChanged);
+    Mojo.Event.listen(this.controller.get('postURL'), Mojo.Event.propertyChange, this.postURLChanged);
 
     this.viewURLAttributes = {
         hintText:      'http://mysite/cgi/location',
@@ -134,8 +134,8 @@ ControlPanelAssistant.prototype.setup = function() {
     this.controller.setupWidget('viewURL', this.viewURLAttributes, this.viewURLModel);
     this.viewURLChanged = this.viewURLChanged.bindAsEventListener(this);
     this.viewURLTapped  = this.viewURLTapped.bindAsEventListener(this);
-    Mojo.Event.listen($('viewURL'), Mojo.Event.propertyChange, this.viewURLChanged);
-    Mojo.Event.listen($('viewURL'), Mojo.Event.tap, this.viewURLTapped);
+    Mojo.Event.listen(this.controller.get('viewURL'), Mojo.Event.propertyChange, this.viewURLChanged);
+    Mojo.Event.listen(this.controller.get('viewURL'), Mojo.Event.tap, this.viewURLTapped);
 
     this.intervalSubmenu = { label: 'Interval Submenu', items: [
         '5s', '10s', '15s', '1m', '3m', '5m', '10m', '1hour'
