@@ -348,7 +348,7 @@ ControlPanelAssistant.prototype.postURLChanged = function() {
 ControlPanelAssistant.prototype.viewURLChanged = function() {
     Mojo.Log.info("ControlPanel::viewURLChanged(): %s", this.viewURLModel.value);
 
-    if( this.viewURLModel.value.match(/[a-zA-Z]/) ) {
+    if( this.viewURLModel.value && this.viewURLModel.value.match(/[a-zA-Z]/) ) {
         this.commandMenuModel.items = [ this.noteModel, this.sendModel ];
         this.controller.modelChanged(this.commandMenuModel);
 
