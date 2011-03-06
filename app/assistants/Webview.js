@@ -74,6 +74,7 @@ WebviewAssistant.prototype.donebutton = function() {
     if( this.donecb ) {
         this.donecb(this._token);
         delete this.donecb;
+        this.SC.popScene(); // bye!!
     }
 };
 
