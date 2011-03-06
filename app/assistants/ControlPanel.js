@@ -115,7 +115,7 @@ ControlPanelAssistant.prototype.setup = function() {
         holdToEdit:    true, // otherwise it steals focus first thing
         multiline:     false
     };
-    this.postURLModel = { value: 'http://db.JGPS.me/input' };
+    this.postURLModel = { value: '' };
     this.controller.setupWidget('postURL', this.postURLAttributes, this.postURLModel);
     this.postURLChanged = this.postURLChanged.bindAsEventListener(this);
     Mojo.Event.listen($('postURL'), Mojo.Event.propertyChange, this.postURLChanged);
@@ -874,19 +874,31 @@ ControlPanelAssistant.prototype.resetMe = function() {
             if( value === "reset" ) {
                 Mojo.Log.info("ControlPannel::resetMe() [resetting]");
 
+                this.trackingModel.value = false;
+                this.controller.modelChanged(this.trackingModel);
+                this.trackingChanged();
+
+                this.fixCount = 0;
+                this.ackCount = 0;
+
                 this.postURLModel.value        = this.postURLModel.def;
                 this.viewURLModel.value        = this.viewURLModel.def;
                 this.continuousModel.value     = this.continuousModel.def;
                 this.updateIntervalModel.value = this.updateIntervalModel.def;
                 this.bufferSizeModel.value     = this.bufferSizeModel.def;
                 this._token = '';
-                this.savePrefs();
 
-                this.controller.modelChanged( this.postURLModel.value        );
-                this.controller.modelChanged( this.viewURLModel.value        );
-                this.controller.modelChanged( this.continuousModel.value     );
-                this.controller.modelChanged( this.updateIntervalModel.value );
-                this.controller.modelChanged( this.bufferSizeModel.value     );
+                // this.savePrefs(); // these three below all save anyway
+
+                this.continuousChanged();
+                this.updateIntervalChanged();
+                this.bufferSizeChanged();
+
+                this.controller.modelChanged( this.postURLModel        );
+                this.controller.modelChanged( this.viewURLModel        );
+                this.controller.modelChanged( this.continuousModel     );
+                this.controller.modelChanged( this.updateIntervalModel );
+                this.controller.modelChanged( this.bufferSizeModel     );
 
             } else {
                 Mojo.Log.info("ControlPannel::resetMe() [equivocating]");
