@@ -25,21 +25,36 @@ StageAssistant.prototype.setup = function() {
     ** });
     */
 
+    this._count = 0;
+
 };
 
 StageAssistant.prototype.popScene = function() {
     this.controller.popScene();
+    this._count --;
 };
 
 StageAssistant.prototype.showScene = function (sceneName, args) {
-	Mojo.Log.info("StageAssistant()::showScene(%s)", sceneName);
+	Mojo.Log.info("StageAssistant()::showScene(%s) [ss: %d]", sceneName, this._count);
 
-	if (args === undefined) {
-		this.controller.pushScene({name: sceneName, sceneTemplate: sceneName});
+    if( this._count < 2 ) {
+        if (args === undefined) {
+            this.controller.pushScene({name: sceneName, sceneTemplate: sceneName});
 
-	} else {
-		this.controller.pushScene({name: sceneName, sceneTemplate: sceneName}, args);
-	}
+        } else {
+            this.controller.pushScene({name: sceneName, sceneTemplate: sceneName}, args);
+        }
+
+    } else {
+        if (args === undefined) {
+            this.controller.swapScene({name: sceneName, sceneTemplate: sceneName});
+
+        } else {
+            this.controller.swapScene({name: sceneName, sceneTemplate: sceneName}, args);
+        }
+    }
+
+    this._count ++;
 };
 
 StageAssistant.prototype.handleCommand = function(event) {
