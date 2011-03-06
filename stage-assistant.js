@@ -52,7 +52,7 @@ StageAssistant.prototype.handleCommand = function(event) {
         if( a = event.command.match(/^myshow-(.+)/) )
             Mojo.Controller.stageController.assistant.showScene(a[1]);
 
-        if( a = event.command.match(/^reset/) )
+        if( a = event.command.match(/reset/) )
             OPT._thisScene.resetMe();
 
         if( a = event.command.match(/^json-gps/) )
