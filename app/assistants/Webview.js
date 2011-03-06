@@ -159,7 +159,7 @@ WebviewAssistant.prototype.progress = function(event) {
                     PalmSystem.paste();
                     var val = t_mojo.getValue();
                     if( val ) {
-                        if( val.match(/^[0-9a-fA-F]{7,}$/) ) {
+                        if( val.length >= 5 && val.length <= 65 ) {
                             Mojo.Log.info("found token \"%s\", using", val);
                             t_mojo.setValue("");
                             this._token = val;
