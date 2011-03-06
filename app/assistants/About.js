@@ -10,6 +10,10 @@ function AboutAssistant() {
 }
 
 AboutAssistant.prototype.setup = function() {
+    this.SC = Mojo.Controller.stageController.assistant;
+    this.menuSetup = this.SC.menuSetup.bind(this);
+    this.menuSetup();
+
     this.controller.get("build-date").update(
         "This instance was built on " + this.buildDate.toLocaleString() + "."
     );
