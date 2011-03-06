@@ -414,12 +414,9 @@ ControlPanelAssistant.prototype.trackingChanged = function() {
                 onFailure: this.trackingFailedResponseHandler
             });
 
-        } else {
-            this.trackingLast = 0;
-
-            // there's nothing to start here
         }
 
+        this.trackingLast = 0;
         this.controller.get("continuousUpdatesGroup").hide();
         $$("div.explanation").each(function(i){i.hide();});
 
@@ -745,6 +742,18 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
     ** "altitude": 500, "vertAccuracy": 0.5},
     ** file:///var/usr/palm/applications/com.jettero.jlt/index.html:0
     */
+
+    if( this.continuousModel.value ) {
+        // If we're in continuous mode, we check the updateinterval to see if
+        // it's too soon to post this fix.  This is similar to what
+        // trackingLoop does.
+
+        var now = (new Date()).getTime()/1000;
+        if( this.trackingLast + this.updateIntervalModel.value < now )
+            this.trackingLast = now;
+
+        else return;
+    }
 
     this.trackingFixRunning = false;
     this.fixCount ++;
@@ -1096,7 +1105,6 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     var d1 = this.controller.get("desc1");
 
     var to = 10e3;
-    if( !this.continuousModel.value )
         to += this.updateIntervalModel.value * 1e3;
 
     d1.innerHTML = this.fixCount + " reads, " + this.ackCount + " posted";
