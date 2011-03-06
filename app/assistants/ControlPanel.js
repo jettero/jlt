@@ -186,6 +186,11 @@ ControlPanelAssistant.prototype.setup = function() {
     this.restoring = false;
 
     this.doneAuthing = this.doneAuthing.bind(this);
+
+    for( var _k in this ) {
+        if( _k.match(/Model$/) )
+            _k.def = _k.value;
+    }
 };
 // }}}
 // ControlPanelAssistant.prototype.activate = function(event) {{{
@@ -789,6 +794,8 @@ ControlPanelAssistant.prototype.trackingFailedResponseHandler = function(result)
 
 // ControlPanelAssistant.prototype.restorePrefs = function() {{{
 ControlPanelAssistant.prototype.restorePrefs = function() {
+    Mojo.Log.info("ControlPannel::restorePrefs())");
+
     this.dbo.simpleGet("prefs",
         function(prefs) {
             Mojo.Log.info("restoring prefs: %s", Object.toJSON(prefs));
@@ -832,7 +839,7 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
 // }}}
 // ControlPanelAssistant.prototype.savePrefs = function() {{{
 ControlPanelAssistant.prototype.savePrefs = function() {
-    Mojo.Log.info("save() restoring=%s (aborts when true)", this.restoring ? "true" : "false");
+    Mojo.Log.info("ControlPannel::savePrefs() restoring=%s (aborts when true)", this.restoring ? "true" : "false");
 
     if( this.restoring )
         return;
@@ -856,6 +863,25 @@ ControlPanelAssistant.prototype.savePrefs = function() {
             Mojo.Controller.errorDialog("ERROR saving prefs (#" + result.message + ").");
         }.bind(this)
     );
+};
+// }}}
+// ControlPanelAssistant.prototype.resetMe = function() {{{
+ControlPanelAssistant.prototype.resetMe = function() {
+    Mojo.Log.info("ControlPannel::resetMe())");
+
+    this.postURLModel.value        = this.postURLModel.def;
+    this.viewURLModel.value        = this.viewURLModel.def;
+    this.continuousModel.value     = this.continuousModel.def;
+    this.updateIntervalModel.value = this.updateIntervalModel.def;
+    this.bufferSizeModel.value     = this.bufferSizeModel.def;
+    this._token = '';
+    this.savePrefs();
+
+    this.controller.modelChanged( this.postURLModel.value        );
+    this.controller.modelChanged( this.viewURLModel.value        );
+    this.controller.modelChanged( this.continuousModel.value     );
+    this.controller.modelChanged( this.updateIntervalModel.value );
+    this.controller.modelChanged( this.bufferSizeModel.value     );
 };
 // }}}
 
