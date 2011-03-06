@@ -80,7 +80,7 @@ StageAssistant.prototype.menuSetup = function() {
     };
 
     if( this.resetMe )
-        this.appMenuModel.items.splice(2,0, { label: "Reset", command: 'factory-reset' });
+        this.appMenuModel.items.splice(2,0, { label: "Reset all Settings", command: 'factory-reset' });
 
     this.controller.setupWidget(Mojo.Menu.appMenu, {omitDefaultItems: true}, this.appMenuModel);
 };

@@ -867,21 +867,38 @@ ControlPanelAssistant.prototype.savePrefs = function() {
 // }}}
 // ControlPanelAssistant.prototype.resetMe = function() {{{
 ControlPanelAssistant.prototype.resetMe = function() {
-    Mojo.Log.info("ControlPannel::resetMe())");
+    Mojo.Log.info("ControlPannel::resetMe()");
 
-    this.postURLModel.value        = this.postURLModel.def;
-    this.viewURLModel.value        = this.viewURLModel.def;
-    this.continuousModel.value     = this.continuousModel.def;
-    this.updateIntervalModel.value = this.updateIntervalModel.def;
-    this.bufferSizeModel.value     = this.bufferSizeModel.def;
-    this._token = '';
-    this.savePrefs();
+    this.controller.showAlertDialog({
+        onChoose: function(value) {
+            if( value === "reset" ) {
+                Mojo.Log.info("ControlPannel::resetMe() [resetting]");
 
-    this.controller.modelChanged( this.postURLModel.value        );
-    this.controller.modelChanged( this.viewURLModel.value        );
-    this.controller.modelChanged( this.continuousModel.value     );
-    this.controller.modelChanged( this.updateIntervalModel.value );
-    this.controller.modelChanged( this.bufferSizeModel.value     );
+                this.postURLModel.value        = this.postURLModel.def;
+                this.viewURLModel.value        = this.viewURLModel.def;
+                this.continuousModel.value     = this.continuousModel.def;
+                this.updateIntervalModel.value = this.updateIntervalModel.def;
+                this.bufferSizeModel.value     = this.bufferSizeModel.def;
+                this._token = '';
+                this.savePrefs();
+
+                this.controller.modelChanged( this.postURLModel.value        );
+                this.controller.modelChanged( this.viewURLModel.value        );
+                this.controller.modelChanged( this.continuousModel.value     );
+                this.controller.modelChanged( this.updateIntervalModel.value );
+                this.controller.modelChanged( this.bufferSizeModel.value     );
+
+            } else {
+                Mojo.Log.info("ControlPannel::resetMe() [equivocating]");
+            }
+        },
+        title:   "Reset all Settings",
+        message: "Are you sure you want to reset everything??",
+        choices:[
+            {label: "Reset",  value:"reset",  type:'negative'},
+            {label: "Cancel", value:"cancel", type:'dismiss'}
+        ]
+    });
 };
 // }}}
 
