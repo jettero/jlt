@@ -58,24 +58,23 @@ StageAssistant.prototype.showScene = function (sceneName, args) {
 };
 
 StageAssistant.prototype.handleCommand = function(event) {
-    // this.controller = Mojo.Controller.stageController.activeScene();
-    // I have this bound to the current scene, so ... this isn't necessary
+    var controller = Mojo.Controller.stageController.activeScene().assistant;
 
     if(event.type === Mojo.Event.command) {
-        Mojo.Log.info("executing mehu command: %s", event.command);
+        Mojo.Log.info("executing menu command: %s", event.command);
         var a;
         if( a = event.command.match(/^myshow-(.+)/) )
             Mojo.Controller.stageController.assistant.showScene(a[1]);
 
         if( a = event.command.match(/reset/) )
-            OPT._thisScene.resetMe();
+            controller.resetMe();
 
         if( a = event.command.match(/clear-token/) )
-            OPT._thisScene.clearToken();
+            controller.clearToken();
 
         if( a = event.command.match(/^json-gps/) )
-            if( OPT._thisScene )
-                OPT._thisScene.controller.serviceRequest("palm://com.palm.applicationManager", {
+            if( controller )
+                controller.controller.serviceRequest("palm://com.palm.applicationManager", {
                     method: "open",
                     parameters:  {
                        id: 'com.palm.app.browser',
@@ -86,8 +85,6 @@ StageAssistant.prototype.handleCommand = function(event) {
 };
 
 StageAssistant.prototype.menuSetup = function() {
-    OPT._thisScene = this;
-
     this.appMenuModel = {
         visible: true,
         items: [
