@@ -100,7 +100,7 @@ ControlPanelAssistant.prototype.setup = function() {
     Mojo.Event.listen(this.controller.get('trackingToggle'), Mojo.Event.propertyChange, this.trackingChanged);
 
     this.continuousOpts = {};
-    this.continuousModel = { value: false };
+    this.continuousModel = { value: true }; // this probably works better, only concern is battery
     this.controller.setupWidget('continuousUpdates', this.continuousOpts, this.continuousModel);
     this.continuousChanged = this.continuousChanged.bindAsEventListener(this);
     Mojo.Event.listen(this.controller.get('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
