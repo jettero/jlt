@@ -749,10 +749,19 @@ ControlPanelAssistant.prototype.trackingSuccessResponseHandler = function(result
         // trackingLoop does.
 
         var now = (new Date()).getTime()/1000;
-        if( this.trackingLast + this.updateIntervalModel.value < now )
-            this.trackingLast = now;
 
-        else return;
+        // NOTE: Since continuous fixes don't always come every second, it
+        // makes sense to use a fuzzy interval match, but how wide should the
+        // interval be?  Here, we pretend to be a few seconds in the future.
+
+        var fake_dt = parseInt(0.1 * this.updateIntervalModel.value, 10);
+        if( fake_dt <  1 ) fake_dt = 1;
+        if( fake_dt > 30 ) fake_dt = 30;
+
+        if( this.trackingLast + this.updateIntervalModel.value < (now+fake_dt) )
+            this.trackingLast = now; // fall through and record fix
+
+        else return; // too soon
     }
 
     this.trackingFixRunning = false;
