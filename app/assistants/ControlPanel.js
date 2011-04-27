@@ -106,8 +106,10 @@ ControlPanelAssistant.prototype.setup = function() {
     Mojo.Event.listen(this.controller.get('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
 
     this.startupOpts = {};
-    this.startupModel = { value: true }; // this probably works better, only concern is battery
+    this.startupModel = { value: false };
     this.controller.setupWidget('startupTrackingEnabled', this.startupOpts, this.startupModel);
+    Mojo.Event.listen(this.controller.get('startupTrackingEnabled'), Mojo.Event.propertyChange,
+        function(){ this.savePrefs(); }.bind(this));
 
     this.postURLAttributes = {
         hintText:      'http://db.JGPS.me/input',
@@ -835,12 +837,14 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
             this.viewURLModel.value        = prefs.viewURL;
             this._token                    = prefs.token;
             this.postURLModel.value        = prefs.postURL;
+            this.startupModel.value        = prefs.startupModel;
 
             this.controller.modelChanged(this.updateIntervalModel);
             this.controller.modelChanged(this.bufferSizeModel);
             this.controller.modelChanged(this.continuousModel);
             this.controller.modelChanged(this.postURLModel);
             this.controller.modelChanged(this.viewURLModel);
+            this.controller.modelChanged(this.startupModel);
 
             this.viewURLChanged(); // this does some additional stuff, the others don't really do
 
@@ -874,6 +878,7 @@ ControlPanelAssistant.prototype.savePrefs = function() {
         continuous:     this.continuousModel.value,
         updateInterval: this.updateIntervalModel.value,
         bufferSize:     this.bufferSizeModel.value,
+        startup:        this.startupModel.value,
         token:          this._token
     };
 
