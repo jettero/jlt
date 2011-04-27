@@ -105,6 +105,10 @@ ControlPanelAssistant.prototype.setup = function() {
     this.continuousChanged = this.continuousChanged.bindAsEventListener(this);
     Mojo.Event.listen(this.controller.get('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
 
+    this.startupOpts = {};
+    this.startupModel = { value: true }; // this probably works better, only concern is battery
+    this.controller.setupWidget('startupTrackingEnabled', this.startupOpts, this.startupModel);
+
     this.postURLAttributes = {
         hintText:      'http://db.JGPS.me/input',
         textFieldName: 'postURL',
