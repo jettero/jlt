@@ -837,7 +837,7 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
             this.viewURLModel.value        = prefs.viewURL;
             this._token                    = prefs.token;
             this.postURLModel.value        = prefs.postURL;
-            this.startupModel.value        = prefs.startupModel;
+            this.startupModel.value        = prefs.startup;
 
             this.controller.modelChanged(this.updateIntervalModel);
             this.controller.modelChanged(this.bufferSizeModel);
