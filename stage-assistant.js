@@ -15,7 +15,10 @@ function StageAssistant() {
 StageAssistant.prototype.setup = function() {
 	Mojo.Log.info("StageAssistant()::setup()");
 
-    this.controller.assistant.showScene('ControlPanel');
+    this.showScene('ControlPanel');
+
+    if( CHANGELOG_COOKIE.get() !== CHANGELOG_KEY )
+        this.showScene("ChangeLog");
 
     /* DEBUG
     ** this.showScene("Webview", {
@@ -82,9 +85,10 @@ StageAssistant.prototype.menuSetup = function() {
         visible: true,
         items: [
             Mojo.Menu.editItem,
-            { label: "JGPS.me", command: 'json-gps'      },
-            { label: "Help",    command: 'myshow-Help'   },
-            { label: "About",   command: 'myshow-About'  }
+            { label: "JGPS.me",   command: 'json-gps'         },
+            { label: "Help",      command: 'myshow-Help'      },
+            { label: "About",     command: 'myshow-About'     },
+            { label: "ChangeLog", command: 'myshow-ChangeLog' }
         ]
     };
 

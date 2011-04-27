@@ -1,10 +1,13 @@
 [
     { "source": "codeJanitorAjaxTimeoutExtension.js" },
+    { "source": "md5.js" },
 
     { "source": "app/assistants/About.js" },
     { "source": "app/assistants/Help.js" },
     { "source": "app/assistants/ControlPanel.js" },
     { "source": "app/assistants/ExtraInfoDialog.js" },
     { "source": "app/assistants/Webview.js" },
+    { "source": "app/assistants/ChangeLog.js" },
+
     { "source": "stage-assistant.js" }
 ]
