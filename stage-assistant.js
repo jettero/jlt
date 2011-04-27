@@ -17,6 +17,9 @@ StageAssistant.prototype.setup = function() {
 
     this.controller.assistant.showScene('ControlPanel');
 
+    if( CHANGELOG_COOKIE.get() !== CHANGELOG_KEY )
+        this.controller.assistant.showScene("ChangeLog");
+
     /* DEBUG
     ** this.showScene("Webview", {
     **     title: "Frobby Debug",
