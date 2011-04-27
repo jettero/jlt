@@ -1,6 +1,6 @@
 /*jslint white: false, onevar: false, laxbreak: true, maxerr: 500000
 */
-/*global Mojo $ ControlPanelAssistant clearTimeout setInterval setTimeout WebviewDialog Ajax ExtraInfoDialog
+/*global Mojo $ ControlPanelAssistant clearTimeout setInterval setTimeout WebviewDialog Ajax ExtraInfoDialog $$
 */
 
 /*
@@ -632,9 +632,11 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
             // probably be an option.  If the buffer is big enough it may be
             // worth collecting data while the user is unauthed.
 
+            /*
             this.trackingModel.value = false;
             this.controller.modelChanged(this.trackingModel);
             this.trackingChanged();
+            */
         }
 
         // If we're authing, there's really no reason to keep trying to post data to the collector
@@ -657,7 +659,7 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
             this.buffer.length, Object.toJSON(p));
 
         this._request_no ++;
-        this.runningRequest = new Ajax.Request(this.postURLModel.value||"http://db.JGPS.me/input", {
+        this.runningRequest = new Ajax.Request(this.postURLModel.value||"http://db.jgps.me/input", {
             method: 'post',
 
             parameters: p,
@@ -861,6 +863,8 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
                 this.trackingChanged();
             }
 
+            this.testViewURL();
+
             Mojo.Log.info("restored prefs: %s", Object.toJSON(prefs));
 
         }.bind(this),
@@ -981,6 +985,37 @@ ControlPanelAssistant.prototype.clearToken = function() {
             {label: "Cancel", value:"cancel", type:'dismiss'}
         ]
     });
+};
+// }}}
+// ControlPanelAssistant.prototype.testViewURL = function() {{{
+ControlPanelAssistant.prototype.testViewURL = function() {
+    Mojo.Log.info("ControlPannel::testViewURL()");
+
+    var res;
+    if( res = this.viewURLModel.value.match(/(http:\/\/.*(?:jgps.me|corky.vhb:8080))\/l\/(.+)/) ) {
+        Mojo.Log.info("ControlPannel::testViewURL() host=%s token=%s", res[1], res[2]);
+        var k = function(){ delete this._tt; }.bind(this);
+        if( !this._tt ) {
+            this._tt = new Ajax.Request(res[1] + "/tt/" + res[2], {
+                method: 'get', parameters: {},
+
+                on403:       k,
+                on404:       k,
+                onFailure:   k,
+                onException: k,
+
+                onSuccess: function(r){
+                    delete this._tt;
+                    if(!r.result) {
+                        this.viewURLModel.value='';
+                        this.controller.modelChanged(this.viewURLModel);
+                    }
+
+                }.bind(this)
+
+            });
+        }
+    }
 };
 // }}}
 
