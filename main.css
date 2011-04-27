@@ -80,3 +80,5 @@ div.load-progress {
 #desc1 { float: left; }
 #desc2 { float: right; }
 #desc3 { margin-top: 0.25em; }
+
+div.changelog-line { text-indent: -4em; margin-left: 4em; }
