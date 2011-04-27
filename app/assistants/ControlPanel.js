@@ -632,9 +632,11 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
             // probably be an option.  If the buffer is big enough it may be
             // worth collecting data while the user is unauthed.
 
+            /*
             this.trackingModel.value = false;
             this.controller.modelChanged(this.trackingModel);
             this.trackingChanged();
+            */
         }
 
         // If we're authing, there's really no reason to keep trying to post data to the collector
