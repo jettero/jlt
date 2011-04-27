@@ -854,6 +854,13 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
 
             this.restoring = false;
 
+            if( this.startupModel.value && !this._autoStarted ) {
+                this._autoStarted = true;
+                this.trackingModel.value = true;
+                this.controller.modelChanged(this.trackingModel);
+                this.trackingChanged();
+            }
+
             Mojo.Log.info("restored prefs: %s", Object.toJSON(prefs));
 
         }.bind(this),
