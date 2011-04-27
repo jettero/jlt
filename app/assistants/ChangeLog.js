@@ -4,6 +4,8 @@
 */
 
 var CHANGELOG = [
+    [ '2011-04-27', '0.95.3', "Lastly, why does the auth_token request require that tracking stop?  Fixed." ],
+    [ '2011-04-27', '0.95.3', "Clear the view url if the token is jgps.me and is obviously expired." ],
     [ '2011-04-27', '0.95.3', "Added option to start tracking when the app opens" ],
     [ '2011-04-27', '0.95.3', "Added this changelog, fixed various bugs with card stack" ]
 ];
