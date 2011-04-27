@@ -1005,8 +1005,11 @@ ControlPanelAssistant.prototype.testViewURL = function() {
                 onException: k,
 
                 onSuccess: function(r){
+                    Mojo.Log.info("ControlPannel::testViewURL() test.result=%s", r.result ? "true" : "false");
+
                     delete this._tt;
                     if(!r.result) {
+                        Mojo.Log.info("ControlPannel::testViewURL() newking");
                         this.viewURLModel.value='';
                         this.controller.modelChanged(this.viewURLModel);
                     }
