@@ -15,10 +15,10 @@ function StageAssistant() {
 StageAssistant.prototype.setup = function() {
 	Mojo.Log.info("StageAssistant()::setup()");
 
-    this.controller.assistant.showScene('ControlPanel');
+    this.showScene('ControlPanel');
 
     if( CHANGELOG_COOKIE.get() !== CHANGELOG_KEY )
-        this.controller.assistant.showScene("ChangeLog");
+        this.showScene("ChangeLog");
 
     /* DEBUG
     ** this.showScene("Webview", {
