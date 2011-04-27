@@ -82,7 +82,7 @@ blarg
 
 =head1 COPYRIGHT
 
-Copyright 2010 -- Paul Miller C<< <jettero@cpan.org> >>
+Copyright 2011 -- Paul Miller C<< <jettero@cpan.org> >>
 
 Licensed under the current version of the GPL.
 
