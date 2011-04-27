@@ -1,6 +1,6 @@
 /*jslint white: false, onevar: false, laxbreak: true, maxerr: 500000
 */
-/*global Mojo $ ControlPanelAssistant clearTimeout setInterval setTimeout WebviewDialog Ajax ExtraInfoDialog
+/*global Mojo $ ControlPanelAssistant clearTimeout setInterval setTimeout WebviewDialog Ajax ExtraInfoDialog $$
 */
 
 /*
@@ -657,17 +657,17 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
             this.buffer.length, Object.toJSON(p));
 
         this._request_no ++;
-        this.runningRequest = new Ajax.Request(this.postURLModel.value||"http://db.JGPS.me/input", {
+        this.runningrequest = new Ajax.request(this.posturlmodel.value||"http://db.jgps.me/input", {
             method: 'post',
 
             parameters: p,
 
-            on403: this.postFixes4xxFail,
-            on404: this.postFixes4xxFail,
+            on403: this.postfixes4xxfail,
+            on404: this.postfixes4xxfail,
 
-            onSuccess:   this.postFixesSuccess,
-            onFailure:   this.postFixesFailure,
-            onException: this.postFixesFailure
+            onsuccess:   this.postfixessuccess,
+            onfailure:   this.postfixesfailure,
+            onexception: this.postfixesfailure
         });
     }
 };
@@ -861,6 +861,8 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
                 this.trackingChanged();
             }
 
+            this.testViewURL();
+
             Mojo.Log.info("restored prefs: %s", Object.toJSON(prefs));
 
         }.bind(this),
@@ -981,6 +983,35 @@ ControlPanelAssistant.prototype.clearToken = function() {
             {label: "Cancel", value:"cancel", type:'dismiss'}
         ]
     });
+};
+// }}}
+// ControlPanelAssistant.prototype.testViewURL = function() {{{
+ControlPanelAssistant.prototype.testViewURL = function() {
+    Mojo.Log.info("ControlPannel::testViewURL()");
+
+    var res;
+    if( res = this.viewURLModel.value.match(/(http:\/\/.*(?:jgps.me|corky.vhb:8080))\/l\/(.+)/) ) {
+        Mojo.Log.info("ControlPannel::testViewURL() host=%s token=%s", res[1], res[2]);
+        var k = function(){ delete this._tt; }.bind(this);
+        if( !this._tt ) {
+            this._tt = new Ajax.request(res[1] + "/tt/" + res[2], {
+                method: 'get',
+
+                on403: k,
+                on404: k,
+                onfailure:   k,
+                onexception: k,
+
+                onsuccess:   function(r){
+                    delete this._tt;
+                    if(!r.result) {
+                        this.viewURLModel.value='';
+                        this.controller.modelChanged(this.viewURLModel);
+                    }
+                }
+            });
+        }
+    }
 };
 // }}}
 
