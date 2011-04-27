@@ -659,17 +659,17 @@ ControlPanelAssistant.prototype.bufferCheckLoop = function() {
             this.buffer.length, Object.toJSON(p));
 
         this._request_no ++;
-        this.runningrequest = new Ajax.request(this.posturlmodel.value||"http://db.jgps.me/input", {
+        this.runningRequest = new Ajax.Request(this.postURLModel.value||"http://db.jgps.me/input", {
             method: 'post',
 
             parameters: p,
 
-            on403: this.postfixes4xxfail,
-            on404: this.postfixes4xxfail,
+            on403: this.postFixes4xxFail,
+            on404: this.postFixes4xxFail,
 
-            onsuccess:   this.postfixessuccess,
-            onfailure:   this.postfixesfailure,
-            onexception: this.postfixesfailure
+            onSuccess:   this.postFixesSuccess,
+            onFailure:   this.postFixesFailure,
+            onException: this.postFixesFailure
         });
     }
 };
@@ -996,21 +996,23 @@ ControlPanelAssistant.prototype.testViewURL = function() {
         Mojo.Log.info("ControlPannel::testViewURL() host=%s token=%s", res[1], res[2]);
         var k = function(){ delete this._tt; }.bind(this);
         if( !this._tt ) {
-            this._tt = new Ajax.request(res[1] + "/tt/" + res[2], {
-                method: 'get',
+            this._tt = new Ajax.Request(res[1] + "/tt/" + res[2], {
+                method: 'get', parameters: {},
 
-                on403: k,
-                on404: k,
-                onfailure:   k,
-                onexception: k,
+                on403:       k,
+                on404:       k,
+                onFailure:   k,
+                onException: k,
 
-                onsuccess:   function(r){
+                onSuccess: function(r){
                     delete this._tt;
                     if(!r.result) {
                         this.viewURLModel.value='';
                         this.controller.modelChanged(this.viewURLModel);
                     }
-                }
+
+                }.bind(this)
+
             });
         }
     }
