@@ -18,6 +18,10 @@ function ChangeLogAssistant() {
 ChangeLogAssistant.prototype.setup = function() {
     Mojo.Log.info("ChangeLog::setup()");
 
+    this.SC = Mojo.Controller.stageController.assistant;
+    this.menuSetup = this.SC.menuSetup.bind(this);
+    this.menuSetup();
+
     var clv = CHANGELOG_COOKIE.get();
 
     this.OKModel          = { label: "OK, I read this.", command: CHANGELOG_KEY };
