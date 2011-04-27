@@ -105,6 +105,12 @@ ControlPanelAssistant.prototype.setup = function() {
     this.continuousChanged = this.continuousChanged.bindAsEventListener(this);
     Mojo.Event.listen(this.controller.get('continuousUpdates'), Mojo.Event.propertyChange, this.continuousChanged);
 
+    this.startupOpts = {};
+    this.startupModel = { value: false };
+    this.controller.setupWidget('startupTrackingEnabled', this.startupOpts, this.startupModel);
+    Mojo.Event.listen(this.controller.get('startupTrackingEnabled'), Mojo.Event.propertyChange,
+        function(){ this.savePrefs(); }.bind(this));
+
     this.postURLAttributes = {
         hintText:      'http://db.JGPS.me/input',
         textFieldName: 'postURL',
@@ -831,12 +837,14 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
             this.viewURLModel.value        = prefs.viewURL;
             this._token                    = prefs.token;
             this.postURLModel.value        = prefs.postURL;
+            this.startupModel.value        = prefs.startup;
 
             this.controller.modelChanged(this.updateIntervalModel);
             this.controller.modelChanged(this.bufferSizeModel);
             this.controller.modelChanged(this.continuousModel);
             this.controller.modelChanged(this.postURLModel);
             this.controller.modelChanged(this.viewURLModel);
+            this.controller.modelChanged(this.startupModel);
 
             this.viewURLChanged(); // this does some additional stuff, the others don't really do
 
@@ -845,6 +853,13 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
             this.continuousChanged();
 
             this.restoring = false;
+
+            if( this.startupModel.value && !this._autoStarted ) {
+                this._autoStarted = true;
+                this.trackingModel.value = true;
+                this.controller.modelChanged(this.trackingModel);
+                this.trackingChanged();
+            }
 
             Mojo.Log.info("restored prefs: %s", Object.toJSON(prefs));
 
@@ -870,6 +885,7 @@ ControlPanelAssistant.prototype.savePrefs = function() {
         continuous:     this.continuousModel.value,
         updateInterval: this.updateIntervalModel.value,
         bufferSize:     this.bufferSizeModel.value,
+        startup:        this.startupModel.value,
         token:          this._token
     };
 
