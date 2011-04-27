@@ -32,15 +32,10 @@ StageAssistant.prototype.setup = function() {
 
 };
 
-StageAssistant.prototype.popScene = function() {
-    this.controller.popScene();
-    this._count --;
-};
-
 StageAssistant.prototype.showScene = function (sceneName, args) {
 	Mojo.Log.info("StageAssistant()::showScene(%s) [ss: %d]", sceneName, this._count);
 
-    if( this._count < 2 ) {
+    if( this.controller.getScenes().length < 2 ) {
         if (args === undefined) {
             this.controller.pushScene({name: sceneName, sceneTemplate: sceneName});
 
@@ -56,8 +51,6 @@ StageAssistant.prototype.showScene = function (sceneName, args) {
             this.controller.swapScene({name: sceneName, sceneTemplate: sceneName}, args);
         }
     }
-
-    this._count ++;
 };
 
 StageAssistant.prototype.handleCommand = function(event) {
