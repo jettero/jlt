@@ -4,7 +4,7 @@
 */
 
 var CHANGELOG = [
-    [ '2011-04-27', '0.95.3', "Added this changelog" ]
+    [ '2011-04-27', '0.95.3', "Added this changelog, fixed various bugs with card stack" ]
 ];
 
 var CHANGELOG_KEY    = "K:" + hex_md5(CHANGELOG.each(function(c){ return c.join("-"); }).join("|"));
