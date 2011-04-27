@@ -4,6 +4,7 @@
 */
 
 var CHANGELOG = [
+    [ '2011-04-27', '0.95.3', "Added option to start tracking when the app opens" ],
     [ '2011-04-27', '0.95.3', "Added this changelog, fixed various bugs with card stack" ]
 ];
 
