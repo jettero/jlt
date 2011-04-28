@@ -8,7 +8,8 @@ buildrelease releasebuild:
 
 release: releasebuild clean
 	git fetch github gh-pages:gh-pages
-	x=$$(ls -1 *.ipk); mv -v $$x /tmp; git checkout gh-pages; mv -v /tmp/$$x .; git add *.ipk; git clean -dfx
+	x=$$(ls -1 *.ipk); mv -v $$x /tmp; git checkout gh-pages; mv -v /tmp/$$x .; git add *.ipk; git clean -dfx \
+    cp -v $$x ~/Dropbox/00.jlt/
 
 test: clean
 	@+ JLT_LOGLEVEL=99 make --no-print-directory build
