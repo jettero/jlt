@@ -996,19 +996,23 @@ ControlPanelAssistant.prototype.testViewURL = function() {
         Mojo.Log.info("ControlPannel::testViewURL() host=%s token=%s", res[1], res[2]);
         var k = function(){ delete this._tt; }.bind(this);
         if( !this._tt ) {
-            this._tt = new Ajax.Request(res[1] + "/tt/" + res[2], {
-                method: 'get', parameters: {},
+            var testURL = res[1] + "/tt";
+            Mojo.Log.info("ControlPannel::testViewURL() testURL: %s", testURL);
+            this._tt = new Ajax.Request(testURL, {
+                method: 'get', parameters: {token: res[2]},
 
                 on403:       k,
                 on404:       k,
                 onFailure:   k,
                 onException: k,
 
-                onSuccess: function(r){
-                    Mojo.Log.info("ControlPannel::testViewURL() test.result=%s", r.result ? "true" : "false");
+                onSuccess: function(transport){
+                    var result;
+                    try{ result = (js = transport.responseText.evalJSON()).result; } catch(e){}
+                    Mojo.Log.info("ControlPannel::testViewURL() test.result=%s", Object.toJSON(result));
 
                     delete this._tt;
-                    if(!r.result) {
+                    if(!result) {
                         Mojo.Log.info("ControlPannel::testViewURL() newking");
                         this.viewURLModel.value='';
                         this.controller.modelChanged(this.viewURLModel);
