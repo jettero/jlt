@@ -37,7 +37,8 @@ build: framework_config.json build_date
 	ln -sf ./ $(name) && \
         palm-package --exclude "*.tar.gz" --exclude .git --exclude cgi --exclude "*.ipk" \
                      --exclude $(name) --exclude contrib --exclude Makefile \
-                     --exclude demo-server.pl --exclude cgi \
+                     --exclude log-parse.pl --exclude test-server.pl --exclude cgi \
+                     --exclude framework_config.json.in \
         $(name) && rm $(name)
 
 README: app/views/About.html app/views/Help.html Makefile
