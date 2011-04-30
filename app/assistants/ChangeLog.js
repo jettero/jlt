@@ -45,8 +45,23 @@ ChangeLogAssistant.prototype.setup = function() {
 
     this.controller.setupWidget(Mojo.Menu.commandMenu, {menuClass: 'no-fade'}, this.commandMenuModel);
 
-    this.changelogModel = {listTitle: 'ChangeLog', items: CHANGELOG.map(function(i){ return {
-        'date': i[0], version: i[1], text: i[2] };})};
+    var changelogItems = [];
+
+    CHANGELOG.each(function(i){
+        var j = { date: i[0], version: i[1], text: i[2] };
+
+        if( changelogItems.length ) {
+            var k = changelogItems[changelogItems.length-1];
+            if( k.date === j.date && k.version === j.version ) {
+                k.text = j.text + " " + k.text;
+                return;
+            }
+        }
+
+        changelogItems.push(j);
+    });
+
+    this.changelogModel = {listTitle: 'ChangeLog', items: changelogItems };
 
     this.changelogAttrs = {
         listTemplate:  'misc/naked-list-container',
