@@ -53,7 +53,8 @@ function rstr_hmac_md5(key, data)
   var bkey = rstr2binl(key);
   if(bkey.length > 16) bkey = binl_md5(bkey, key.length * 8);
 
-  var ipad = Array(16), opad = Array(16);
+  var ipad = Array(16);
+  var opad = Array(16);
   for(var i = 0; i < 16; i++)
   {
     ipad[i] = bkey[i] ^ 0x36363636;
@@ -111,7 +112,11 @@ function rstr2b64(input)
 function rstr2any(input, encoding)
 {
   var divisor = encoding.length;
-  var i, j, q, x, quotient;
+  var i;
+  var j;
+  var q;
+  var x;
+  var quotient;
 
   /* Convert to an array of 16-bit big-endian values, forming the dividend */
   var dividend = Array(Math.ceil(input.length / 2));
@@ -161,7 +166,8 @@ function str2rstr_utf8(input)
 {
   var output = "";
   var i = -1;
-  var x, y;
+  var x;
+  var y;
 
   while(++i < input.length)
   {

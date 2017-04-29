@@ -53,7 +53,7 @@ StageAssistant.prototype.showScene = function (sceneName, args) {
     }
 };
 
-StageAssistant.prototype.handleCommand = function(event) {
+StageAssistant.prototype.handleCommand = event => {
     var controller = Mojo.Controller.stageController.activeScene().assistant;
 
     if(event.type === Mojo.Event.command) {

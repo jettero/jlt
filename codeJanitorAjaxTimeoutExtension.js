@@ -3,8 +3,8 @@
 /*global Mojo Ajax setTimeout clearTimeout
 */
 
-(function(){
-    var callInProgress = function(xmlhttp) {
+((() => {
+    var callInProgress = xmlhttp => {
         switch (xmlhttp.readyState) {
             case 1:
             case 2:
@@ -17,7 +17,7 @@
         }
     };
 
-    var now = function() {
+    var now = () => {
         var d = new Date();
         var t = d.getTime();
         var n = Math.round( t/1000.0 );
@@ -28,12 +28,12 @@
     var ajaxTimeout = 10e3;
 
     Ajax.Responders.register({
-        onCreate: function(request) {
+        onCreate(request) {
             var f;
 
             request.before = now();
             request.timeoutId = setTimeout(
-                f = function() {
+                f = () => {
                     if (callInProgress(request.transport)) {
                         Mojo.Log.info("AJAX-ext Timeout fired dt=%d", now() - request.before);
                         request.transport.abort();
@@ -47,10 +47,10 @@
             );
         },
 
-        onComplete: function(request) {
+        onComplete(request) {
             Mojo.Log.info("AJAX-ext Timeout cleared normally dt=%d", now() - request.before);
             clearTimeout(request.timeoutId);
         }
     });
 
-}());
+})());

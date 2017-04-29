@@ -11,7 +11,7 @@ var CHANGELOG = [
     [ '2011-04-27', '0.95.3', "Added this changelog, fixed various bugs with card stack" ]
 ];
 
-var CHANGELOG_KEY    = "K:" + hex_md5(CHANGELOG.each(function(c){ return c.join("-"); }).join("|"));
+var CHANGELOG_KEY    = "K:" + hex_md5(CHANGELOG.each(c => c.join("-")).join("|"));
 var CHANGELOG_COOKIE = new Mojo.Model.Cookie("ChangeLog");
 
 function ChangeLogAssistant() {
@@ -36,18 +36,18 @@ ChangeLogAssistant.prototype.setup = function() {
         this.commandMenuModel.items = [ {}, this.DoneModel, {} ];
 
     } else {
-        setTimeout(function(){
+        setTimeout(() => {
             this.commandMenuModel.items = [ {}, this.OKModel, {} ];
             this.controller.modelChanged(this.commandMenuModel);
 
-        }.bind(this), 4e3);
+        }, 4e3);
     }
 
     this.controller.setupWidget(Mojo.Menu.commandMenu, {menuClass: 'no-fade'}, this.commandMenuModel);
 
     var changelogItems = [];
 
-    CHANGELOG.each(function(i){
+    CHANGELOG.each(i => {
         var j = { date: i[0], version: i[1], text: i[2] };
 
         if( changelogItems.length ) {
@@ -72,7 +72,7 @@ ChangeLogAssistant.prototype.setup = function() {
     this.controller.setupWidget('changelog', this.changelogAttrs, this.changelogModel);
 };
 
-ChangeLogAssistant.prototype.handleCommand = function(event) {
+ChangeLogAssistant.prototype.handleCommand = event => {
     Mojo.Log.info("ChangeLog::handleCommand()");
 
     if (event.type === Mojo.Event.command) {

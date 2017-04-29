@@ -90,7 +90,7 @@ WebviewAssistant.prototype.deactivate = function() {
 
 };
 
-WebviewAssistant.prototype.cleanup = function() {
+WebviewAssistant.prototype.cleanup = () => {
 };
 
 WebviewAssistant.prototype.handleCommand = function(event) {
@@ -103,11 +103,11 @@ WebviewAssistant.prototype.handleCommand = function(event) {
                 this.controller.showDialog({
                     template: 'dialogs/token',
                     assistant: new ExtraInfoDialog(this.controller, {maxLength: 64, hintText: "auth token"},
-                        function(info){
+                        info => {
                             this._token = info;
                             this.donebutton();
 
-                        }.bind(this)
+                        }
                     )
                 });
                 break;
@@ -155,7 +155,7 @@ WebviewAssistant.prototype.progress = function(event) {
         var t_node = this.controller.get("token");
         var t_mojo = t_node.mojo;
 
-        w_mojo.copy(function(a){
+        w_mojo.copy(a => {
             if( a ) {
                 if(PalmSystem && PalmSystem.paste) {
                     t_mojo.focus();
@@ -171,7 +171,7 @@ WebviewAssistant.prototype.progress = function(event) {
                     }
                 }
             }
-        }.bind(this));
+        });
 
     } catch(e) {
         Mojo.Log.logException(e, e.description);

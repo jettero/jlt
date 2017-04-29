@@ -68,10 +68,10 @@ ControlPanelAssistant.prototype.setup = function() {
 
     this.trackingLoop    = this.trackingLoop.bind(this);
     this.bufferCheckLoop = this.bufferCheckLoop.bind(this);
-    this.everySecond     = function() {
+    this.everySecond     = () => {
             this.trackingLoop();
             this.bufferCheckLoop();
-        }.bind(this);
+        };
 
     setInterval(this.everySecond, 1100);
     // Longer than a second because the timer seems a bit fast on the EMU...
@@ -86,7 +86,7 @@ ControlPanelAssistant.prototype.setup = function() {
         replace: false // opening existing if possible
     };
 
-    this.dbo = new Mojo.Depot(options, function(){}, function(t,r){
+    this.dbo = new Mojo.Depot(options, () => {}, (t, r) => {
         Mojo.Controller.errorDialog("Can't open location database (#" + r.message + ").");
     });
 
@@ -109,7 +109,7 @@ ControlPanelAssistant.prototype.setup = function() {
     this.startupModel = { value: false };
     this.controller.setupWidget('startupTrackingEnabled', this.startupOpts, this.startupModel);
     Mojo.Event.listen(this.controller.get('startupTrackingEnabled'), Mojo.Event.propertyChange,
-        function(){ this.savePrefs(); }.bind(this));
+        () => { this.savePrefs(); });
 
     this.postURLAttributes = {
         hintText:      'http://db.JGPS.me/input',
@@ -424,7 +424,7 @@ ControlPanelAssistant.prototype.trackingChanged = function() {
 
         this.trackingLast = 0;
         this.controller.get("continuousUpdatesGroup").hide();
-        $$("div.explanation").each(function(i){i.hide();});
+        $$("div.explanation").each(i => {i.hide();});
 
     } else {
         if( this.trackingHandle ) {
@@ -436,7 +436,7 @@ ControlPanelAssistant.prototype.trackingChanged = function() {
         // this.resetQueue();
 
         this.controller.get("continuousUpdatesGroup").show();
-        $$("div.explanation").each(function(i){i.show();});
+        $$("div.explanation").each(i => {i.show();});
     }
 };
 // }}}
@@ -456,7 +456,7 @@ ControlPanelAssistant.prototype.continuousChanged = function(event) {
 /* {{{ */ ControlPanelAssistant.prototype.doneAuthing = function(token) {
     if( this.runningRequest ) {
         Mojo.Log.info("ControlPannel::doneAuthing [request still running, coming back in a couple seconds]");
-        setTimeout(function(){ this.doneAuthing(); }.bind(this), 2e3);
+        setTimeout(() => { this.doneAuthing(); }, 2e3);
         return;
     }
 
@@ -557,7 +557,7 @@ ControlPanelAssistant.prototype.postFixesSuccess = function(transport) {
 ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
     Mojo.Log.info("ControlPanel::postFixesFailure() %d: %s", transport.status, transport.statusText);
 
-    setTimeout(function(){ delete this.runningRequest; }.bind(this), 2e3);
+    setTimeout(() => { delete this.runningRequest; }, 2e3);
 
     this.blinkRedLED(short_blink);
     this.blinkGreenLED(short_blink);
@@ -566,7 +566,9 @@ ControlPanelAssistant.prototype.postFixesFailure = function(transport) {
 // }}}
 // ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {{{
 ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {
-    var s,st,error;
+    var s;
+    var st;
+    var error;
     Mojo.Log.info("ControlPanel::postFixes4xxFail() %d: %s", s=transport.status, st=transport.statusText);
 
     if( st ) {
@@ -595,7 +597,7 @@ ControlPanelAssistant.prototype.postFixes4xxFail = function(transport) {
 
     this.updateAction("http suspended");
 
-    setTimeout(function(){ delete this.runningRequest; }.bind(this), 2e3);
+    setTimeout(() => { delete this.runningRequest; }, 2e3);
 
     this._4xxFailURL = this.postURLModel.value;
 
@@ -716,7 +718,7 @@ ControlPanelAssistant.prototype.trackingLoop = function() {
 };
 // }}}
 
-/* {{{ */ ControlPanelAssistant.prototype.validateItem = function(item) {
+/* {{{ */ ControlPanelAssistant.prototype.validateItem = item => {
     if( !item.t ) {
         Mojo.Log.error("ControlPanel::validateItem(): [fail] no timestamp");
         return false;
@@ -825,7 +827,7 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
     Mojo.Log.info("ControlPannel::restorePrefs())");
 
     this.dbo.simpleGet("prefs",
-        function(prefs) {
+        prefs => {
             Mojo.Log.info("restoring prefs: %s", Object.toJSON(prefs));
 
             if( prefs === null )
@@ -867,12 +869,12 @@ ControlPanelAssistant.prototype.restorePrefs = function() {
 
             Mojo.Log.info("restored prefs: %s", Object.toJSON(prefs));
 
-        }.bind(this),
+        },
 
-        function(transaction, error) {
+        (transaction, error) => {
             Mojo.Controller.errorDialog("ERROR restoring prefs (#" + error.message + ").");
 
-        }.bind(this)
+        }
     );
 };
 // }}}
@@ -894,14 +896,14 @@ ControlPanelAssistant.prototype.savePrefs = function() {
     };
 
     this.dbo.simpleAdd("prefs", prefs,
-        function() {
+        () => {
             Mojo.Log.info("saved prefs: %s", Object.toJSON(prefs) );
 
-        }.bind(this),
+        },
 
-        function(transaction,result) {
+        (transaction, result) => {
             Mojo.Controller.errorDialog("ERROR saving prefs (#" + result.message + ").");
-        }.bind(this)
+        }
     );
 };
 // }}}
@@ -910,7 +912,7 @@ ControlPanelAssistant.prototype.resetMe = function() {
     Mojo.Log.info("ControlPannel::resetMe()");
 
     this.controller.showAlertDialog({
-        onChoose: function(value) {
+        onChoose: value => {
             if( value === "reset" ) {
                 Mojo.Log.info("ControlPannel::resetMe() [resetting]");
 
@@ -952,7 +954,7 @@ ControlPanelAssistant.prototype.resetMe = function() {
                 Mojo.Log.info("ControlPannel::resetMe() [equivocating]");
             }
 
-        }.bind(this),
+        },
 
         title:   "Reset all Settings",
         message: "Are you sure you want to reset everything?",
@@ -968,7 +970,7 @@ ControlPanelAssistant.prototype.clearToken = function() {
     Mojo.Log.info("ControlPannel::clearToken()");
 
     this.controller.showAlertDialog({
-        onChoose: function(value) {
+        onChoose: value => {
             if( value === "clear" ) {
                 this.setToken('');
 
@@ -976,7 +978,7 @@ ControlPanelAssistant.prototype.clearToken = function() {
                 Mojo.Log.info("ControlPannel::resetMe() [equivocating]");
             }
 
-        }.bind(this),
+        },
 
         title:   "Clear Token",
         message: "Are you sure you want to clear the authentication token?",
@@ -994,7 +996,7 @@ ControlPanelAssistant.prototype.testViewURL = function() {
     var res;
     if( res = this.viewURLModel.value.match(/(http:\/\/.*(?:jgps.me|corky.vhb:8080))\/l\/(.+)/) ) {
         Mojo.Log.info("ControlPannel::testViewURL() host=%s token=%s", res[1], res[2]);
-        var k = function(){ delete this._tt; }.bind(this);
+        var k = () => { delete this._tt; };
         if( !this._tt ) {
             var testURL = res[1] + "/tt";
             Mojo.Log.info("ControlPannel::testViewURL() testURL: %s", testURL);
@@ -1006,7 +1008,7 @@ ControlPanelAssistant.prototype.testViewURL = function() {
                 onFailure:   k,
                 onException: k,
 
-                onSuccess: function(transport){
+                onSuccess: transport => {
                     var result;
                     try{ result = (js = transport.responseText.evalJSON()).result; } catch(e){}
                     Mojo.Log.info("ControlPannel::testViewURL() test.result=%s", Object.toJSON(result));
@@ -1018,7 +1020,7 @@ ControlPanelAssistant.prototype.testViewURL = function() {
                         this.controller.modelChanged(this.viewURLModel);
                     }
 
-                }.bind(this)
+                }
 
             });
         }
@@ -1027,7 +1029,7 @@ ControlPanelAssistant.prototype.testViewURL = function() {
 // }}}
 
 // ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {{{
-ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
+ControlPanelAssistant.prototype.errCodeToStr = errorCode => {
     var res = {
         0: "Success",
         1: "Timeout",
@@ -1127,15 +1129,15 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                     template: 'dialogs/tag',
                     assistant: new ExtraInfoDialog(this.controller, {maxLength: 64, hintText: "trip name"},
 
-                        function(info){
+                        info => {
                             this._tag = info;
                             this.trackingLast = 0; // try to update right away so we can show the start of the tag
-                        }.bind(this),
+                        },
 
-                        function() {
+                        () => {
                             this._tag = false;
                             this.trackingLast = 0; // try to update right away so we can show the end of the tag
-                        }.bind(this)
+                        }
                     )
                 });
                 break;
@@ -1146,14 +1148,12 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
                     template: 'dialogs/poi',
                     assistant: new ExtraInfoDialog(this.controller, {maxLength: 240, hintText: "This is so cool! :-P"},
 
-                        function(info){
+                        info => {
                             this._poi = info;
                             this.trackingLast = 0; // try to update right away so we get the POI in the right place
-                        }.bind(this),
+                        },
 
-                        function() { this._poi = false; }.bind(this)
-
-                        // not going to show anything anyway... no need to reset trackingLast
+                        () => { this._poi = false; }
                     )
                 });
                 break;
@@ -1179,7 +1179,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     if( this.d1TimeoutID )
         clearTimeout(this.d1TimeoutID);
 
-    this.d1TimeoutID = setTimeout(function(){ d1.innerHTML = ""; }, to);
+    this.d1TimeoutID = setTimeout(() => { d1.innerHTML = ""; }, to);
 };
 
 /*}}}*/
@@ -1191,7 +1191,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     if( this.d2TimeoutID )
         clearTimeout(this.d2TimeoutID);
 
-    this.d2TimeoutID = setTimeout(function(){ d2.innerHTML = ""; }, 2e3);
+    this.d2TimeoutID = setTimeout(() => { d2.innerHTML = ""; }, 2e3);
 };
 
 /*}}}*/
@@ -1219,7 +1219,7 @@ ControlPanelAssistant.prototype.errCodeToStr = function(errorCode) {
     if( this.d3TimeoutID )
         clearTimeout(this.d3TimeoutID);
 
-    this.d3TimeoutID = setTimeout(function(){ d3.innerHTML = ""; }, to);
+    this.d3TimeoutID = setTimeout(() => { d3.innerHTML = ""; }, to);
 };
 
 /*}}}*/
